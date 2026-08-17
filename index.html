@@ -16,6 +16,25 @@
     <link rel="canonical" href="https://ron-amit-claude.vercel.app/">
     <meta property="og:locale" content="he_IL">
 
+
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1410625827632523');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1410625827632523&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;500;700;900&display=swap" rel="stylesheet">
@@ -578,7 +597,7 @@
 @keyframes pulse-dot { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
 
         .hero h1 {
-            font-size: clamp(24px, 5vw, 47px);
+            font-size: clamp(21px, 4.4vw, 42px);
             font-weight: 900; line-height: 1.32;
             letter-spacing: -0.6px;
             margin-bottom: 22px;
@@ -587,7 +606,7 @@
             text-wrap: balance;
         }
         .hero-sub {
-            font-size: 17.5px; color: var(--text-mid);
+            font-size: 16.5px; color: var(--text-mid);
             max-width: 570px; margin: 0 auto 30px;
             line-height: 1.85;
         }
@@ -642,8 +661,8 @@
 @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 /* ====== SECTIONS ====== */
         .section { padding: 84px 0; position: relative; z-index: 1; }
-        .section-title { font-size: clamp(26px, 5vw, 38px); font-weight: 900; text-align: center; margin-bottom: 14px; line-height: 1.3; letter-spacing: -0.5px; text-wrap: balance; }
-        .section-sub { text-align: center; color: var(--text-mid); font-size: 17px; margin-bottom: 48px; max-width: 560px; margin-left: auto; margin-right: auto; }
+        .section-title { font-size: clamp(22px, 4.3vw, 34px); font-weight: 900; text-align: center; margin-bottom: 14px; line-height: 1.3; letter-spacing: -0.5px; text-wrap: balance; }
+        .section-sub { text-align: center; color: var(--text-mid); font-size: 16px; margin-bottom: 48px; max-width: 560px; margin-left: auto; margin-right: auto; }
 
         /* ====== PAIN SECTION ====== */
         .pain-stack { max-width: 640px; margin: 0 auto; }
@@ -1295,8 +1314,7 @@
             .sticky-cta { display: block; }
             .final-section { padding-bottom: 130px; }
             .notif-popup { bottom: 84px; left: 12px; right: 12px; max-width: none; }
-            .growth-chart { height: 260px; gap: 8px; }
-            .gc-amount { font-size: 12.5px; }
+            .growth-chart { height: 300px; gap: 10px; }
             .gc-month { font-size: 11.5px; }
             .gc-detail { font-size: 10px; }
             /* אין להוסיף פה top: הבסיס מציב את הכתר לפי bottom, ושניהם יחד מותחים אותו */
@@ -1318,6 +1336,41 @@
             .pain-bridge { font-size: 17px; }
             .wa-card { width: 280px; }
             .wa-arrow { width: 40px; height: 40px; font-size: 18px; }
+        }
+
+        /* ══ הידוק מובייל ══ */
+        @media (max-width: 560px) {
+            body { font-size: 15px; }
+            .section { padding: 56px 0; }
+            .hero-sub { font-size: 14.5px; line-height: 1.75; }
+            .section-sub { font-size: 14.5px; margin-bottom: 34px; }
+            .pain-item { padding: 22px 18px; gap: 16px; }
+            .pain-item h3 { font-size: 16.5px; }
+            .pain-item p { font-size: 13.5px; line-height: 1.7; }
+            .pain-cost-amount { font-size: 30px; }
+            .pain-bridge { font-size: 16px; line-height: 1.85; }
+            .ps-item { font-size: 13.5px; }
+            .meta-chip .mc-value { font-size: 15px; }
+            .faq-q { font-size: 14.5px; padding: 16px 18px; }
+            .faq-a p { font-size: 13.5px; }
+            .who-item { font-size: 14px; padding: 14px 16px; }
+            .about-content p { font-size: 14px; }
+            .cta-btn { font-size: 17px; padding: 16px 34px; }
+
+            /* הגרף: רשת 2×2, היקרים למעלה והסוכן סוגר את הסיפור */
+            .growth-chart {
+                display: grid; grid-template-columns: 1fr 1fr;
+                gap: 22px 14px; height: auto; max-width: 360px;
+            }
+            .gc-col { max-width: none; }
+            .gc-col:nth-child(1) { order: 4; }   /* 90 ₪, אחרון */
+            .gc-col:nth-child(2) { order: 3; }
+            .gc-col:nth-child(3) { order: 2; }
+            .gc-col:nth-child(4) { order: 1; }   /* 28,160, פותח */
+            .gc-plot { height: 130px; flex: none; }
+            .gc-amount { font-size: 13px; margin-bottom: 8px; }
+            .gc-label { font-size: 12.5px; }
+            .gc-detail { font-size: 10.5px; }
         }
     </style>
 </head>
@@ -2262,6 +2315,13 @@ const CONFIG = {
         if (exit) exit.classList.remove('show');
         overlay.classList.add('show');
         setTimeout(function () { document.getElementById('ldName').focus(); }, 180);
+        if (typeof fbq === 'function') {
+            fbq('track', 'InitiateCheckout', {
+                content_name: 'סוכני AI בוואטסאפ - קורס דיגיטלי',
+                content_ids: ['ai-agents-course'], content_type: 'product',
+                currency: 'ILS', value: 293.82
+            });
+        }
     }
 
     document.addEventListener('click', function (e) {
@@ -2293,6 +2353,19 @@ const CONFIG = {
         var lead = { name: name, phone: phone, email: email, terms: true,
                      ts: new Date().toISOString(), source: location.href };
         try { localStorage.setItem('rbs_lead', JSON.stringify(lead)); } catch (err) {}
+        if (typeof fbq === 'function') {
+            /* Advanced Matching: מייל, טלפון בפורמט בינלאומי, שם פרטי ומשפחה */
+            var parts = name.split(/\s+/);
+            fbq('init', '1410625827632523', {
+                em: email.toLowerCase(),
+                ph: '972' + phone.replace(/^0/, ''),
+                fn: parts[0] || '', ln: parts.slice(1).join(' ') || ''
+            });
+            fbq('track', 'Lead', {
+                content_name: 'סוכני AI בוואטסאפ - קורס דיגיטלי',
+                currency: 'ILS', value: 293.82
+            });
+        }
         if (CONFIG.LEAD_WEBHOOK_URL) {
             try {
                 fetch(CONFIG.LEAD_WEBHOOK_URL, {
@@ -2302,7 +2375,7 @@ const CONFIG = {
                 });
             } catch (err) {}
         }
-        setTimeout(function () { location.href = CONFIG.CHECKOUT_URL; }, 300);
+        setTimeout(function () { location.href = CONFIG.CHECKOUT_URL; }, 400);
     });
 
     /* ניקוי שגיאה תוך כדי הקלדה */
