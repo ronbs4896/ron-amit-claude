@@ -12,6 +12,7 @@
     <meta property="og:description" content="קורס דיגיטלי לבניית סוכן שירות בוואטסאפ ובאינסטגרם. 249 ש״ח + מע״מ במקום 997.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ron-amit-claude.vercel.app/">
+    <meta property="og:image" content="https://ron-amit-claude.vercel.app/amit.jpg">
     <link rel="canonical" href="https://ron-amit-claude.vercel.app/">
     <meta property="og:locale" content="he_IL">
 
@@ -847,10 +848,11 @@
         /* ====== ABOUT ====== */
         .about-card { padding: 48px 36px; display: flex; gap: 36px; align-items: flex-start; }
         .about-avatar {
-            width: 200px; min-height: 340px; border-radius: 20px;
+            width: 280px; border-radius: 20px;
             flex-shrink: 0; overflow: hidden;
             border: 2px solid var(--glass-border);
-            aspect-ratio: 9/16;
+            aspect-ratio: 1/1;
+            position: relative;
             background: var(--bg-card);
             display: flex; align-items: center; justify-content: center;
             color: var(--text-dim); font-size: 13px; text-align: center; padding: 12px;
@@ -1346,19 +1348,11 @@
 
 <!-- URGENCY BAR -->
 <div class="urgency-bar">
-    <span class="ub-price"><span class="ub-hide-m">מחיר השקה: </span>249 ש״ח + מע״מ במקום 997</span>
-    <span class="ub-sep">|</span>
     <span class="ub-timer"><svg class="ico" aria-hidden="true"><use href="#i-hourglass"/></svg> <span class="ub-label">המחיר עולה בעוד </span><span id="ubDays"></span><span class="ub-count" id="ubCount">–</span></span>
 </div>
 
-<!-- LOGO -->
-<!-- החלף את הבלוק הזה ב: <div class="logo-wrap reveal"><img src="logo-light.png" alt="עמית ליטמן"></div> -->
-<div class="logo-wrap reveal band band-first" style="padding-top:26px;padding-bottom:4px">
-    <span class="logo-text"><span class="lt-mark"><svg class="ico" aria-hidden="true"><use href="#i-mark"/></svg></span>עמית ליטמן</span>
-</div>
-
 <!-- HERO -->
-<section class="hero band" style="border-top:none">
+<section class="hero band band-first" style="border-top:none;padding-top:64px">
     <div class="container">
         <div class="reveal stagger-1">
             <div class="hero-badge">
@@ -1906,7 +1900,8 @@
         <div class="about-card glass reveal">
             <!-- החלף בתמונה: <img src="amit.jpg" alt="עמית ליטמן"> -->
             <div class="about-avatar">
-                תמונה של עמית<br>(9:16)
+                תמונה של עמית (1:1)
+                <img src="amit.jpg" alt="עמית ליטמן" style="position:absolute;inset:0" onerror="this.remove()">
             </div>
             <div class="about-content">
                 <h2>מי מעביר את הקורס</h2>
