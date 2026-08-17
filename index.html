@@ -234,6 +234,241 @@
             .live-dot, .pulse-dot { animation: none; }
         }
 
+/* ══ SIM ══ */
+        /* בורר עסק */
+        .biz-picker { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; }
+        .biz-chip {
+            padding: 11px 22px; border-radius: 999px; cursor: pointer;
+            border: 1px solid var(--line); background: var(--bg-card);
+            color: var(--text-mid); font-size: 14.5px; font-weight: 700;
+            font-family: inherit; transition: all 0.25s;
+        }
+        .biz-chip:hover { border-color: rgba(37, 211, 102, 0.4); color: var(--text); }
+        .biz-chip.on { background: var(--wa); border-color: var(--wa); color: #04140f; font-weight: 900; }
+
+        /* מסילת התהליך */
+        .rail { display: flex; justify-content: center; gap: 0; margin-bottom: 38px; direction: rtl; }
+        .rail-step { display: flex; align-items: center; }
+        .rail-node {
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            min-width: 86px; cursor: default;
+        }
+        .rail-dot {
+            width: 38px; height: 38px; border-radius: 50%;
+            border: 2px solid var(--line); background: var(--bg-card);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; font-weight: 900; color: var(--text-dim);
+            transition: all 0.4s;
+        }
+        .rail-label { font-size: 12px; font-weight: 700; color: var(--text-dim); transition: color 0.4s; white-space: nowrap; }
+        .rail-line { width: clamp(18px, 6vw, 74px); height: 2px; background: var(--line); margin: 0 2px 26px; position: relative; overflow: hidden; }
+        .rail-line::after {
+            content: ''; position: absolute; inset: 0; background: var(--wa);
+            transform: scaleX(0); transform-origin: right; transition: transform 0.5s ease;
+        }
+        .rail-step.done .rail-line::after { transform: scaleX(1); }
+        .rail-node.active .rail-dot { border-color: var(--wa); color: var(--wa); box-shadow: 0 0 0 5px rgba(37, 211, 102, 0.12); }
+        .rail-node.active .rail-label { color: var(--text); }
+        .rail-node.done .rail-dot { background: var(--wa); border-color: var(--wa); color: #04140f; }
+        .rail-node.done .rail-label { color: var(--text-mid); }
+
+        /* במת התהליך */
+        .stage-wrap {
+            max-width: 680px; margin: 0 auto;
+            border: 1px solid var(--line); border-radius: 22px;
+            background: var(--bg-deep); overflow: hidden;
+            min-height: 300px; display: flex; flex-direction: column;
+        }
+        .stage { display: none; padding: 40px 34px; text-align: center; flex: 1; }
+        .stage.on { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; animation: stage-in 0.5s ease; }
+        @keyframes stage-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+        .stage h3 { font-size: 22px; font-weight: 900; }
+        .stage p { font-size: 15px; color: var(--text-mid); max-width: 400px; }
+
+        /* שלב 0: פתיחה */
+        .start-btn {
+            display: inline-block; margin-top: 6px;
+            background: linear-gradient(135deg, var(--wa) 0%, var(--wa-deep) 100%);
+            color: #04140f; padding: 17px 42px; border-radius: 15px;
+            font-size: 18px; font-weight: 900; font-family: inherit;
+            border: none; cursor: pointer; box-shadow: var(--shadow-glow);
+            transition: transform 0.25s;
+        }
+        .start-btn:hover { transform: translateY(-2px); }
+
+        /* שלב 1: חיבור */
+        .qr-frame {
+            width: 120px; height: 120px; border-radius: 18px;
+            border: 2px dashed rgba(37, 211, 102, 0.4);
+            display: flex; align-items: center; justify-content: center;
+            position: relative; margin-bottom: 4px;
+        }
+        .qr-frame svg { width: 54px; height: 54px; color: var(--wa); }
+        .qr-scan {
+            position: absolute; left: 8px; right: 8px; top: 10px; height: 3px;
+            background: var(--wa); border-radius: 2px; opacity: 0.85;
+            animation: qr-sweep 1.6s ease-in-out infinite;
+        }
+        @keyframes qr-sweep { 0%,100% { top: 10px; } 50% { top: calc(100% - 13px); } }
+        .link-status { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 800; color: var(--text-dim); }
+        .link-status.ok { color: #34e07a; }
+
+        /* שלב 2: הזנה */
+        .feed-brain {
+            width: 96px; height: 96px; border-radius: 50%;
+            background: var(--bg-card); border: 2px solid rgba(37, 211, 102, 0.35);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 30px; font-weight: 900; color: var(--wa);
+        }
+        .feed-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; max-width: 380px; }
+        .feed-chip {
+            padding: 7px 16px; border-radius: 999px; font-size: 13px; font-weight: 700;
+            background: var(--bg-card); border: 1px solid var(--line); color: var(--text-mid);
+            opacity: 0; transform: translateY(14px); transition: all 0.45s ease;
+        }
+        .feed-chip.in { opacity: 1; transform: none; border-color: rgba(37, 211, 102, 0.35); color: var(--text); }
+
+        /* שלב 3: אימון */
+        .train-list { width: 100%; max-width: 380px; text-align: right; }
+        .train-q {
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 0; font-size: 14px; color: var(--text-dim);
+            border-bottom: 1px solid var(--line-soft); transition: color 0.3s;
+        }
+        .train-q .tq-mark { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--line); flex-shrink: 0; transition: all 0.3s; position: relative; }
+        .train-q.done { color: var(--text); }
+        .train-q.done .tq-mark { background: var(--wa); border-color: var(--wa); }
+        .train-bar { width: 100%; max-width: 380px; height: 6px; border-radius: 3px; background: var(--bg-card); overflow: hidden; }
+        .train-bar i { display: block; height: 100%; width: 0; background: var(--wa); border-radius: 3px; transition: width 0.4s ease; }
+        .train-count { font-size: 13px; font-weight: 800; color: var(--wa); }
+
+        /* שלב 4: הפעלה */
+        .power-switch {
+            width: 92px; height: 48px; border-radius: 26px; cursor: pointer;
+            background: var(--bg-card); border: 2px solid var(--line);
+            position: relative; transition: all 0.4s;
+        }
+        .power-switch i {
+            position: absolute; top: 4px; right: 4px;
+            width: 36px; height: 36px; border-radius: 50%;
+            background: var(--text-dim); transition: all 0.4s ease;
+        }
+        .power-switch.on { background: rgba(37, 211, 102, 0.18); border-color: var(--wa); }
+        .power-switch.on i { right: calc(100% - 40px); background: var(--wa); box-shadow: 0 0 18px rgba(37, 211, 102, 0.6); }
+        .live-tag { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 900; color: var(--text-dim); transition: color 0.3s; }
+        .live-tag.on { color: #34e07a; }
+        .live-tag .lt-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+        .live-tag.on .lt-dot { animation: pulse-dot 1.4s ease-in-out infinite; }
+
+        /* ══════════ שלב 5: הלילה הראשון ══════════ */
+        .night { display: none; }
+        .night.on { display: block; animation: stage-in 0.5s ease; }
+        .night-grid {
+            display: grid; grid-template-columns: 1fr 380px;
+            gap: 22px; align-items: start; max-width: 880px; margin: 0 auto;
+        }
+
+        /* הטלפון */
+        .phone {
+            background: var(--bg-deep); border: 1px solid var(--line);
+            border-radius: 26px; overflow: hidden;
+            display: flex; flex-direction: column; height: 520px;
+        }
+        .phone-top {
+            padding: 13px 18px; background: var(--bg-card);
+            display: flex; align-items: center; gap: 11px;
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .ph-avatar {
+            width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 15px; color: #fff;
+        }
+        .ph-name { font-size: 14px; font-weight: 800; line-height: 1.3; }
+        .ph-status { font-size: 11.5px; color: #34e07a; display: flex; align-items: center; gap: 5px; }
+        .ph-status i { width: 6px; height: 6px; border-radius: 50%; background: #34e07a; animation: pulse-dot 1.4s infinite; }
+        .ph-clock { margin-right: auto; font-size: 13px; font-weight: 900; color: var(--text-mid); font-variant-numeric: tabular-nums; direction: ltr; }
+        .phone-msgs { flex: 1; overflow-y: auto; padding: 16px 14px; display: flex; flex-direction: column; gap: 9px; }
+        .pm {
+            max-width: 82%; padding: 9px 13px; border-radius: 14px;
+            font-size: 13.5px; line-height: 1.55; animation: pm-in 0.3s ease;
+            position: relative;
+        }
+        @keyframes pm-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+        .pm.in  { align-self: flex-start; background: var(--bg-card); border: 1px solid var(--line-soft); border-bottom-right-radius: 4px; }
+        .pm.out { align-self: flex-end; background: rgba(37, 211, 102, 0.13); border: 1px solid rgba(37, 211, 102, 0.22); border-bottom-left-radius: 4px; }
+        .pm .pm-who { display: block; font-size: 10.5px; font-weight: 900; color: var(--wa); margin-bottom: 2px; }
+        .pm .pm-t { display: block; font-size: 10px; color: var(--text-dim); margin-top: 4px; direction: ltr; text-align: left; font-variant-numeric: tabular-nums; }
+        .pm-typing { align-self: flex-start; display: inline-flex; gap: 4px; padding: 11px 15px; background: var(--bg-card); border-radius: 14px; border-bottom-right-radius: 4px; }
+        .pm-typing.agent { align-self: flex-end; background: rgba(37, 211, 102, 0.13); border-bottom-left-radius: 4px; border-bottom-right-radius: 14px; }
+        .pm-typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--text-dim); animation: tp 1.2s infinite; }
+        .pm-typing i:nth-child(2) { animation-delay: 0.18s; }
+        .pm-typing i:nth-child(3) { animation-delay: 0.36s; }
+        @keyframes tp { 0%,60%,100% { opacity: 0.25; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
+
+        /* לוח המונים */
+        .panel { display: flex; flex-direction: column; gap: 14px; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat {
+            background: var(--bg-deep); border: 1px solid var(--line);
+            border-radius: 16px; padding: 16px 14px; text-align: center;
+        }
+        .stat b { display: block; font-size: 26px; font-weight: 900; color: var(--wa); line-height: 1.2; font-variant-numeric: tabular-nums; direction: ltr; }
+        .stat span { font-size: 12px; color: var(--text-dim); font-weight: 600; }
+        .stat.night-clock b { color: var(--text); }
+        .evlog {
+            background: var(--bg-deep); border: 1px solid var(--line); border-radius: 16px;
+            padding: 14px 16px; min-height: 130px; max-height: 210px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 7px;
+        }
+        .evlog-title { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 2px; }
+        .ev {
+            font-size: 12.5px; color: var(--text-mid); display: flex; gap: 8px; align-items: baseline;
+            animation: pm-in 0.3s ease;
+        }
+        .ev time { font-variant-numeric: tabular-nums; direction: ltr; color: var(--text-dim); font-size: 11px; flex-shrink: 0; }
+        .ev.deal { color: #34e07a; font-weight: 700; }
+        .ev.hand { color: #fbbf24; }
+
+        .sim-controls { display: flex; justify-content: center; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .sim-btn {
+            padding: 10px 20px; border-radius: 999px; cursor: pointer;
+            background: var(--bg-card); border: 1px solid var(--line);
+            color: var(--text-mid); font-size: 13.5px; font-weight: 700; font-family: inherit;
+            transition: all 0.25s;
+        }
+        .sim-btn:hover { color: var(--text); border-color: rgba(37, 211, 102, 0.4); }
+        .sim-btn.on { background: var(--wa-soft); border-color: rgba(37, 211, 102, 0.4); color: #34e07a; }
+
+        /* סיכום */
+        .night-summary {
+            display: none; max-width: 620px; margin: 30px auto 0; text-align: center;
+            border: 1px solid rgba(37, 211, 102, 0.3); border-radius: 22px;
+            background: rgba(37, 211, 102, 0.07); padding: 34px 28px;
+        }
+        .night-summary.on { display: block; animation: stage-in 0.6s ease; }
+        .night-summary h3 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
+        .night-summary p { color: var(--text-mid); font-size: 15.5px; margin-bottom: 20px; }
+        .night-summary p b { color: var(--text); }
+
+
+        .wa-more { text-align: center; color: var(--text-mid); font-size: 15px; font-weight: 700; margin: 44px 0 6px; }
+        @media (max-width: 880px) {
+            .night-grid { grid-template-columns: 1fr; }
+            .phone { height: 440px; }
+            .panel { order: -1; }
+            .evlog { min-height: 0; max-height: 130px; }
+        }
+        @media (max-width: 560px) {
+            .rail-label { display: none; }
+            .rail-node { min-width: 46px; }
+            .rail-dot { width: 34px; height: 34px; font-size: 13.5px; }
+            .rail-line { margin-bottom: 0; width: clamp(12px, 5vw, 40px); }
+            .stage { padding: 30px 18px; }
+        }
+        /* ══ SIM END ══ */
+
         /* ====== רצועות סקשן ======
            כל סקשן הוא רצועה בצבע אחיד. שתי הרצועות מתחלפות,
            וקו דק בין רצועה לרצועה מסמן את הגבול. */
@@ -1001,6 +1236,34 @@
         .tk-body h4 { color: var(--text); font-size: 15px; margin: 20px 0 6px; }
         .tk-body h4:first-child { margin-top: 0; }
         .tk-body .tk-todo { color: var(--gold); font-weight: 700; }
+        #tkOverlay { z-index: 320; }
+
+        /* ── פופ-אפ הרשמה ── */
+        .ld-sub { font-size: 14px; color: var(--text-mid); margin-bottom: 18px; line-height: 1.7; }
+        .ld-field { margin-bottom: 13px; }
+        .ld-field label { display: block; font-size: 13px; font-weight: 700; color: var(--text-mid); margin-bottom: 6px; }
+        .ld-field input {
+            width: 100%; background: #0A161E;
+            border: 1px solid var(--line); border-radius: 12px;
+            padding: 12px 14px; color: var(--text);
+            font-size: 15px; font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        .ld-field input:focus { outline: none; border-color: var(--wa); }
+        .ld-field input::placeholder { color: rgba(255, 255, 255, 0.25); }
+        .ld-err { display: none; color: #ff8f8f; font-size: 12px; margin-top: 5px; }
+        .ld-field.bad input { border-color: var(--red); }
+        .ld-field.bad .ld-err { display: block; }
+        .ld-check {
+            display: flex; align-items: flex-start; gap: 10px;
+            font-size: 13.5px; color: var(--text-mid); line-height: 1.55;
+            margin: 15px 0 6px; cursor: pointer;
+        }
+        .ld-check input { accent-color: var(--wa); width: 17px; height: 17px; margin-top: 2px; flex-shrink: 0; }
+        .ld-check a { color: var(--wa); cursor: pointer; text-decoration: underline; }
+        .ld-check-err { display: none; color: #ff8f8f; font-size: 12px; margin: 2px 0 0 0; }
+        .ld-check.bad + .ld-check-err { display: block; }
+        .ld-submit { width: 100%; font-size: 18px; padding: 16px 20px; margin-top: 12px; }
 
         /* ====== CONFETTI ====== */
         .confetti-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 200; overflow: hidden; }
@@ -1367,8 +1630,94 @@
 <section class="wa-slider-section band">
     <div class="container">
         <div class="section-head reveal"><span class="eyebrow"><span class="eb-dot"></span>הדגמה</span></div>
-        <h2 class="section-title reveal">ככה זה נראה אצל הלקוח</h2>
-        <p class="section-sub reveal stagger-1">שיחות אמיתיות שהסוכן ניהל לבד, בשעות שאף אחד לא היה ליד הטלפון</p>
+        <h2 class="section-title reveal">מהחיבור הראשון עד הלילה הראשון</h2>
+        <p class="section-sub reveal stagger-1">תבחר עסק שדומה לשלך, תלחץ הפעלה, ותראה את כל הדרך: חיבור, למידה, ולילה שלם של לקוחות</p>
+
+        <!-- SIM -->
+        <div class="biz-picker" id="bizPicker" role="tablist" aria-label="סוג עסק"></div>
+
+        <div class="rail" id="rail" aria-hidden="true"></div>
+
+        <div class="stage-wrap" id="stageWrap">
+
+            <div class="stage on" data-stage="0">
+                <h3>הלילה הראשון של הסוכן שלך</h3>
+                <p>נריץ את התהליך המלא על <b id="startBizName" style="color:var(--wa)"></b>: חיבור, הזנה, אימון, הפעלה, ואז לילה שלם של לקוחות אמיתיים.</p>
+                <button class="start-btn" id="startBtn">תראה את זה קורה</button>
+            </div>
+
+            <div class="stage" data-stage="1">
+                <h3>מחברים את הוואטסאפ</h3>
+                <div class="qr-frame"><div class="qr-scan"></div><svg aria-hidden="true"><use href="#i-chat"/></svg></div>
+                <div class="link-status" id="linkStatus"><span>סורק...</span></div>
+                <p>סריקת QR אחת, כמו וואטסאפ ווב. בלי קוד, בלי התקנות.</p>
+            </div>
+
+            <div class="stage" data-stage="2">
+                <h3>מזינים את העסק</h3>
+                <div class="feed-brain" id="feedBrain">AI</div>
+                <div class="feed-chips" id="feedChips"></div>
+                <p>מדביקים את מה שכבר יש לך. זה כל ה"אימון" שצריך.</p>
+            </div>
+
+            <div class="stage" data-stage="3">
+                <h3>הסוכן לומד את השאלות שחוזרות</h3>
+                <div class="train-list" id="trainList"></div>
+                <div class="train-bar"><i id="trainBar"></i></div>
+                <div class="train-count" id="trainCount">0 מתוך 12</div>
+            </div>
+
+            <div class="stage" data-stage="4">
+                <h3>מדליקים</h3>
+                <div class="power-switch" id="powerSwitch" role="img" aria-label="מתג הפעלה"><i></i></div>
+                <div class="live-tag" id="liveTag"><span class="lt-dot"></span>הסוכן על המשמרת</div>
+                <p>מהרגע הזה, כל הודעה שנכנסת נענית תוך שניות. בוא נראה לילה אחד.</p>
+            </div>
+
+        </div>
+
+        <!-- הלילה -->
+        <div class="night" id="night">
+            <div class="night-grid">
+                <div class="panel">
+                    <div class="stat-grid">
+                        <div class="stat night-clock"><b id="stClock">22:00</b><span>השעה</span></div>
+                        <div class="stat"><b id="stMsgs">0</b><span>הודעות נענו</span></div>
+                        <div class="stat"><b id="stDeals">0</b><span>נסגרו</span></div>
+                        <div class="stat"><b id="stValue">0 ₪</b><span>שווי העסקאות</span></div>
+                    </div>
+                    <div class="evlog" id="evlog"><div class="evlog-title">יומן הלילה</div></div>
+                </div>
+                <div class="phone">
+                    <div class="phone-top">
+                        <div class="ph-avatar" id="phAvatar"></div>
+                        <div>
+                            <div class="ph-name" id="phName"></div>
+                            <div class="ph-status"><i></i>הסוכן מחובר</div>
+                        </div>
+                        <div class="ph-clock" id="phClock">22:00</div>
+                    </div>
+                    <div class="phone-msgs" id="phoneMsgs"></div>
+                </div>
+            </div>
+
+            <div class="sim-controls">
+                <button class="sim-btn" id="speedBtn">מהירות ×3</button>
+                <button class="sim-btn" id="skipBtn">דלג לסוף הלילה</button>
+                <button class="sim-btn" id="replayBtn">הרץ שוב</button>
+            </div>
+        </div>
+
+        <div class="night-summary" id="nightSummary">
+            <span class="badge badge-success" style="margin-bottom:14px"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>הלילה הסתיים</span>
+            <h3 id="sumTitle"></h3>
+            <p id="sumText"></p>
+            <a class="cta-btn" href="#register" style="font-size:18px;padding:17px 40px">אני רוצה סוכן כזה לעסק שלי</a>
+            <p style="margin:14px 0 0;font-size:13px;color:var(--text-dim)">בקורס בונים בדיוק את זה, מסך מול מסך, צעד אחרי צעד. 249 ש״ח + מע״מ.</p>
+        </div>
+        <!-- /SIM -->
+
+        <p class="wa-more reveal">ועוד שיחות אמיתיות שסוכנים כאלה ניהלו לבד, בשעות שאף אחד לא ליד הטלפון:</p>
     </div>
     <div class="wa-slider-wrap">
         <button class="wa-arrow wa-arrow-right" id="waPrev" aria-label="הקודם">›</button>
@@ -1820,8 +2169,8 @@
                     <div class="guarantee-badge">
                         <div class="guarantee-icon"><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg></div>
                         <div class="guarantee-text">
-                            <div class="guarantee-title">14 יום להתחרט</div>
-                            <div class="guarantee-desc">תעבור על הקורס, תבנה את הסוכן. לא ראית ערך, תכתוב לנו ותקבל את הכסף בחזרה</div>
+                            <div class="guarantee-title">ביטול חינם עד 14 יום, לפני פתיחת התכנים</div>
+                            <div class="guarantee-desc">התחרטת לפני שנכנסת לקורס? מייל אחד והחזר מלא. מרגע שנצפה שיעור, הרכישה סופית, כמקובל בתוכן דיגיטלי</div>
                         </div>
                     </div>
                 </div>
@@ -1890,7 +2239,7 @@
         </p>
         <div class="reveal stagger-2">
             <a href="#register" class="cta-btn">אני רוצה את הסוכן שלי</a>
-            <div class="cta-sub">249 ש״ח + מע״מ, תשלום אחד, 14 יום להתחרט</div>
+            <div class="cta-sub">249 ש״ח + מע״מ, תשלום אחד, גישה מיידית לכל החיים</div>
         </div>
     </div>
 </section>
@@ -1931,7 +2280,7 @@
         </div>
         <div class="tk-body">
             <h4>1. כללי</h4>
-            <p>תקנון זה מסדיר את הרכישה והשימוש בקורס הדיגיטלי "סוכני AI בוואטסאפ" (להלן: "הקורס"), המופעל על ידי <span class="tk-todo">[שם העסק / החברה]</span>, <span class="tk-todo">[ח.פ. / ע.מ.]</span> (להלן: "המפעיל"). השלמת רכישה מהווה הסכמה לתנאים אלה. הניסוח בלשון זכר מטעמי נוחות בלבד ופונה לכל המגדרים.</p>
+            <p>תקנון זה מסדיר את הרכישה והשימוש בקורס הדיגיטלי "סוכני AI בוואטסאפ" (להלן: "הקורס"), המופעל על ידי אר-בי-אס דיגיטל יזמות והשקעות בע״מ, ח.פ. 516866878 (להלן: "המפעיל"). השלמת רכישה, לרבות סימון תיבת אישור התקנון, מהווה הסכמה מלאה ובלתי מסויגת לכל תנאי התקנון. מי שאינו מסכים לתנאים, מתבקש שלא לרכוש. הניסוח בלשון זכר מטעמי נוחות בלבד ופונה לכל המגדרים.</p>
             <h4>2. המוצר</h4>
             <p>הקורס הוא תוכן דיגיטלי מוקלט, לצפייה אישית, המלמד בניית סוכן שירות אוטומטי בוואטסאפ ובאינסטגרם. הקורס אינו כולל את עלות הכלים החיצוניים (ספקי AI, חיבור וואטסאפ וכדומה), המשולמת ישירות לצדדים שלישיים לפי השימוש, בסדר גודל של כ-210 ש״ח בחודש. אין בקורס התחייבות לתוצאה עסקית כלשהי, והתוצאות תלויות ביישום.</p>
             <h4>3. מחיר ותשלום</h4>
@@ -1939,15 +2288,57 @@
             <h4>4. אספקה וגישה</h4>
             <p>הגישה לקורס נפתחת לאחר אישור התשלום, ומייל עם פרטי הכניסה נשלח בסמוך לרכישה (מומלץ לבדוק גם בתיקיית הספאם). הגישה אישית ואינה ניתנת להעברה, והיא כוללת עדכונים עתידיים לתכני הקורס. בכל תקלת גישה ניתן לפנות אלינו ונטפל בתוך יום עסקים.</p>
             <h4>5. ביטול עסקה והחזר כספי</h4>
-            <p>ניתן לבטל את הרכישה ולקבל החזר כספי מלא בתוך 14 יום ממועד הרכישה, בפנייה למייל <span class="tk-todo">[מייל התמיכה]</span>, ללא צורך בנימוק. לאחר 14 יום לא יינתן החזר. האמור אינו גורע מזכויות לפי חוק הגנת הצרכן, התשמ״א-1981.</p>
+            <p><b>הקורס הוא "מידע" ותוכן דיגיטלי הניתן לשעתוק ולהעתקה</b>, ולכן חלים עליו הסייגים לזכות הביטול שבחוק הגנת הצרכן, התשמ״א-1981 ובתקנות שמכוחו, החלים על טובין הניתנים להקלטה, לשעתוק או לשכפול.</p>
+            <p>ניתן לבטל את העסקה ולקבל החזר כספי מלא בתוך 14 יום ממועד הרכישה, <b>ובתנאי מצטבר שטרם בוצעה כניסה לאזור הקורס וטרם נצפה תוכן כלשהו, ולו באופן חלקי</b>. כניסה ראשונה לאזור הקורס או צפייה בשיעור כלשהו, לרבות בחלק ממנו, מהווה צריכה של התוכן הדיגיטלי, וממועד זה <b>לא יינתן החזר כספי מכל סוג, לא מלא ולא חלקי</b>, וזאת בהתאם לדין.</p>
+            <p>בקשת ביטול תוגש בכתב למייל office@ronbenshushan.com בציון שם מלא, מספר טלפון ואסמכתת רכישה. ככל שאושרה זכאות להחזר כאמור לעיל, ההחזר יבוצע לאותו אמצעי תשלום שבו בוצעה הרכישה, בתוך 14 ימי עסקים.</p>
             <h4>6. קניין רוחני</h4>
-            <p>כלל התכנים, הסרטונים, התבניות והפרומפטים בקורס הם קניינו הרוחני של המפעיל. השימוש בהם אישי בלבד. אין להעתיק, להקליט, להפיץ, למכור או לשתף גישה עם אחרים.</p>
+            <p>כלל התכנים בקורס, ובכלל זה סרטונים, מצגות, מסמכים, תבניות, פרומפטים ושיטות עבודה, הם קניינו הרוחני הבלעדי של המפעיל ומוגנים לפי דיני זכויות יוצרים. הרוכש מקבל רישיון צפייה אישי, לא בלעדי ובלתי ניתן להעברה, לשימוש עצמי בלבד.</p>
+            <p><b>נאסר באיסור מוחלט:</b> להקליט, לצלם מסך, להוריד, לשעתק, להעתיק, לתרגם, לתמלל, להפיץ, לשדר, לפרסם, למכור, להשכיר, להעניק גישה לצד שלישי, לשתף פרטי התחברות, להעלות לכל פלטפורמה או קבוצה, או לעשות בתכנים שימוש לצורך אימון מערכות בינה מלאכותית או יצירת קורס או מוצר מתחרה.</p>
+            <p><b>הפרה של איסורים אלה תגרור:</b> (א) חסימת גישה מיידית וסופית לקורס ללא כל החזר; (ב) פיצוי מוסכם וקבוע מראש, ללא צורך בהוכחת נזק, בסך 50,000 ש״ח בגין כל הפרה, וזאת מבלי לגרוע מכל סעד נוסף לפי דין, לרבות צווי מניעה והוצאות משפט; (ג) העברת המקרה לטיפול משפטי. התכנים משולבים בסימוני מקור ייחודיים המאפשרים זיהוי מקור של עותק מודלף, ופרטי גישה שנעשה בהם שימוש חריג ייחסמו אוטומטית.</p>
             <h4>7. אחריות</h4>
             <p>הקורס מסופק כמות שהוא (AS IS). המפעיל לא יישא באחריות לנזק עקיף או תוצאתי הנובע מיישום התכנים. השימוש בכלים חיצוניים כפוף לתנאי אותם ספקים, והמפעיל אינו אחראי לזמינותם או למחיריהם. אין לראות בתכנים ייעוץ משפטי, פיננסי או מקצועי אחר.</p>
             <h4>8. פרטיות</h4>
             <p>פרטים הנמסרים ברכישה (שם, מייל, טלפון) משמשים לאספקת המוצר, לתמיכה ולעדכונים מהמפעיל. ניתן להסיר את עצמך מרשימת התפוצה בכל עת. פרטים לא יועברו לצד שלישי אלא לצורך תפעול השירות (סליקה, דיוור) או כנדרש על פי דין.</p>
             <h4>9. שונות ויצירת קשר</h4>
-            <p>על תקנון זה יחול הדין הישראלי. המפעיל רשאי לעדכן את התקנון מעת לעת, והנוסח המפורסם בדף זה הוא המחייב. לשאלות ופניות: <span class="tk-todo">[מייל]</span> | <span class="tk-todo">[טלפון]</span>.</p>
+            <p>על תקנון זה יחול הדין הישראלי בלבד, וסמכות השיפוט הייחודית נתונה לבתי המשפט המוסמכים במחוז תל אביב. המפעיל רשאי לעדכן את התקנון מעת לעת, והנוסח המפורסם בדף זה במועד הרכישה הוא המחייב.</p>
+            <p><b>יצירת קשר:</b> אר-בי-אס דיגיטל יזמות והשקעות בע״מ · office@ronbenshushan.com · 052-270-9152</p>
+        </div>
+    </div>
+</div>
+
+<!-- LEAD POPUP -->
+<div class="tk-overlay" id="leadOverlay" onclick="if(event.target===this)this.classList.remove('show')">
+    <div class="tk-card" role="dialog" aria-modal="true" aria-label="הרשמה" style="max-width:430px">
+        <div class="tk-head">
+            עוד צעד אחד ואתה בפנים
+            <button class="tk-close" onclick="document.getElementById('leadOverlay').classList.remove('show')" aria-label="סגירה"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
+        </div>
+        <div class="tk-body">
+            <p class="ld-sub">ממלאים פרטים, ומיד עוברים לדף תשלום מאובטח. הגישה לקורס נשלחת למייל הזה.</p>
+            <form id="leadForm" novalidate>
+                <div class="ld-field" id="ldfName">
+                    <label for="ldName">שם מלא</label>
+                    <input id="ldName" type="text" autocomplete="name" placeholder="ישראל ישראלי">
+                    <div class="ld-err">איך קוראים לך? שם מלא, שנדע על שם מי הגישה</div>
+                </div>
+                <div class="ld-field" id="ldfPhone">
+                    <label for="ldPhone">טלפון נייד</label>
+                    <input id="ldPhone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" style="text-align:right" placeholder="050-0000000">
+                    <div class="ld-err">מספר טלפון ישראלי תקין, 10 ספרות שמתחילות ב-0</div>
+                </div>
+                <div class="ld-field" id="ldfEmail">
+                    <label for="ldEmail">כתובת מייל</label>
+                    <input id="ldEmail" type="email" autocomplete="email" dir="ltr" style="text-align:right" placeholder="you@mail.com">
+                    <div class="ld-err">לכתובת הזאת נשלחת הגישה, אז שווה שתהיה תקינה</div>
+                </div>
+                <label class="ld-check" id="ldfTerms">
+                    <input type="checkbox" id="ldTerms">
+                    <span>קראתי ואני מאשר את <a onclick="event.preventDefault();document.getElementById('tkOverlay').classList.add('show')">התקנון ומדיניות הביטול</a>, כולל מדיניות ההחזרים לתוכן דיגיטלי</span>
+                </label>
+                <div class="ld-check-err">בלי אישור התקנון אי אפשר להמשיך לתשלום</div>
+                <button type="submit" class="cta-btn ld-submit" id="ldSubmit">ממשיכים לתשלום מאובטח</button>
+                <div class="cta-sub" style="text-align:center;margin-top:10px"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-lock"/></svg> 249 ש״ח + מע״מ, תשלום אחד, סליקה מאובטחת</div>
+            </form>
         </div>
     </div>
 </div>
@@ -1972,6 +2363,7 @@
 const CONFIG = {
     // קישור התשלום (Morning / Cardcom / Grow / Stripe וכו')
     CHECKOUT_URL: 'https://mrng.to/vkS6uOJNQB',
+    LEAD_WEBHOOK_URL: '',                    // Webhook ללידים (Make / Sheets). ריק = רק מעבר לתשלום
 
     // מתי מחיר ההשקה נסגר (שעון ישראל)
     DEADLINE: '2026-09-01T23:59:00+03:00',
@@ -1989,11 +2381,66 @@ const CONFIG = {
 
 /* ====== החלת קישור התשלום על כל הכפתורים ====== */
 (function () {
-    if (!CONFIG.CHECKOUT_URL || CONFIG.CHECKOUT_URL === '#') return;
-    /* כשיש לינק סליקה, כל כפתורי ה-CTA מובילים אליו ישירות */
-    document.querySelectorAll('a.cta-btn, .js-checkout').forEach(function (a) {
-        a.href = CONFIG.CHECKOUT_URL;
-        a.target = '_blank'; a.rel = 'noopener';
+    /* ── פופ-אפ הרשמה: כל כפתורי ה-CTA פותחים אותו, ורק טופס תקין ממשיך לסליקה ── */
+    var overlay = document.getElementById('leadOverlay');
+    if (!overlay || !CONFIG.CHECKOUT_URL || CONFIG.CHECKOUT_URL === '#') return;
+
+    function openLead() {
+        var exit = document.getElementById('exitOverlay');
+        if (exit) exit.classList.remove('show');
+        overlay.classList.add('show');
+        setTimeout(function () { document.getElementById('ldName').focus(); }, 180);
+    }
+
+    document.addEventListener('click', function (e) {
+        var a = e.target.closest('a.cta-btn, .js-checkout');
+        if (!a || e.target.closest('#leadOverlay')) return;
+        e.preventDefault();
+        openLead();
+    });
+
+    var form = document.getElementById('leadForm');
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var name = document.getElementById('ldName').value.trim();
+        var phone = document.getElementById('ldPhone').value.replace(/[^0-9]/g, '');
+        var email = document.getElementById('ldEmail').value.trim();
+        var terms = document.getElementById('ldTerms').checked;
+
+        var ok = true;
+        function mark(id, bad) { document.getElementById(id).classList.toggle('bad', bad); if (bad) ok = false; }
+        mark('ldfName', name.length < 2);
+        mark('ldfPhone', !/^0\d{8,9}$/.test(phone));
+        mark('ldfEmail', !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email));
+        mark('ldfTerms', !terms);
+        if (!ok) return;
+
+        var btn = document.getElementById('ldSubmit');
+        btn.disabled = true; btn.textContent = 'עוברים לתשלום...';
+
+        var lead = { name: name, phone: phone, email: email, terms: true,
+                     ts: new Date().toISOString(), source: location.href };
+        try { localStorage.setItem('rbs_lead', JSON.stringify(lead)); } catch (err) {}
+        if (CONFIG.LEAD_WEBHOOK_URL) {
+            try {
+                fetch(CONFIG.LEAD_WEBHOOK_URL, {
+                    method: 'POST', mode: 'no-cors', keepalive: true,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(lead)
+                });
+            } catch (err) {}
+        }
+        setTimeout(function () { location.href = CONFIG.CHECKOUT_URL; }, 300);
+    });
+
+    /* ניקוי שגיאה תוך כדי הקלדה */
+    ['ldfName', 'ldfPhone', 'ldfEmail'].forEach(function (id) {
+        document.getElementById(id).querySelector('input').addEventListener('input', function () {
+            document.getElementById(id).classList.remove('bad');
+        });
+    });
+    document.getElementById('ldTerms').addEventListener('change', function () {
+        document.getElementById('ldfTerms').classList.remove('bad');
     });
 })();
 
@@ -2014,6 +2461,271 @@ const CONFIG = {
     window.addEventListener('scroll', tick, { passive: true });
     tick();
 })();
+
+/* ══ SIM JS ══ */
+(function () {
+/* ═════════ שלושת העסקים ═════════ */
+const BIZ = {
+    clinic: {
+        name: 'הקליניקה של נועה', avatar: 'נ', label: 'קליניקת טיפולים',
+        feed: ['מחירון טיפולים', 'שעות קבלה', '12 השאלות שחוזרות', 'הטון של נועה', 'יומן התורים'],
+        train: ['כמה עולה טיפול פנים?', 'יש חניה באזור?', 'אפשר להזיז תור?', 'זה מתאים לעור רגיש?'],
+        events: [
+            { t: 18,  who: 'דנה',        msg: 'היי, כמה עולה טיפול פנים קלאסי?', reply: 'היי דנה, טיפול קלאסי 340 ש״ח כולל אבחון. יש לי מחר ב-16:30 או חמישי ב-11:00, מה נוח לך?', log: 'תור נקבע למחר 16:30', deal: 340 },
+            { t: 101, who: 'שיר',        msg: 'אני חייבת להזיז את התור שלי מחמישי 😬', reply: 'אין בעיה שיר, ביטלתי את חמישי. פנוי ראשון ב-11:00 או שלישי ב-17:30. מה מתאים?', log: 'תור הוזז, בלי טלפון אחד' },
+            { t: 172, who: 'מיכל',       msg: 'יש לכם חניה באזור?', reply: 'כן, חניון הכיכר במרחק שתי דקות הליכה, שעה ראשונה חינם. שולח לך מיקוד בוויז?', log: 'שאלה חוזרת מס׳ 7, נענתה ב-6 שניות' },
+            { t: 247, who: 'רותם',       msg: 'מתלבטת בין טיפול בודד לחבילה של 3', reply: 'החבילה 890 ש״ח במקום 1,020, וזה גם קובע רצף שהעור מרגיש. רוצה שאשריין לך את הראשון כבר השבוע?', log: 'חבילת 3 טיפולים נסגרה', deal: 890 },
+            { t: 393, who: 'נועה מ.',    msg: 'יש לי עור ממש רגיש, זה לא יכאיב לי?', reply: 'שאלה מצוינת. מתחילים באבחון 20 דקות בלי התחייבות, ונועה מתאימה חומרים לעור רגיש. לקבוע לך אבחון חינם?', log: 'אבחון חינם נקבע, לידה חמה לבוקר' },
+            { t: 490, who: 'ליאת',       msg: 'אתם פתוחים היום?', reply: 'היום 9:00 עד 19:00. התפנה חלון ב-13:00 אם בא לך לנצל את היום, לשריין?', log: 'תור נסגר לאותו יום', deal: 340 },
+            { t: 562, who: 'אמא של יובל', msg: 'אפשר לקנות שובר מתנה ליום הולדת?', reply: 'בטח! שובר דיגיטלי בכל סכום, מעצבים אותו עם השם שלה. הנפוץ הוא 250 ש״ח לטיפול קלאסי. שולח לך קישור לתשלום?', log: 'שובר מתנה 250 ש״ח', deal: 250 },
+        ],
+        sum: (d) => `4 תורים ושובר אחד, ${d.toLocaleString()} ש״ח, בזמן שנועה ישנה. בבוקר חיכתה לה רק לידה חמה אחת לאישור.`,
+    },
+    shop: {
+        name: 'לילך הום', avatar: 'ל', label: 'חנות אונליין',
+        feed: ['קטלוג ומלאי', 'מדיניות משלוחים', '12 השאלות שחוזרות', 'הטון של לילך', 'מערכת ההזמנות'],
+        train: ['מתי ההזמנה מגיעה?', 'יש משלוח לאילת?', 'איך מחזירים פריט?', 'הקופון לא עובד'],
+        events: [
+            { t: 31,  who: 'יעל',   msg: 'ההזמנה שלי לא הגיעה ואמרו עד היום 😡', reply: 'יעל, בדקתי עכשיו: החבילה תקועה במיון בראשל״צ מאתמול. אני מעביר את זה לאורן עם עדיפות, והוא חוזר אלייך עד 10:00 בבוקר עם פתרון. מתנצל על העיכוב.', log: 'לקוחה כועסת, הועברה לבן אדם', hand: true },
+            { t: 72,  who: 'מורן',  msg: 'יש את סט הקערות בירוק מרווה?', reply: 'יש! נשארו 4 סטים, 189 ש״ח. מעל 400 ש״ח המשלוח חינם, הרבה משלימות עם המפיות התואמות ב-59. לשלוח קישור לסל מוכן?', log: 'הזמנה: סט קערות + מפיות', deal: 248 },
+            { t: 167, who: 'עדן',   msg: 'כמה זמן משלוח לאילת?', reply: 'לאילת 4 ימי עסקים, 29 ש״ח. מעל 400 חינם גם לאילת.', log: 'שאלה חוזרת מס׳ 2, נענתה ב-5 שניות' },
+            { t: 238, who: 'הילה',  msg: 'ואם המגש לא יתאים לשולחן שלי?', reply: 'יש 14 יום החזרה עם תווית משלוח חינם, בלי שאלות. המידות המדויקות: 45×30. רוצה שאשלח תמונה שלו על שולחן אלון בהיר?', log: 'התלבטות נסגרה: מגש עץ', deal: 320 },
+            { t: 325, who: 'שני',   msg: 'הקופון שלי לא עובד 🙄', reply: 'בדקתי, הקופון פג לפני יומיים. עשיתי לך חדש: SHANI10, תקף עד מחר בחצות. הסל שלך שמור.', log: 'קופון חודש, הסל הושלם', deal: 412 },
+            { t: 469, who: 'טל',    msg: 'אפשר גיפט קארד לחברה שעוברת דירה?', reply: 'רעיון מצוין. כרטיס דיגיטלי בכל סכום עם ברכה אישית, נשלח אליה במייל ברגע שתרצי. הפופולרי לחנוכת בית הוא 200 ש״ח.', log: 'גיפט קארד 200 ש״ח', deal: 200 },
+            { t: 555, who: 'רון',   msg: 'מתי אפשר לתפוס אתכם בטלפון?', reply: 'לילך זמינה בטלפון ראשון עד חמישי 10:00-16:00. אני פה בכל שעה, אז אם זה משהו שאפשר לסגור עכשיו, ספר לי.', log: 'שאלה חוזרת מס׳ 11' },
+        ],
+        sum: (d) => `4 הזמנות ב-${d.toLocaleString()} ש״ח, קופון שטופל, ולקוחה כועסת אחת שקיבלה מענה ב-22:31 במקום לכתוב ביקורת. לבוקר נשארה משימה אחת.`,
+    },
+    studio: {
+        name: 'סטודיו פועם', avatar: 'פ', label: 'סטודיו אימונים',
+        feed: ['מערכת השיעורים', 'מחירי מנויים', '12 השאלות שחוזרות', 'הטון של הסטודיו', 'רישום לשיעורים'],
+        train: ['כמה עולה מנוי?', 'יש שיעור בוקר מחר?', 'איך מקפיאים מנוי?', 'מתאים למתחילות?'],
+        events: [
+            { t: 24,  who: 'אור',    msg: 'כמה עולה מנוי חודשי?', reply: 'מנוי חופשי 289 ש״ח בחודש, והשיעור הראשון עלינו. מחר ב-18:00 יש עיצוב וחיטוב עם מקום, לשריין לך ניסיון?', log: 'שיעור ניסיון נקבע', deal: 289 },
+            { t: 115, who: 'מאיה',   msg: 'יש שיעור בוקר מחר?', reply: 'מחר: פילאטיס 06:30 ועיצוב 08:00. בפילאטיס נשארו 2 מקומות. לשמור לך?', log: 'מקום נשמר לפילאטיס 06:30' },
+            { t: 192, who: 'דנית',   msg: 'אני טסה לחודש, אפשר להקפיא?', reply: 'בטח, עד חודשיים הקפאה בשנה. הקפאתי לך מהיום, המנוי מתחדש אוטומטית ב-18.9. טיסה נעימה!', log: 'הקפאת מנוי, טופל בצ׳אט' },
+            { t: 284, who: 'שירה',   msg: 'אני בהריון, יש משהו מותאם?', reply: 'יש שיעור יולדות בימי שלישי עם עדי, מותאם לכל שלב. אקשר אותך אליה בבוקר לתיאום קצר לפני השיעור הראשון, בסדר?', log: 'שאלה רפואית, הועברה לעדי', hand: true },
+            { t: 422, who: 'רוני',   msg: 'שכחתי אם יש לי אימון היום 😅', reply: 'יש לך! 19:00 עיצוב עם טל. אזכיר לך גם שעה לפני.', log: 'תזכורת נשלחה, ביטול נמנע' },
+            { t: 520, who: 'עמית ק.', msg: 'רוצה להצטרף עם חברה, יש הטבה?', reply: 'יש, חברה מביאה חברה: חודש ראשון 50% לשתיכן. אם נרשמות היום זה תופס כבר למחזור של ספטמבר. שולח קישור הרשמה לשתיים?', log: 'שני מנויים במבצע חברות', deal: 434 },
+            { t: 571, who: 'גיא',    msg: 'איפה אתם בדיוק?', reply: 'הרצל 12, קומה 2, מעל הקפה. יש מקלחות ומקום לאופניים. שולח וויז?', log: 'שאלה חוזרת מס׳ 4' },
+        ],
+        sum: (d) => `שיעור ניסיון, 2 מנויים והקפאה שטופלה לבד, ${d.toLocaleString()} ש״ח. ואף אחד לא קם ב-06:30 כדי לענות על "יש שיעור בוקר?"`,
+    },
+};
+
+const STAGES = ['התחלה', 'חיבור', 'הזנה', 'אימון', 'הפעלה', 'הלילה הראשון'];
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let biz = 'clinic';
+let speed = 1;
+let runToken = 0;          // מבטל ריצות קודמות כשמחליפים עסק
+const $ = id => document.getElementById(id);
+
+/* ── בורר עסק ── */
+const picker = $('bizPicker');
+Object.entries(BIZ).forEach(([key, b]) => {
+    const btn = document.createElement('button');
+    btn.className = 'biz-chip' + (key === biz ? ' on' : '');
+    btn.textContent = b.label;
+    btn.setAttribute('role', 'tab');
+    btn.onclick = () => { biz = key; document.querySelectorAll('.biz-chip').forEach(c => c.classList.remove('on')); btn.classList.add('on'); resetAll(); };
+    picker.appendChild(btn);
+});
+
+/* ── מסילה ── */
+const rail = $('rail');
+for (let i = 1; i <= 5; i++) {
+    const step = document.createElement('div');
+    step.className = 'rail-step'; step.dataset.step = i;
+    step.innerHTML = (i > 1 ? '<div class="rail-line"></div>' : '') +
+        `<div class="rail-node" data-node="${i}"><div class="rail-dot">${i}</div><div class="rail-label">${STAGES[i]}</div></div>`;
+    rail.appendChild(step);
+}
+function setRail(n) {
+    document.querySelectorAll('.rail-node').forEach(el => {
+        const i = +el.dataset.node;
+        el.classList.toggle('done', i < n);
+        el.classList.toggle('active', i === n);
+    });
+    document.querySelectorAll('.rail-step').forEach(el => el.classList.toggle('done', +el.dataset.step <= n));
+}
+
+function showStage(n) {
+    document.querySelectorAll('.stage').forEach(s => s.classList.toggle('on', +s.dataset.stage === n));
+    $('stageWrap').style.display = n >= 0 ? 'flex' : 'none';
+}
+
+const wait = ms => new Promise(r => setTimeout(r, REDUCED ? 0 : ms / speed));
+
+/* ── ריצת התהליך ── */
+async function runProcess() {
+    const token = ++runToken;
+    const B = BIZ[biz];
+
+    // שלב 1: חיבור
+    setRail(1); showStage(1);
+    $('linkStatus').className = 'link-status'; $('linkStatus').innerHTML = '<span>סורק...</span>';
+    await wait(1600); if (token !== runToken) return;
+    $('linkStatus').className = 'link-status ok';
+    $('linkStatus').innerHTML = '<svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span>וואטסאפ מחובר</span>';
+    await wait(900); if (token !== runToken) return;
+
+    // שלב 2: הזנה
+    setRail(2); showStage(2);
+    const chips = $('feedChips'); chips.innerHTML = '';
+    B.feed.forEach(f => { const c = document.createElement('span'); c.className = 'feed-chip'; c.textContent = f; chips.appendChild(c); });
+    for (const c of chips.children) { await wait(340); if (token !== runToken) return; c.classList.add('in'); }
+    await wait(800); if (token !== runToken) return;
+
+    // שלב 3: אימון
+    setRail(3); showStage(3);
+    const list = $('trainList'); list.innerHTML = '';
+    B.train.forEach(q => { const r = document.createElement('div'); r.className = 'train-q'; r.innerHTML = `<span class="tq-mark"></span>${q}`; list.appendChild(r); });
+    for (let i = 1; i <= 12; i++) {
+        await wait(210); if (token !== runToken) return;
+        if (i <= 4) list.children[i - 1].classList.add('done');
+        $('trainBar').style.width = (i / 12 * 100) + '%';
+        $('trainCount').textContent = i + ' מתוך 12';
+    }
+    await wait(700); if (token !== runToken) return;
+
+    // שלב 4: הפעלה
+    setRail(4); showStage(4);
+    $('powerSwitch').classList.remove('on'); $('liveTag').classList.remove('on');
+    await wait(900); if (token !== runToken) return;
+    $('powerSwitch').classList.add('on'); $('liveTag').classList.add('on');
+    await wait(1300); if (token !== runToken) return;
+
+    // שלב 5: הלילה
+    setRail(5); showStage(-1);
+    runNight(token);
+}
+
+/* ── הלילה ── */
+const NIGHT_MIN = 600;                        // 22:00 עד 08:00
+const NIGHT_MS = 34000;                       // אורך הסימולציה במהירות ×1
+let totals;
+
+function fmtClock(min) {
+    const h = (22 + Math.floor(min / 60)) % 24;
+    return String(h).padStart(2, '0') + ':' + String(min % 60).padStart(2, '0');
+}
+function addMsg(cls, html) {
+    const box = $('phoneMsgs');
+    const el = document.createElement('div');
+    el.className = cls; el.innerHTML = html;
+    box.appendChild(el); box.scrollTop = box.scrollHeight;
+    return el;
+}
+function addEv(t, text, cls) {
+    const log = $('evlog');
+    const el = document.createElement('div');
+    el.className = 'ev' + (cls ? ' ' + cls : '');
+    el.innerHTML = `<time>${fmtClock(t)}</time><span>${text}</span>`;
+    log.appendChild(el); log.scrollTop = log.scrollHeight;
+}
+function setStats() {
+    $('stMsgs').textContent = totals.msgs;
+    $('stDeals').textContent = totals.deals;
+    $('stValue').textContent = totals.value.toLocaleString() + ' ₪';
+}
+
+async function playEvent(ev, token) {
+    const t1 = addMsg('pm-typing', '<i></i><i></i><i></i>');
+    await wait(750); if (token !== runToken) return;
+    t1.remove();
+    addMsg('pm in', `${ev.msg}<span class="pm-t">${fmtClock(ev.t)}</span>`);
+    await wait(650); if (token !== runToken) return;
+    const t2 = addMsg('pm-typing agent', '<i></i><i></i><i></i>');
+    await wait(950); if (token !== runToken) return;
+    t2.remove();
+    addMsg('pm out', `<span class="pm-who">הסוכן</span>${ev.reply}<span class="pm-t">${fmtClock(ev.t + 1)} ✓✓</span>`);
+    totals.msgs++;
+    if (ev.deal) { totals.deals++; totals.value += ev.deal; addEv(ev.t + 1, ev.log + ' · ' + ev.deal.toLocaleString() + ' ש״ח', 'deal'); }
+    else addEv(ev.t + 1, ev.log, ev.hand ? 'hand' : '');
+    setStats();
+}
+
+async function runNight(token) {
+    const B = BIZ[biz];
+    $('night').classList.add('on');
+    $('nightSummary').classList.remove('on');
+    $('phoneMsgs').innerHTML = '';
+    $('evlog').innerHTML = '<div class="evlog-title">יומן הלילה</div>';
+    $('phName').textContent = B.name;
+    $('phAvatar').textContent = B.avatar;
+    totals = { msgs: 0, deals: 0, value: 0 };
+    setStats();
+
+    if (REDUCED) { finishNight(token, true); return; }
+
+    let idx = 0;
+    const start = performance.now();
+    let played = 0;
+
+    const tick = async now => {
+        if (token !== runToken) return;
+        const prog = Math.min(1, ((now - start) * speed) / NIGHT_MS);
+        const min = Math.floor(prog * NIGHT_MIN);
+        $('stClock').textContent = fmtClock(min);
+        $('phClock').textContent = fmtClock(min);
+        while (idx < B.events.length && B.events[idx].t <= min) {
+            const ev = B.events[idx++];
+            played++;
+            await playEvent(ev, token);
+            played--;
+        }
+        if (prog < 1) requestAnimationFrame(tick);
+        else { const done = () => played === 0 ? finishNight(token, false) : setTimeout(done, 200); done(); }
+    };
+    requestAnimationFrame(tick);
+}
+
+function finishNight(token, instant) {
+    if (token !== runToken) return;
+    const B = BIZ[biz];
+    if (instant) {
+        // מצב חסכוני בתנועה: הכל מוצג מיד
+        B.events.forEach(ev => {
+            addMsg('pm in', `${ev.msg}<span class="pm-t">${fmtClock(ev.t)}</span>`);
+            addMsg('pm out', `<span class="pm-who">הסוכן</span>${ev.reply}<span class="pm-t">${fmtClock(ev.t + 1)} ✓✓</span>`);
+            totals.msgs++;
+            if (ev.deal) { totals.deals++; totals.value += ev.deal; addEv(ev.t + 1, ev.log + ' · ' + ev.deal.toLocaleString() + ' ש״ח', 'deal'); }
+            else addEv(ev.t + 1, ev.log, ev.hand ? 'hand' : '');
+        });
+        setStats();
+    }
+    $('stClock').textContent = '08:00'; $('phClock').textContent = '08:00';
+    $('sumTitle').textContent = totals.deals + ' סגירות, ' + totals.value.toLocaleString() + ' ש״ח, אפס שיחות שהעירו אותך';
+    $('sumText').innerHTML = B.sum(totals.value) + '<br><b>וזה היה לילה אחד.</b>';
+    $('nightSummary').classList.add('on');
+}
+
+/* ── שליטה ── */
+$('startBtn').onclick = runProcess;
+$('speedBtn').onclick = () => { speed = speed === 1 ? 3 : 1; $('speedBtn').textContent = speed === 1 ? 'מהירות ×3' : 'מהירות ×1'; $('speedBtn').classList.toggle('on', speed === 3); };
+$('skipBtn').onclick = () => {
+    const token = ++runToken;
+    const B = BIZ[biz];
+    $('phoneMsgs').innerHTML = ''; $('evlog').innerHTML = '<div class="evlog-title">יומן הלילה</div>';
+    totals = { msgs: 0, deals: 0, value: 0 };
+    $('night').classList.add('on'); $('phName').textContent = B.name; $('phAvatar').textContent = B.avatar;
+    finishNight(token, true);
+};
+$('replayBtn').onclick = () => resetAll(true);
+
+function resetAll(autostart) {
+    runToken++;
+    $('night').classList.remove('on');
+    $('nightSummary').classList.remove('on');
+    setRail(0); showStage(0);
+    $('startBizName').textContent = BIZ[biz].label;
+    if (autostart === true) runProcess();
+}
+$('startBizName').textContent = BIZ[biz].label;
+
+})();
+/* ══ SIM JS END ══ */
 
 /* ====== SCROLL PROGRESS ====== */
 window.addEventListener('scroll', () => {
