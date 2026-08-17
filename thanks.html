@@ -7,6 +7,25 @@
     <meta name="robots" content="noindex">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%2325d366'/%3E%3Cpath d='M46 31a13.4 13.4 0 0 1-14.4 13.4 14 14 0 0 1-6-1.4L18 45.6l2.6-7.8A13.4 13.4 0 0 1 32 17.6 13.4 13.4 0 0 1 46 31Z' fill='%2304140f'/%3E%3C/svg%3E">
 
+
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1410625827632523');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1410625827632523&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;500;700;900&display=swap" rel="stylesheet">
@@ -196,6 +215,34 @@ const CONFIG = {
     COURSE_URL: '#',            // קישור לאזור הקורס. חובה לפני עלייה לאוויר.
     WHATSAPP_GROUP_URL: '',     // קבוצת תלמידים. ריק = השורה מוסתרת
 };
+
+/* ── Meta Pixel: אירוע רכישה ── */
+(function () {
+    if (typeof fbq !== 'function') return;
+    var PRICE = 293.82;   /* 249 + מע״מ, הסכום שחויב בפועל */
+    var lead = null;
+    try { lead = JSON.parse(localStorage.getItem('rbs_lead') || 'null'); } catch (e) {}
+    if (lead && lead.email) {
+        /* אותו Advanced Matching כמו בדף המכירה, להצלבה מלאה */
+        var parts = (lead.name || '').split(/\s+/);
+        fbq('init', '1410625827632523', {
+            em: String(lead.email).toLowerCase(),
+            ph: '972' + String(lead.phone || '').replace(/^0/, ''),
+            fn: parts[0] || '', ln: parts.slice(1).join(' ') || ''
+        });
+    }
+    /* Purchase נורה פעם אחת לדפדפן, שרענון של דף התודה לא יכפיל רכישות */
+    if (!localStorage.getItem('rbs_purchase_done')) {
+        var eid = 'purch_' + ((lead && lead.ts) ? lead.ts.replace(/[^0-9]/g, '') : Date.now());
+        fbq('track', 'Purchase', {
+            value: PRICE, currency: 'ILS',
+            content_name: 'סוכני AI בוואטסאפ - קורס דיגיטלי',
+            content_ids: ['ai-agents-course'], content_type: 'product',
+            num_items: 1
+        }, { eventID: eid });
+        try { localStorage.setItem('rbs_purchase_done', String(Date.now())); } catch (e) {}
+    }
+})();
 
 /* ── קונפיג ── */
 var $id = function (x) { return document.getElementById(x); };
