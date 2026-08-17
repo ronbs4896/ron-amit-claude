@@ -128,6 +128,82 @@
             .ps-title, .ps-foot { padding-left: 16px; padding-right: 16px; }
         }
 
+
+        /* ══════════════ BADGE SYSTEM ══════════════
+           גיאומטריה אחת לכל התגיות, והווריאנט קובע רק צבע.
+           על רקע כהה משתמשים במילוי טונאלי ולא בצבע רווי מלא,
+           חוץ מ-primary שהוא הווריאנט הדגשי היחיד.
+           כל הווריאנטים נבדקו מול ארבע רצועות הרקע ועוברים AA (4.5:1). */
+        .badge,
+        .eyebrow, .hero-badge, .live-viewers,
+        .about-tag, .price-tag, .wa-agent-tag {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            font-size: 12.5px; font-weight: 700; line-height: 1.45;
+            letter-spacing: -0.1px; white-space: nowrap;
+            vertical-align: middle;
+        }
+
+        /* ── גדלים ── */
+        .badge-sm, .wa-agent-tag { padding: 2px 9px; font-size: 10.5px; gap: 5px; }
+        .badge-lg, .hero-badge   { padding: 8px 18px; font-size: 13px; gap: 8px; }
+
+        /* ── ווריאנטים ── */
+        .badge-primary {
+            background: var(--wa); color: #04140f;
+            border-color: var(--wa); font-weight: 800;
+        }
+        .badge-secondary {
+            background: rgba(255, 255, 255, 0.08); color: var(--text);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        .badge-outline, .eyebrow {
+            background: transparent; color: #c3d4cd;
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+        .badge-destructive, .live-viewers {
+            background: rgba(239, 68, 68, 0.15); color: #ff9b9b;
+            border-color: rgba(239, 68, 68, 0.28);
+        }
+        .badge-success, .hero-badge, .about-tag, .wa-agent-tag {
+            background: rgba(37, 211, 102, 0.14); color: #34e07a;
+            border-color: rgba(37, 211, 102, 0.28);
+        }
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.15); color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.30);
+        }
+        .badge-info {
+            background: rgba(56, 189, 248, 0.14); color: #7dd3fc;
+            border-color: rgba(56, 189, 248, 0.28);
+        }
+        /* ווריאנט מלא, לשימוש נדיר כשהתגית היא העוגן של הסקשן */
+        .price-tag {
+            background: var(--gold); color: #2a1503;
+            border-color: var(--gold); font-weight: 800;
+        }
+
+        /* ── נקודת סטטוס, אותו רכיב בכל התגיות ── */
+        .badge .b-dot, .eb-dot, .live-dot, .pulse-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: currentColor; flex-shrink: 0;
+        }
+        .live-dot, .pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
+        .pulse-dot { background: var(--red); }
+
+        /* ── מרווחים חיצוניים נשארים באחריות ההקשר, לא של הרכיב ── */
+        .eyebrow      { margin-bottom: 18px; }
+        .hero-badge   { margin-bottom: 28px; }
+        .live-viewers { margin-top: 20px; animation: fade-in 1s ease 2s both; }
+        .price-tag    { margin-bottom: 24px; position: relative; }
+        .wa-agent-tag { margin-bottom: 6px; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .live-dot, .pulse-dot { animation: none; }
+        }
+
         /* ====== רצועות סקשן ======
            כל סקשן הוא רצועה בצבע אחיד. שתי הרצועות מתחלפות,
            וקו דק בין רצועה לרצועה מסמן את הגבול. */
@@ -136,14 +212,6 @@
         .band-first { border-top: none; }
 
         /* כותרת קטנה מעל כל סקשן, כדי שהמעבר בין נושאים יהיה חד */
-        .eyebrow {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 6px 18px; border-radius: 50px;
-            border: 1px solid var(--glass-border); background: var(--glass);
-            font-size: 12px; font-weight: 700; color: var(--wa);
-            margin-bottom: 18px;
-        }
-        .eyebrow .eb-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--wa); }
         .section-head { text-align: center; }
 
         /* ====== SCROLL PROGRESS ====== */
@@ -219,16 +287,7 @@
 
         /* ====== HERO ====== */
         .hero { padding: 48px 0 50px; text-align: center; position: relative; z-index: 1; }
-        .hero-badge {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: var(--glass); border: 1px solid var(--glass-border);
-            backdrop-filter: blur(16px);
-            padding: 8px 22px; border-radius: 50px;
-            font-size: 13px; font-weight: 600; color: var(--wa);
-            margin-bottom: 28px;
-        }
-        .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); animation: pulse-dot 1.5s ease-in-out infinite; }
-        @keyframes pulse-dot { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
+@keyframes pulse-dot { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
 
         .hero h1 {
             font-size: clamp(24px, 5vw, 47px);
@@ -292,17 +351,8 @@
         @keyframes shine { 0% { right: -100%; } 60% { right: 100%; } 100% { right: 100%; } }
         .cta-sub { font-size: 13px; color: var(--text-dim); margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 
-        .live-viewers {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);
-            padding: 6px 16px; border-radius: 50px;
-            font-size: 13px; font-weight: 500; color: #ff6b6b;
-            margin-top: 20px; animation: fade-in 1s ease 2s both;
-        }
-        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: pulse-dot 1.5s ease-in-out infinite; }
-
-        /* ====== SECTIONS ====== */
+@keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+/* ====== SECTIONS ====== */
         .section { padding: 84px 0; position: relative; z-index: 1; }
         .section-title { font-size: clamp(26px, 5vw, 38px); font-weight: 900; text-align: center; margin-bottom: 14px; line-height: 1.3; letter-spacing: -0.5px; text-wrap: balance; }
         .section-sub { text-align: center; color: var(--text-mid); font-size: 17px; margin-bottom: 48px; max-width: 560px; margin-left: auto; margin-right: auto; }
@@ -524,7 +574,6 @@
         .about-content p { font-size: 15px; color: var(--text-mid); line-height: 2; }
         .about-content p + p { margin-top: 12px; }
         .about-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
-        .about-tag { background: var(--wa-soft); color: var(--wa); padding: 6px 16px; border-radius: 50px; font-size: 13px; font-weight: 700; }
         .about-ig {
             display: inline-flex; align-items: center; gap: 8px; margin-top: 18px;
             font-size: 14px; font-weight: 700; color: var(--text-mid); text-decoration: none;
@@ -541,13 +590,6 @@
             border-radius: 26px; padding: 52px 36px;
             text-align: center; position: relative; overflow: hidden;
         }
-        .price-tag {
-            display: inline-block;
-            background: var(--gold);
-            color: #2a1503; padding: 6px 20px;
-            border-radius: 50px; font-size: 13px; font-weight: 900;
-            margin-bottom: 24px; position: relative;
-        }
         .price-title { font-size: 28px; font-weight: 900; margin-bottom: 8px; position: relative; }
         .price-subtitle { color: var(--text-mid); font-size: 15px; margin-bottom: 36px; position: relative; }
 
@@ -559,8 +601,8 @@
         .cd-label { font-size: 11px; color: var(--text-dim); margin-top: 4px; font-weight: 500; }
 
         .spots-bar { max-width: 380px; margin: 24px auto 36px; position: relative; }
-        .spots-text { font-size: 14px; color: var(--text-mid); margin-bottom: 8px; text-align: center; }
-        .spots-text strong { color: #ff6b6b; }
+        .spots-line { text-align: center; margin-bottom: 10px; }
+        .spots-line strong { font-weight: 900; }
         .spots-track { height: 8px; background: rgba(255,255,255,0.06); border-radius: 8px; overflow: hidden; }
         .spots-fill { height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--red), #f97316); width: 78%; position: relative; }
         .spots-fill::after {
@@ -769,23 +811,16 @@
         .wa-msg .wa-t { display: block; font-size: 10.5px; color: var(--text-dim); margin-top: 5px; }
         .wa-msg.out .wa-t { color: rgba(37,211,102,0.65); }
         .wa-msg .wa-t .wa-check { color: #4fc3f7; }
-        .wa-agent-tag {
-            display: inline-flex; align-items: center; gap: 5px;
-            font-size: 10px; font-weight: 900; color: var(--wa);
-            background: rgba(37,211,102,0.1); border: 1px solid rgba(37,211,102,0.2);
-            border-radius: 50px; padding: 1px 9px; margin-bottom: 6px;
-        }
         .wa-typing { display: inline-flex; gap: 4px; align-items: center; padding: 3px 0; }
         .wa-typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--text-dim); display: block; animation: wa-dot 1.4s infinite; }
         .wa-typing i:nth-child(2) { animation-delay: 0.2s; }
         .wa-typing i:nth-child(3) { animation-delay: 0.4s; }
         @keyframes wa-dot { 0%, 60%, 100% { opacity: 0.25; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-3px); } }
         .wa-result {
-            margin-top: 14px; padding-top: 12px;
-            border-top: 1px dashed rgba(255,255,255,0.08);
-            font-size: 12px; color: var(--wa); font-weight: 700;
-            display: flex; align-items: center; gap: 7px;
+            margin-top: 14px; padding-top: 13px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.08);
         }
+        .wa-result .badge { white-space: normal; text-align: right; }
 
         /* ====== VIDEO TESTIMONIALS SLIDER ====== */
         .vid-test-section { padding: 70px 0; position: relative; z-index: 1; }
@@ -1269,7 +1304,7 @@
                     <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>היי דנה, הטיפול הראשון 340 ש״ח והוא כולל אבחון של 20 דקות. יש לי תור פנוי מחר ב-16:30 ואחד ביום חמישי ב-11:00, מה נוח לך?<span class="wa-t">02:47 <span class="wa-check">✓✓</span></span></div>
                     <div class="wa-msg in">מחר ב-16:30 מעולה<span class="wa-t">02:49</span></div>
                 </div>
-                <div class="wa-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> תור נסגר, בלי שאף אחד התעורר</div>
+                <div class="wa-result"><span class="badge badge-sm badge-success"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg>תור נסגר, בלי שאף אחד התעורר</span></div>
             </div>
 
             <!-- 2 -->
@@ -1287,7 +1322,7 @@
                     <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>כן, לקרית מוצקין המשלוח 29 ש״ח ומגיע תוך יומיים עסקים. מעל 400 ש״ח הוא חינם. רוצה שאשלח לך את הקטלוג?<span class="wa-t">13:20 <span class="wa-check">✓✓</span></span></div>
                     <div class="wa-msg in">כן תשלח<span class="wa-t">13:21</span></div>
                 </div>
-                <div class="wa-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> ענה בשבת, כשהעסק סגור</div>
+                <div class="wa-result"><span class="badge badge-sm badge-success"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg>ענה בשבת, כשהעסק סגור</span></div>
             </div>
 
             <!-- 3 -->
@@ -1304,7 +1339,7 @@
                     <div class="wa-msg in">הזמנתי לפני שבוע ועדיין לא קיבלתי כלום, זה ממש לא בסדר<span class="wa-t">21:05</span></div>
                     <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>מיכל, אני מבין ומצטער. בדקתי, החבילה יצאה ביום שני ותקועה במיון בראשון לציון. אני מעביר את זה לאורן מהצוות עכשיו, והוא חוזר אלייך עד מחר ב-10:00 עם פתרון.<span class="wa-t">21:05 <span class="wa-check">✓✓</span></span></div>
                 </div>
-                <div class="wa-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> זיהה לקוח כועס והעביר לבן אדם</div>
+                <div class="wa-result"><span class="badge badge-sm badge-success"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg>זיהה לקוח כועס והעביר לבן אדם</span></div>
             </div>
 
             <!-- 4 -->
@@ -1323,7 +1358,7 @@
                     <div class="wa-msg in">אז בעצם אתה עונה תמיד?<span class="wa-t">07:13</span></div>
                     <div class="wa-msg out">תמיד<span class="wa-t">07:13 <span class="wa-check">✓✓</span></span></div>
                 </div>
-                <div class="wa-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> אחת מ-12 השאלות שחוזרות כל יום</div>
+                <div class="wa-result"><span class="badge badge-sm badge-success"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg>אחת מ-12 השאלות שחוזרות כל יום</span></div>
             </div>
 
             <!-- 5 -->
@@ -1342,7 +1377,7 @@
                     <div class="wa-msg in">כל יום כמעט<span class="wa-t">23:59</span></div>
                     <div class="wa-msg out">אז המורחבת. שולח לך קישור לתשלום<span class="wa-t">23:59 <span class="wa-check">✓✓</span></span></div>
                 </div>
-                <div class="wa-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> ייעץ, לא רק ענה</div>
+                <div class="wa-result"><span class="badge badge-sm badge-success"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg>ייעץ, לא רק ענה</span></div>
             </div>
 
             <!-- 6 -->
@@ -1360,7 +1395,7 @@
                     <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>כן, ביט, אשראי או העברה. איזה מהם נוח לך?<span class="wa-t">04:33 <span class="wa-check">✓✓</span></span></div>
                     <div class="wa-msg in"><span class="wa-typing"><i></i><i></i><i></i></span></div>
                 </div>
-                <div class="wa-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> 4 בלילה, זמן תגובה 6 שניות</div>
+                <div class="wa-result"><span class="badge badge-sm badge-success"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg>4 בלילה, זמן תגובה 6 שניות</span></div>
             </div>
 
         </div>
@@ -1671,7 +1706,7 @@
                 </div>
 
                 <div class="spots-bar">
-                    <div class="spots-text">נותרו <strong>66 כרטיסים</strong> במחיר ההשקה מתוך 300</div>
+                    <div class="spots-line"><span class="badge badge-warning"><span class="b-dot"></span>נותרו <strong>66 כרטיסים</strong> מתוך 300</span></div>
                     <div class="spots-track"><div class="spots-fill"></div></div>
                 </div>
 
