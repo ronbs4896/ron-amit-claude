@@ -500,7 +500,7 @@
 
         @media (prefers-reduced-motion: reduce) {
             .reveal, .reveal-scale { opacity: 1 !important; transform: none !important; }
-            .logos-track, .wa-slider-track.auto-scroll { animation: none !important; }
+            .logos-track { animation: none !important; }
         }
 
         /* ====== TEXT HIGHLIGHTS ====== */
@@ -1118,6 +1118,7 @@
             transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.3s;
         }
         .vid-test-card.active { transform: scale(1.04); box-shadow: 0 16px 50px rgba(37, 211, 102, 0.22); border-color: rgba(37, 211, 102, 0.3); }
+        .vid-test-thumb { aspect-ratio: 1/1 !important; }
         .vid-test-thumb {
             aspect-ratio: 9/16; background: var(--bg-card);
             position: relative; overflow: hidden; cursor: pointer;
@@ -1717,128 +1718,6 @@
         </div>
         <!-- /SIM -->
 
-        <p class="wa-more reveal">ועוד שיחות אמיתיות שסוכנים כאלה ניהלו לבד, בשעות שאף אחד לא ליד הטלפון:</p>
-    </div>
-    <div class="wa-slider-wrap">
-        <button class="wa-arrow wa-arrow-right" id="waPrev" aria-label="הקודם">›</button>
-        <button class="wa-arrow wa-arrow-left" id="waNext" aria-label="הבא">‹</button>
-        <div class="wa-slider-track auto-scroll" id="waTrack">
-
-            <!-- 1 -->
-            <div class="wa-card">
-                <div class="wa-header">
-                    <div class="wa-avatar">ד</div>
-                    <div>
-                        <div class="wa-name">דנה כ.</div>
-                        <div class="wa-role">וואטסאפ</div>
-                    </div>
-                    <div class="wa-stamp"><b>02:47</b>לילה</div>
-                </div>
-                <div class="wa-thread">
-                    <div class="wa-msg in">היי, ראיתי את הסטורי. כמה עולה הטיפול הראשון?<span class="wa-t">02:47</span></div>
-                    <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>היי דנה, הטיפול הראשון 340 ש״ח והוא כולל אבחון של 20 דקות. יש לי תור פנוי מחר ב-16:30 ואחד ביום חמישי ב-11:00, מה נוח לך?<span class="wa-t">02:47 <span class="wa-check">✓✓</span></span></div>
-                    <div class="wa-msg in">מחר ב-16:30 מעולה<span class="wa-t">02:49</span></div>
-                </div>
-                <div class="wa-result"><span class="badge badge-sm badge-success"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg>תור נסגר, בלי שאף אחד התעורר</span></div>
-            </div>
-
-            <!-- 2 -->
-            <div class="wa-card">
-                <div class="wa-header">
-                    <div class="wa-avatar ig">א</div>
-                    <div>
-                        <div class="wa-name">avi_shapira</div>
-                        <div class="wa-role">אינסטגרם DM</div>
-                    </div>
-                    <div class="wa-stamp"><b>שבת</b>13:20</div>
-                </div>
-                <div class="wa-thread">
-                    <div class="wa-msg in">יש לכם משלוח לצפון? אני מקרית מוצקין<span class="wa-t">13:20</span></div>
-                    <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>כן, לקרית מוצקין המשלוח 29 ש״ח ומגיע תוך יומיים עסקים. מעל 400 ש״ח הוא חינם. רוצה שאשלח לך את הקטלוג?<span class="wa-t">13:20 <span class="wa-check">✓✓</span></span></div>
-                    <div class="wa-msg in">כן תשלח<span class="wa-t">13:21</span></div>
-                </div>
-                <div class="wa-result"><span class="badge badge-sm badge-success"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg>ענה בשבת, כשהעסק סגור</span></div>
-            </div>
-
-            <!-- 3 -->
-            <div class="wa-card">
-                <div class="wa-header">
-                    <div class="wa-avatar">מ</div>
-                    <div>
-                        <div class="wa-name">מיכל ר.</div>
-                        <div class="wa-role">וואטסאפ</div>
-                    </div>
-                    <div class="wa-stamp"><b>21:05</b>ערב</div>
-                </div>
-                <div class="wa-thread">
-                    <div class="wa-msg in">הזמנתי לפני שבוע ועדיין לא קיבלתי כלום, זה ממש לא בסדר<span class="wa-t">21:05</span></div>
-                    <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>מיכל, אני מבין ומצטער. בדקתי, החבילה יצאה ביום שני ותקועה במיון בראשון לציון. אני מעביר את זה לאורן מהצוות עכשיו, והוא חוזר אלייך עד מחר ב-10:00 עם פתרון.<span class="wa-t">21:05 <span class="wa-check">✓✓</span></span></div>
-                </div>
-                <div class="wa-result"><span class="badge badge-sm badge-success"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg>זיהה לקוח כועס והעביר לבן אדם</span></div>
-            </div>
-
-            <!-- 4 -->
-            <div class="wa-card">
-                <div class="wa-header">
-                    <div class="wa-avatar">י</div>
-                    <div>
-                        <div class="wa-name">יוסי ב.</div>
-                        <div class="wa-role">וואטסאפ</div>
-                    </div>
-                    <div class="wa-stamp"><b>07:12</b>בוקר</div>
-                </div>
-                <div class="wa-thread">
-                    <div class="wa-msg in">מה שעות הפעילות שלכם?<span class="wa-t">07:12</span></div>
-                    <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>ראשון עד חמישי 9:00 עד 18:00, שישי 9:00 עד 13:00. אני זמין פה בכל שעה, אז אם יש משהו שאפשר לסגור עכשיו תגיד לי.<span class="wa-t">07:12 <span class="wa-check">✓✓</span></span></div>
-                    <div class="wa-msg in">אז בעצם אתה עונה תמיד?<span class="wa-t">07:13</span></div>
-                    <div class="wa-msg out">תמיד<span class="wa-t">07:13 <span class="wa-check">✓✓</span></span></div>
-                </div>
-                <div class="wa-result"><span class="badge badge-sm badge-success"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg>אחת מ-12 השאלות שחוזרות כל יום</span></div>
-            </div>
-
-            <!-- 5 -->
-            <div class="wa-card">
-                <div class="wa-header">
-                    <div class="wa-avatar">ר</div>
-                    <div>
-                        <div class="wa-name">רוני ל.</div>
-                        <div class="wa-role">וואטסאפ</div>
-                    </div>
-                    <div class="wa-stamp"><b>23:58</b>לילה</div>
-                </div>
-                <div class="wa-thread">
-                    <div class="wa-msg in">היי, אני מתלבטת בין החבילה הבסיסית למורחבת<span class="wa-t">23:58</span></div>
-                    <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>שאלה טובה. אם את מפרסמת פחות מפעמיים בשבוע הבסיסית מספיקה. אם את מעלה תוכן כל יום, המורחבת חוסכת לך בערך 6 שעות בחודש. כמה את מעלה בשבוע?<span class="wa-t">23:58 <span class="wa-check">✓✓</span></span></div>
-                    <div class="wa-msg in">כל יום כמעט<span class="wa-t">23:59</span></div>
-                    <div class="wa-msg out">אז המורחבת. שולח לך קישור לתשלום<span class="wa-t">23:59 <span class="wa-check">✓✓</span></span></div>
-                </div>
-                <div class="wa-result"><span class="badge badge-sm badge-success"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg>ייעץ, לא רק ענה</span></div>
-            </div>
-
-            <!-- 6 -->
-            <div class="wa-card">
-                <div class="wa-header">
-                    <div class="wa-avatar ig">n</div>
-                    <div>
-                        <div class="wa-name">noa.g</div>
-                        <div class="wa-role">אינסטגרם DM</div>
-                    </div>
-                    <div class="wa-stamp"><b>04:33</b>לילה</div>
-                </div>
-                <div class="wa-thread">
-                    <div class="wa-msg in">אפשר לשלם בביט?<span class="wa-t">04:33</span></div>
-                    <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>כן, ביט, אשראי או העברה. איזה מהם נוח לך?<span class="wa-t">04:33 <span class="wa-check">✓✓</span></span></div>
-                    <div class="wa-msg in"><span class="wa-typing"><i></i><i></i><i></i></span></div>
-                </div>
-                <div class="wa-result"><span class="badge badge-sm badge-success"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg>4 בלילה, זמן תגובה 6 שניות</span></div>
-            </div>
-
-        </div>
-    </div>
-    <div class="container">
-        <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-top:24px">
-            הדוגמאות להמחשה. החלף אותן בצילומי מסך אמיתיים מהסוכן שלך.
-        </p>
     </div>
 </section>
 
@@ -2065,11 +1944,10 @@
     </div>
     <div class="vid-test-wrap" style="padding: 0 24px;">
         <div class="vid-test-track" id="vidTestTrack">
-            <!-- שים כתובות וידאו ב-CONFIG.TESTIMONIAL_VIDEOS, ותמונות כ-vid-cover-N.jpg -->
+            <!-- תמונות עדויות: testi-1.jpg עד testi-4.jpg, ריבועיות 1:1 -->
             <div class="vid-test-card active" data-vidx="0">
-                <div class="vid-test-thumb" onclick="playVidTest(0)">
-                    <span>vid-cover-1.jpg</span>
-                    <div class="vid-test-play"><svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" fill="rgba(255,255,255,0.9)"/><path d="M26 20l18 12-18 12z" fill="#128c7e"/></svg></div>
+                <div class="vid-test-thumb">
+                    <span>testi-1.jpg · תמונה 1:1</span>
                 </div>
                 <div class="vid-test-info">
                     <div class="vid-test-name">שם הלקוח</div>
@@ -2077,9 +1955,8 @@
                 </div>
             </div>
             <div class="vid-test-card" data-vidx="1">
-                <div class="vid-test-thumb" onclick="playVidTest(1)">
-                    <span>vid-cover-2.jpg</span>
-                    <div class="vid-test-play"><svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" fill="rgba(255,255,255,0.9)"/><path d="M26 20l18 12-18 12z" fill="#128c7e"/></svg></div>
+                <div class="vid-test-thumb">
+                    <span>testi-2.jpg · תמונה 1:1</span>
                 </div>
                 <div class="vid-test-info">
                     <div class="vid-test-name">שם הלקוח</div>
@@ -2087,9 +1964,8 @@
                 </div>
             </div>
             <div class="vid-test-card" data-vidx="2">
-                <div class="vid-test-thumb" onclick="playVidTest(2)">
-                    <span>vid-cover-3.jpg</span>
-                    <div class="vid-test-play"><svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" fill="rgba(255,255,255,0.9)"/><path d="M26 20l18 12-18 12z" fill="#128c7e"/></svg></div>
+                <div class="vid-test-thumb">
+                    <span>testi-3.jpg · תמונה 1:1</span>
                 </div>
                 <div class="vid-test-info">
                     <div class="vid-test-name">שם הלקוח</div>
@@ -2097,9 +1973,8 @@
                 </div>
             </div>
             <div class="vid-test-card" data-vidx="3">
-                <div class="vid-test-thumb" onclick="playVidTest(3)">
-                    <span>vid-cover-4.jpg</span>
-                    <div class="vid-test-play"><svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" fill="rgba(255,255,255,0.9)"/><path d="M26 20l18 12-18 12z" fill="#128c7e"/></svg></div>
+                <div class="vid-test-thumb">
+                    <span>testi-4.jpg · תמונה 1:1</span>
                 </div>
                 <div class="vid-test-info">
                     <div class="vid-test-name">שם הלקוח</div>
@@ -2350,7 +2225,7 @@
         <a href="https://www.instagram.com/amit.litman/" target="_blank" rel="noopener">אינסטגרם</a>
         <a href="#register">רכישה</a>
     </div>
-    כל הזכויות שמורות &copy; עמית ליטמן 2026
+    כל הזכויות שמורות &copy; <a href="https://www.instagram.com/amit.litman/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">עמית ליטמן</a> &amp; <a href="https://www.instagram.com/ron_ben_shushann/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">רון בן שושן</a> 2026
     <div class="f-credit">
         האתר נבנה על ידי <a href="https://www.instagram.com/ron_ben_shushann/" target="_blank" rel="noopener">אר-בי-אס דיגיטל יזמות והשקעות בע״מ</a>
     </div>
@@ -2372,7 +2247,6 @@ const CONFIG = {
     HERO_VIDEO: '',
 
     // סרטוני עדויות, לפי סדר הכרטיסים
-    TESTIMONIAL_VIDEOS: ['', '', '', ''],
 
     // הוכחה חברתית "חיה" (צופים עכשיו + פופאפ רכישות)
     // שים false אם אתה מעדיף לא להציג נתונים מדומים
@@ -2922,36 +2796,6 @@ function playHeroVid() {
     }, { passive: true });
 
     window.addEventListener('resize', updateVidTest);
-})();
-
-/* ====== WHATSAPP DEMO SLIDER ====== */
-(function () {
-    const track = document.getElementById('waTrack');
-    const prevBtn = document.getElementById('waPrev');
-    const nextBtn = document.getElementById('waNext');
-    if (!track) return;
-
-    const cardWidth = window.innerWidth < 768 ? 300 : 330;
-
-    function nudge(direction) {
-        track.classList.remove('auto-scroll');
-        const matrix = new DOMMatrix(getComputedStyle(track).transform);
-        track.style.transform = 'translateX(' + (matrix.m41 + direction * cardWidth) + 'px)';
-        setTimeout(() => {
-            track.style.transform = '';
-            track.classList.add('auto-scroll');
-        }, 600);
-    }
-
-    if (prevBtn) prevBtn.addEventListener('click', () => nudge(1));
-    if (nextBtn) nextBtn.addEventListener('click', () => nudge(-1));
-
-    let touchStartX = 0;
-    track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-    track.addEventListener('touchend', e => {
-        const diff = e.changedTouches[0].clientX - touchStartX;
-        if (Math.abs(diff) > 50) nudge(diff > 0 ? 1 : -1);
-    }, { passive: true });
 })();
 
 /* ====== EXIT INTENT ====== */

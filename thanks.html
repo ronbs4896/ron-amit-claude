@@ -179,22 +179,13 @@
     </div>
 </section>
 
-<!-- CTA -->
-<section class="sim-section band-alt">
-    <div class="container" style="text-align:center;max-width:560px">
-        <h2 style="font-size:clamp(24px,4.5vw,34px);font-weight:900;margin-bottom:10px">עכשיו תבנה את שלך</h2>
-        <p class="sub" style="margin-bottom:22px">שעה וחצי מהרגע שתפתח את השיעור הראשון, יכול להיות לך סוכן שעונה.</p>
-        <a class="course-btn" id="courseBtn" href="#">פתח את השיעור הראשון</a>
-    </div>
-</section>
-
 <!-- FOOTER -->
 <div class="footer">
     <div class="f-links">
         <a href="index.html">חזרה לדף הקורס</a>
         <a href="index.html#faq-takanon" onclick="localStorage.setItem('openTk','1')">תקנון ומדיניות ביטול</a>
     </div>
-    כל הזכויות שמורות &copy; עמית ליטמן 2026
+    כל הזכויות שמורות &copy; <a href="https://www.instagram.com/amit.litman/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">עמית ליטמן</a> &amp; <a href="https://www.instagram.com/ron_ben_shushann/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none">רון בן שושן</a> 2026
     <div class="f-credit">האתר נבנה על ידי <a href="https://www.instagram.com/ron_ben_shushann/" target="_blank" rel="noopener">אר-בי-אס דיגיטל יזמות והשקעות בע״מ</a></div>
 </div>
 
@@ -206,8 +197,10 @@ const CONFIG = {
 };
 
 /* ── קונפיג ── */
-if (CONFIG.COURSE_URL && CONFIG.COURSE_URL !== '#') $('courseBtn').href = CONFIG.COURSE_URL;
-if (CONFIG.WHATSAPP_GROUP_URL) { $('groupRow').style.display = 'flex'; $('groupLink').href = CONFIG.WHATSAPP_GROUP_URL; }
+var $id = function (x) { return document.getElementById(x); };
+var _cb = $id('courseBtn');
+if (_cb && CONFIG.COURSE_URL && CONFIG.COURSE_URL !== '#') _cb.href = CONFIG.COURSE_URL;
+if (CONFIG.WHATSAPP_GROUP_URL && $id('groupRow')) { $id('groupRow').style.display = 'flex'; $id('groupLink').href = CONFIG.WHATSAPP_GROUP_URL; }
 </script>
 </body>
 </html>
