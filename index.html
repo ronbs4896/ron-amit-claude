@@ -15,14 +15,41 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <!-- כשקבצי Birzia יהיו כאן, בטל את ההערה בשורה הבאה. היא טוענת מראש את המשקל
+         הכי נפוץ בדף (900, 36 שימושים) ומונעת הבזק של פונט חלופי בטעינה. -->
+    <!-- <link rel="preload" as="font" type="font/woff2" href="Birzia-Black.woff2" crossorigin> -->
 
     <style>
         /* ====== FONTS ====== */
-        /* אם יש לך את קבצי Birzia, שים אותם ליד הקובץ הזה והם יתפסו אוטומטית */
-        @font-face { font-family: 'Birzia'; src: url('Birzia-Light.woff2') format('woff2'); font-weight: 300; font-display: swap; }
-        @font-face { font-family: 'Birzia'; src: url('Birzia-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
-        @font-face { font-family: 'Birzia'; src: url('Birzia-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
-        @font-face { font-family: 'Birzia'; src: url('Birzia-Black.woff2') format('woff2'); font-weight: 900; font-display: swap; }
+        /* ══════════════ BIRZIA ══════════════
+           local()  = הפונט שמותקן אצלך במחשב. עובד רק אצלך, בלי שום קובץ.
+           url()    = הקובץ שמוגש לגולשים. שים את ארבעת קבצי ה-woff2
+                      ליד index.html בדיוק בשמות האלה.
+           עד שהקבצים יהיו שם, הדף נופל ל-Heebo וזה נראה תקין. */
+        @font-face {
+            font-family: 'Birzia';
+            src: local('Birzia Light'), local('Birzia-Light'),
+                 url('Birzia-Light.woff2') format('woff2');
+            font-weight: 300; font-style: normal; font-display: swap;
+        }
+        @font-face {
+            font-family: 'Birzia';
+            src: local('Birzia Medium'), local('Birzia-Medium'), local('Birzia'),
+                 url('Birzia-Medium.woff2') format('woff2');
+            font-weight: 400 500; font-style: normal; font-display: swap;
+        }
+        @font-face {
+            font-family: 'Birzia';
+            src: local('Birzia Bold'), local('Birzia-Bold'),
+                 url('Birzia-Bold.woff2') format('woff2');
+            font-weight: 600 700; font-style: normal; font-display: swap;
+        }
+        @font-face {
+            font-family: 'Birzia';
+            src: local('Birzia Black'), local('Birzia-Black'),
+                 url('Birzia-Black.woff2') format('woff2');
+            font-weight: 800 900; font-style: normal; font-display: swap;
+        }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
