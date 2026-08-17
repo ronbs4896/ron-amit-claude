@@ -68,6 +68,66 @@
             overflow-x: hidden;
         }
 
+
+        /* ====== מערכת אייקונים ====== */
+        .ico { width: 1em; height: 1em; display: inline-block; vertical-align: -0.13em; flex-shrink: 0; }
+        .ico-lg { width: 26px; height: 26px; }
+        .ico-sm { width: 15px; height: 15px; }
+
+        /* עיגול נושא לאייקון, במקום אימוג'י */
+        .ico-badge {
+            width: 44px; height: 44px; border-radius: 13px;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: rgba(37, 211, 102, 0.10);
+            border: 1px solid rgba(37, 211, 102, 0.22);
+            color: var(--wa);
+        }
+        .ico-badge .ico { width: 21px; height: 21px; }
+
+        /* ====== רצועת הכאב בהירו ====== */
+        .h1-hit { color: var(--wa); display: inline-block; text-wrap: balance; }
+        @media (max-width: 620px) { .br-d { display: none; } }
+
+        .pain-strip {
+            max-width: 620px; margin: 0 auto 34px;
+            border: 1px solid var(--glass-border); border-radius: 18px;
+            background: rgba(0, 0, 0, 0.22); overflow: hidden;
+            text-align: right;
+        }
+        .ps-title {
+            padding: 13px 20px; font-size: 13px; font-weight: 800;
+            color: var(--text-mid); letter-spacing: 0.2px;
+            border-bottom: 1px solid var(--line-soft);
+            background: rgba(255, 255, 255, 0.025);
+        }
+        .ps-grid { padding: 6px 0; }
+        .ps-item {
+            display: flex; align-items: flex-start; gap: 12px;
+            padding: 11px 20px; font-size: 15px; line-height: 1.55;
+            color: var(--text); border-bottom: 1px solid var(--line-soft);
+        }
+        .ps-item:last-child { border-bottom: none; }
+        .ps-mark {
+            flex-shrink: 0; width: 17px; height: 17px; margin-top: 3px;
+            border-radius: 5px; border: 1.5px solid rgba(255, 255, 255, 0.22);
+            background: transparent; position: relative;
+        }
+        .ps-item.on .ps-mark { background: var(--wa); border-color: var(--wa); }
+        .ps-item.on .ps-mark::after {
+            content: ''; position: absolute; inset: 0;
+            background: no-repeat center/10px 10px
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2306201a' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6.5 9.4 17.5 4 12.1'/%3E%3C/svg%3E");
+        }
+        .ps-foot {
+            padding: 14px 20px; font-size: 14px; font-weight: 800;
+            color: var(--wa); background: rgba(37, 211, 102, 0.07);
+            border-top: 1px solid var(--line-soft);
+        }
+        @media (max-width: 560px) {
+            .ps-item { font-size: 14px; padding: 10px 16px; gap: 10px; }
+            .ps-title, .ps-foot { padding-left: 16px; padding-right: 16px; }
+        }
+
         /* ====== רצועות סקשן ======
            כל סקשן הוא רצועה בצבע אחיד. שתי הרצועות מתחלפות,
            וקו דק בין רצועה לרצועה מסמן את הגבול. */
@@ -147,14 +207,14 @@
         .logo-wrap img { height: 180px; width: auto; margin: -40px auto -40px; display: block; filter: brightness(0) invert(1) drop-shadow(0 2px 12px rgba(37,211,102,0.25)); }
         /* לוגו טקסטואלי זמני - החלף ב-<img src="logo-light.png"> כשיש לך קובץ */
         .logo-text {
-            display: inline-flex; align-items: center; gap: 10px;
-            font-size: 20px; font-weight: 900; letter-spacing: 0.5px; color: var(--text);
+            display: inline-flex; align-items: center; gap: 11px;
+            font-size: 19px; font-weight: 700; letter-spacing: -0.1px; color: var(--text);
         }
+        .logo-text .lt-mark .ico { width: 19px; height: 19px; }
         .logo-text .lt-mark {
-            width: 34px; height: 34px; border-radius: 10px;
-            background: linear-gradient(135deg, var(--wa), var(--wa-deep));
+            width: 32px; height: 32px; border-radius: 9px;
+            background: var(--wa); color: #06201a;
             display: flex; align-items: center; justify-content: center;
-            font-size: 17px; color: #06201a;
         }
 
         /* ====== HERO ====== */
@@ -164,29 +224,31 @@
             background: var(--glass); border: 1px solid var(--glass-border);
             backdrop-filter: blur(16px);
             padding: 8px 22px; border-radius: 50px;
-            font-size: 13px; font-weight: 500; color: var(--wa);
-            margin-bottom: 32px;
+            font-size: 13px; font-weight: 600; color: var(--wa);
+            margin-bottom: 28px;
         }
         .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); animation: pulse-dot 1.5s ease-in-out infinite; }
         @keyframes pulse-dot { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
 
         .hero h1 {
-            font-size: clamp(25px, 4.6vw, 43px);
-            font-weight: 900; line-height: 1.4;
-            margin-bottom: 24px;
-            max-width: 760px;
+            font-size: clamp(24px, 5vw, 47px);
+            font-weight: 900; line-height: 1.32;
+            letter-spacing: -0.6px;
+            margin-bottom: 22px;
+            max-width: 800px;
             margin-left: auto; margin-right: auto;
+            text-wrap: balance;
         }
         .hero-sub {
-            font-size: 18px; color: var(--text-mid);
-            max-width: 590px; margin: 0 auto 40px;
-            line-height: 1.9;
+            font-size: 17.5px; color: var(--text-mid);
+            max-width: 570px; margin: 0 auto 30px;
+            line-height: 1.85;
         }
 
         .meta-strip {
             display: grid; grid-template-columns: repeat(4, 1fr);
-            gap: 0; margin-bottom: 44px;
-            max-width: 560px; margin-left: auto; margin-right: auto;
+            gap: 0; margin: 26px auto 0;
+            max-width: 540px;
             background: var(--bg-card);
             border: 1px solid var(--glass-border);
             border-radius: 16px;
@@ -205,7 +267,8 @@
             width: 1px; background: var(--glass-border);
         }
         .meta-chip .mc-value { font-size: 17px; font-weight: 900; color: var(--text); line-height: 1.2; }
-        .meta-chip .mc-icon { font-size: 24px; margin-bottom: 2px; }
+        .meta-chip .mc-icon { color: var(--wa); margin-bottom: 4px; display: block; }
+        .meta-chip .mc-icon .ico { width: 22px; height: 22px; }
 
         /* ====== CTA BUTTON ====== */
         .cta-wrap { text-align: center; }
@@ -241,7 +304,7 @@
 
         /* ====== SECTIONS ====== */
         .section { padding: 84px 0; position: relative; z-index: 1; }
-        .section-title { font-size: clamp(26px, 5.5vw, 40px); font-weight: 900; text-align: center; margin-bottom: 16px; line-height: 1.35; }
+        .section-title { font-size: clamp(26px, 5vw, 38px); font-weight: 900; text-align: center; margin-bottom: 14px; line-height: 1.3; letter-spacing: -0.5px; text-wrap: balance; }
         .section-sub { text-align: center; color: var(--text-mid); font-size: 17px; margin-bottom: 48px; max-width: 560px; margin-left: auto; margin-right: auto; }
 
         /* ====== PAIN SECTION ====== */
@@ -317,8 +380,10 @@
             display: flex; align-items: center; gap: 9px;
         }
         .cmp-good { color: var(--text); display: flex; align-items: center; gap: 9px; }
-        .cmp-bad .ci { color: var(--red); font-weight: 900; flex-shrink: 0; }
-        .cmp-good .ci { color: var(--wa); font-weight: 900; flex-shrink: 0; }
+        .cmp-bad .ci, .cmp-good .ci { flex-shrink: 0; display: inline-flex; margin-top: 3px; }
+        .cmp-bad .ci { color: var(--red); }
+        .cmp-good .ci { color: var(--wa); }
+        .cmp-bad .ci .ico, .cmp-good .ci .ico { width: 13px; height: 13px; }
         .cmp-row.cmp-final .cmp-bad { background: rgba(239,68,68,0.05); }
         .cmp-row.cmp-final .cmp-good { background: rgba(37,211,102,0.08); }
         .cmp-row.cmp-final > div { padding-top: 20px; padding-bottom: 20px; font-size: 15px; font-weight: 900; }
@@ -369,9 +434,10 @@
         .gc-label { margin-top: 14px; text-align: center; flex-shrink: 0; }
         .gc-month { font-size: 13px; font-weight: 700; color: var(--text); display: block; }
         .gc-detail { font-size: 11px; color: var(--text-dim); margin-top: 2px; display: block; line-height: 1.4; }
+        .gc-crown .ico { width: 22px; height: 22px; }
         .gc-crown {
             position: absolute; bottom: var(--h); left: 0; right: 0;
-            margin-bottom: 48px; text-align: center; font-size: 22px;
+            margin-bottom: 48px; text-align: center; color: var(--wa);
             animation: crown-bounce 2s ease-in-out infinite;
             opacity: 0; transition: opacity 0.5s 1.4s;
         }
@@ -419,12 +485,12 @@
         /* ====== WHO FOR ====== */
         .who-list { list-style: none; max-width: 620px; margin: 0 auto; }
         .who-item { display: flex; align-items: flex-start; gap: 16px; padding: 18px 22px; margin-bottom: 12px; }
+        .who-check .ico { width: 14px; height: 14px; }
         .who-check {
-            flex-shrink: 0; width: 28px; height: 28px;
-            background: linear-gradient(135deg, var(--wa), var(--wa-deep));
-            border-radius: 8px;
+            flex-shrink: 0; width: 26px; height: 26px;
+            background: var(--wa); border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
-            color: #04140f; font-size: 14px; font-weight: 900; margin-top: 2px;
+            color: #04140f; margin-top: 2px;
         }
         .who-item span { font-size: 15px; color: var(--text-mid); line-height: 1.7; }
         .who-item strong { color: var(--text); }
@@ -438,7 +504,8 @@
         .notfor-card h3 { font-size: 17px; font-weight: 900; margin-bottom: 14px; color: var(--text); }
         .notfor-card ul { list-style: none; }
         .notfor-card li { display: flex; align-items: flex-start; gap: 12px; padding: 7px 0; font-size: 14.5px; color: var(--text-mid); line-height: 1.7; }
-        .notfor-card .nf-x { color: var(--red); font-weight: 900; flex-shrink: 0; margin-top: 3px; }
+        .notfor-card .nf-x { color: var(--red); flex-shrink: 0; margin-top: 5px; display: inline-flex; }
+        .notfor-card .nf-x .ico { width: 13px; height: 13px; }
 
         /* ====== ABOUT ====== */
         .about-card { padding: 48px 36px; display: flex; gap: 36px; align-items: flex-start; }
@@ -518,11 +585,12 @@
             border-bottom: 1px solid rgba(255,255,255,0.04);
         }
         .price-features li:last-child { border-bottom: none; }
+        .pf-icon .ico { width: 12px; height: 12px; }
         .pf-icon {
             width: 22px; height: 22px; border-radius: 6px;
-            background: var(--wa-soft); color: var(--wa);
+            background: rgba(37, 211, 102, 0.13); color: var(--wa);
             display: flex; align-items: center; justify-content: center;
-            font-size: 11px; flex-shrink: 0;
+            flex-shrink: 0;
         }
 
         .guarantee-wrap { margin-top: 32px; position: relative; }
@@ -534,11 +602,14 @@
             position: relative; overflow: hidden;
             max-width: 440px; margin: 0 auto;
         }
+        .guarantee-icon .ico { width: 24px; height: 24px; }
         .guarantee-icon {
             width: 48px; height: 48px; border-radius: 14px;
-            background: rgba(37, 211, 102, 0.14);
+            background: rgba(37, 211, 102, 0.12);
+            border: 1px solid rgba(37, 211, 102, 0.22);
+            color: var(--wa);
             display: flex; align-items: center; justify-content: center;
-            font-size: 24px; flex-shrink: 0;
+            flex-shrink: 0;
         }
         .guarantee-text { text-align: right; }
         .guarantee-title { font-size: 15px; font-weight: 900; color: var(--wa); margin-bottom: 2px; }
@@ -557,7 +628,8 @@
             gap: 16px; transition: color 0.3s;
         }
         .faq-q:hover { color: var(--wa); }
-        .faq-arrow { transition: transform 0.3s; font-size: 14px; color: var(--text-dim); flex-shrink: 0; }
+        .faq-arrow { transition: transform 0.3s; color: var(--text-dim); flex-shrink: 0; display: flex; }
+        .faq-arrow .ico { width: 17px; height: 17px; }
         .faq-item.open .faq-arrow { transform: rotate(180deg); }
         .faq-a { max-height: 0; overflow: hidden; transition: max-height 0.45s ease, padding 0.45s ease; }
         .faq-item.open .faq-a { max-height: 900px; padding: 0 24px 22px; }
@@ -602,7 +674,8 @@
             max-width: 320px;
         }
         .notif-popup.show { transform: translateX(0); }
-        .notif-popup .np-icon { font-size: 24px; flex-shrink: 0; }
+        .notif-popup .np-icon { flex-shrink: 0; color: var(--wa); display: flex; }
+        .notif-popup .np-icon .ico { width: 21px; height: 21px; }
         .notif-popup .np-text { font-size: 13px; color: var(--text-mid); line-height: 1.5; }
         .notif-popup .np-name { color: var(--text); font-weight: 700; }
         .notif-popup .np-time { font-size: 11px; color: var(--text-dim); }
@@ -776,11 +849,12 @@
             animation: exit-pop 0.5s cubic-bezier(0.16,1,0.3,1);
         }
         @keyframes exit-pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .exit-close .ico { width: 15px; height: 15px; }
         .exit-close {
             position: absolute; top: 16px; left: 16px;
             width: 32px; height: 32px; border-radius: 50%;
             background: rgba(255,255,255,0.06); border: none;
-            color: var(--text-dim); font-size: 16px;
+            color: var(--text-dim);
             cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
         .exit-card h2 { font-size: 24px; font-weight: 900; margin-bottom: 12px; }
@@ -839,7 +913,8 @@
             .gc-month { font-size: 11.5px; }
             .gc-detail { font-size: 10px; }
             /* אין להוסיף פה top: הבסיס מציב את הכתר לפי bottom, ושניהם יחד מותחים אותו */
-            .gc-crown { font-size: 18px; margin-bottom: 40px; }
+            .gc-crown { margin-bottom: 40px; }
+            .gc-crown .ico { width: 18px; height: 18px; }
             .ar-title { font-size: 17px; }
             .ar-desc { font-size: 13px; }
             .ar-bullets li { font-size: 12px; }
@@ -861,6 +936,26 @@
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false"><defs>
+<g id="ico-base" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></g>
+<symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-infinity" viewBox="0 0 24 24"><path d="M12 12c-1.8-2.5-3.6-3.8-5.4-3.8a3.8 3.8 0 0 0 0 7.6c1.8 0 3.6-1.3 5.4-3.8Zm0 0c1.8 2.5 3.6 3.8 5.4 3.8a3.8 3.8 0 0 0 0-7.6c-1.8 0-3.6 1.3-5.4 3.8Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-pointer" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 9 5.5 12.5 2-6 6-2L9 9Z"/><path d="M7.5 2.6 8.2 5.2M5.2 8.2 2.6 7.5M13.4 4.6 11.5 6.5M6.5 11.5 4.6 13.4"/></g></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.8 8.8 0 0 1-3.8-.9L3 20.5l1.6-4.9A8.4 8.4 0 0 1 12 3.1a8.4 8.4 0 0 1 9 8.4Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10.5" rx="2.4"/><path d="M7.8 10.5V7.2a4.2 4.2 0 0 1 8.4 0v3.3"/></g></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5c4.4-1.5 7.5-4.1 7.5-8.7V5.4a.9.9 0 0 0-.7-.9C16.6 4 14.2 3.1 12.4 2a.8.8 0 0 0-.8 0C9.8 3.1 7.4 4 5.2 4.5a.9.9 0 0 0-.7.9v7.4c0 4.6 3.1 7.2 7.5 8.7Z"/><path d="m9 12 2.2 2.2L15.2 10"/></g></symbol>
+<symbol id="i-bell" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18.5 15.6V10a6.5 6.5 0 0 0-13 0v5.6L4 18.2h16l-1.5-2.6Z"/><path d="M10.2 21a2 2 0 0 0 3.6 0"/></g></symbol>
+<symbol id="i-instagram" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.8" y="2.8" width="18.4" height="18.4" rx="5.2"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/></g></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6.5 9.4 17.5 4 12.1" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M17.5 6.5 6.5 17.5M6.5 6.5l11 11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9.5 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6.8V12l3.4 2"/></g></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5A2.5 2.5 0 0 1 6 5h11.5A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19H6a2.5 2.5 0 0 1-2.5-2.5v-9Z"/><path d="M16.5 11.5h4v3.4h-4a1.7 1.7 0 0 1 0-3.4Z"/></g></symbol>
+<symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.7 8.7 0 1 0 11.1 11.1Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 20.5v-1.8a3.6 3.6 0 0 0-3.6-3.6H6.6A3.6 3.6 0 0 0 3 18.7v1.8"/><circle cx="9.2" cy="7.7" r="3.6"/><path d="M21 20.5v-1.8a3.6 3.6 0 0 0-2.7-3.5M16.2 4.3a3.6 3.6 0 0 1 0 7"/></g></symbol>
+<symbol id="i-trend" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 16.5 5.5-5.5 3.5 3.5L21 5.5"/><path d="M15.5 5.5H21v5.5"/></g></symbol>
+<symbol id="i-mark" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.6a7.9 7.9 0 0 1-8.5 7.9 8.3 8.3 0 0 1-3.4-.8l-4.6 1.4 1.5-4.5a7.9 7.9 0 0 1 6.9-11.7 7.9 7.9 0 0 1 8.1 7.7Z"/><path d="m9.3 11.8 1.9 1.9 3.5-3.6"/></g></symbol>
+</defs></svg>
 <div class="scroll-progress" id="scrollProgress"></div>
 
 <!-- URGENCY BAR -->
@@ -869,9 +964,9 @@
 </div>
 
 <!-- LOGO -->
-<!-- ✏️ החלף את הבלוק הזה ב: <div class="logo-wrap reveal"><img src="logo-light.png" alt="עמית ליטמן"></div> -->
+<!-- החלף את הבלוק הזה ב: <div class="logo-wrap reveal"><img src="logo-light.png" alt="עמית ליטמן"></div> -->
 <div class="logo-wrap reveal band band-first" style="padding-top:26px;padding-bottom:4px">
-    <span class="logo-text"><span class="lt-mark">✦</span>עמית ליטמן</span>
+    <span class="logo-text"><span class="lt-mark"><svg class="ico" aria-hidden="true"><use href="#i-mark"/></svg></span>עמית ליטמן</span>
 </div>
 
 <!-- HERO -->
@@ -885,42 +980,59 @@
         </div>
 
         <h1 class="reveal stagger-2">
-            תבנה סוכן AI שעונה ללקוחות שלך<br>
-            בוואטסאפ ובאינסטגרם<br>
-            <span class="gradient-text" style="white-space:nowrap">24 שעות ביממה</span><br>
-            בפחות מ-7 שקלים ליום
+            בזמן שאתה ישן, שלושה לקוחות<br class="br-d">
+            שאלו כמה זה עולה.<br>
+            <span class="h1-hit">עד הבוקר שניים קנו במקום אחר.</span>
         </h1>
 
         <p class="hero-sub reveal stagger-3">
-            עובד שירות לקוחות עולה לך <span class="marker">7,040 שקלים בחודש</span> ועונה שמונה שעות ביום.
-            הסוכן שתבנה בקורס הזה עונה גם ב-2 בלילה, גם בשבת, וגם כשנופלות עליך שמונים הודעות בבת אחת.
+            סוכן AI שעונה להם תוך 6 שניות בוואטסאפ ובאינסטגרם, גם ב-2 בלילה וגם בשבת.
+            בונים אותו בערב אחד בלי לכתוב שורת קוד, והוא עולה
+            <span class="marker" style="white-space:nowrap">210 שקלים בחודש</span> במקום 7,040.
         </p>
 
-        <div class="meta-strip reveal stagger-4">
+        <!-- PAIN STRIP -->
+        <div class="pain-strip reveal stagger-3">
+            <div class="ps-title">תסמן את מה שקרה לך בשבועיים האחרונים</div>
+            <div class="ps-grid">
+                <div class="ps-item"><span class="ps-mark"></span>ענית להודעות מהמיטה ב-23:40</div>
+                <div class="ps-item"><span class="ps-mark"></span>לקוח כתב בשבת, חזרת אליו ראשון, הוא כבר לא ענה</div>
+                <div class="ps-item"><span class="ps-mark"></span>שילמת משכורת מלאה למישהו שעונה על אותן 12 שאלות</div>
+                <div class="ps-item"><span class="ps-mark"></span>חפפת עובד חודש שלם והוא עזב אחרי שלושה</div>
+                <div class="ps-item"><span class="ps-mark"></span>יצאת לחופש עם הטלפון ביד, כי אין למי להשאיר את זה</div>
+            </div>
+            <div class="ps-foot">שניים ומעלה, וזה כבר עולה לך כסף בכל חודש שאתה לא סוגר את זה.</div>
+        </div>
+
+
+        <div class="cta-wrap reveal stagger-5">
+            <a href="#register" class="cta-btn">אני רוצה את הסוכן שלי</a>
+            <div class="cta-sub"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-lock"/></svg> תשלום מאובטח, 197 ש״ח, תשלום אחד</div>
+        <div class="meta-strip reveal stagger-5">
             <div class="meta-chip">
-                <span class="mc-icon">⚡</span>
+                <span class="mc-icon"><svg class="ico" aria-hidden="true"><use href="#i-bolt"/></svg></span>
                 <span class="mc-value">מיידי</span>
                 גישה אחרי התשלום
             </div>
             <div class="meta-chip">
-                <span class="mc-icon">♾️</span>
+                <span class="mc-icon"><svg class="ico" aria-hidden="true"><use href="#i-infinity"/></svg></span>
                 <span class="mc-value">לכל החיים</span>
                 כולל עדכונים
             </div>
             <div class="meta-chip">
-                <span class="mc-icon">🧩</span>
+                <span class="mc-icon"><svg class="ico" aria-hidden="true"><use href="#i-pointer"/></svg></span>
                 <span class="mc-value">בלי קוד</span>
                 בלי ידע טכני
             </div>
             <div class="meta-chip">
-                <span class="mc-icon">💬</span>
+                <span class="mc-icon"><svg class="ico" aria-hidden="true"><use href="#i-chat"/></svg></span>
                 <span class="mc-value">וואטסאפ</span>
                 ואינסטגרם
             </div>
         </div>
 
-        <!-- HERO VIDEO ✏️ שים כתובת וידאו ב-CONFIG.HERO_VIDEO למטה -->
-        <div class="reveal stagger-4" style="max-width:480px;margin:0 auto 36px;border-radius:20px;overflow:hidden;border:1px solid var(--glass-border);background:var(--glass);aspect-ratio:16/9;position:relative;cursor:pointer" id="heroVideo" onclick="playHeroVid()">
+        <!-- HERO VIDEO שים כתובת וידאו ב-CONFIG.HERO_VIDEO למטה -->
+        <div class="reveal stagger-4" style="max-width:420px;margin:34px auto 0;border-radius:20px;overflow:hidden;border:1px solid var(--glass-border);background:var(--glass);aspect-ratio:16/9;position:relative;cursor:pointer" id="heroVideo" onclick="playHeroVid()">
             <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:var(--bg-card)">
                 <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.3)">
                     <div style="width:0;height:0;border-top:12px solid transparent;border-bottom:12px solid transparent;border-right:20px solid var(--wa-deep);margin-right:-3px;transform:rotate(180deg)"></div>
@@ -929,9 +1041,6 @@
             </div>
         </div>
 
-        <div class="cta-wrap reveal stagger-5">
-            <a href="#register" class="cta-btn">אני רוצה את הסוכן שלי</a>
-            <div class="cta-sub">🔒 תשלום מאובטח | 197 ש״ח, תשלום אחד</div>
             <div class="live-viewers" id="liveViewersBox">
                 <span class="live-dot"></span>
                 <span id="viewerCount">17</span> אנשים צופים בדף הזה עכשיו
@@ -1004,8 +1113,9 @@
             <p>
                 <strong>הבעיה היא לא שחסרות לך ידיים.</strong>
                 <br><br>
-                שירות לקוחות דורש <span class="marker-wa">זיכרון מושלם</span>, סבלנות אינסופית וזמינות של 24 שעות,
-                ואף בן אדם לא בנוי לשלושת אלה יחד.
+                שירות לקוחות דורש לזכור מה הלקוח שאל לפני חודשיים, ולענות לו באותו טון
+                גם בהודעה <span class="marker-wa">המאתיים של אותו יום</span>.
+                בן אדם לא בנוי לזה, וזאת לא ביקורת עליו.
                 <br><br>
                 בקורס הזה עמית מראה לך איך לבנות את המערכת שכן בנויה לזה.
             </p>
@@ -1023,49 +1133,49 @@
         <div class="cmp-wrap reveal stagger-2">
             <div class="cmp-head">
                 <div class="ch-spacer"></div>
-                <div class="ch-bad">❌ עובד שירות לקוחות</div>
-                <div class="ch-good">✅ הסוכן שלך</div>
+                <div class="ch-bad"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-x"/></svg> עובד שירות לקוחות</div>
+                <div class="ch-good"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> הסוכן שלך</div>
             </div>
 
             <div class="cmp-row">
                 <div class="cmp-key">זמינות</div>
-                <div class="cmp-bad"><span class="ci">✕</span>8 שעות ביום, שישי־שבת מנותק</div>
-                <div class="cmp-good"><span class="ci">✓</span><strong>24/7, גם בשבת וגם ב-3 לפנות בוקר</strong></div>
+                <div class="cmp-bad"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-x"/></svg></span>8 שעות ביום, שישי־שבת מנותק</div>
+                <div class="cmp-good"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span><strong>24/7, גם בשבת וגם ב-3 לפנות בוקר</strong></div>
             </div>
             <div class="cmp-row">
                 <div class="cmp-key">זמן תגובה</div>
-                <div class="cmp-bad"><span class="ci">✕</span>דקות עד שעות, הודעה אחת בכל פעם</div>
-                <div class="cmp-good"><span class="ci">✓</span><strong>שניות, גם ל-80 שיחות במקביל</strong></div>
+                <div class="cmp-bad"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-x"/></svg></span>דקות עד שעות, הודעה אחת בכל פעם</div>
+                <div class="cmp-good"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span><strong>שניות, גם ל-80 שיחות במקביל</strong></div>
             </div>
             <div class="cmp-row">
                 <div class="cmp-key">חפיפה</div>
-                <div class="cmp-bad"><span class="ci">✕</span>3 שבועות, ומחדש בכל עובד חדש</div>
-                <div class="cmp-good"><span class="ci">✓</span><strong>מלמדים אותו פעם אחת, זהו</strong></div>
+                <div class="cmp-bad"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-x"/></svg></span>3 שבועות, ומחדש בכל עובד חדש</div>
+                <div class="cmp-good"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span><strong>מלמדים אותו פעם אחת, זהו</strong></div>
             </div>
             <div class="cmp-row">
                 <div class="cmp-key">שיפור</div>
-                <div class="cmp-bad"><span class="ci">✕</span>מקטין ראש ככל שעובר הזמן</div>
-                <div class="cmp-good"><span class="ci">✓</span><strong>לומד מכל שיחה, טוב יותר בכל שבוע</strong></div>
+                <div class="cmp-bad"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-x"/></svg></span>מקטין ראש ככל שעובר הזמן</div>
+                <div class="cmp-good"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span><strong>לומד מכל שיחה, טוב יותר בכל שבוע</strong></div>
             </div>
             <div class="cmp-row">
                 <div class="cmp-key">ערוצים</div>
-                <div class="cmp-bad"><span class="ci">✕</span>ערוץ אחד, לפי מה שפתוח לו במסך</div>
-                <div class="cmp-good"><span class="ci">✓</span><strong>וואטסאפ ואינסטגרם במקביל</strong></div>
+                <div class="cmp-bad"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-x"/></svg></span>ערוץ אחד, לפי מה שפתוח לו במסך</div>
+                <div class="cmp-good"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span><strong>וואטסאפ ואינסטגרם במקביל</strong></div>
             </div>
             <div class="cmp-row">
                 <div class="cmp-key">חופש ומחלה</div>
-                <div class="cmp-bad"><span class="ci">✕</span>חופשות, מילואים, ימי מחלה</div>
-                <div class="cmp-good"><span class="ci">✓</span><strong>לא קיים</strong></div>
+                <div class="cmp-bad"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-x"/></svg></span>חופשות, מילואים, ימי מחלה</div>
+                <div class="cmp-good"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span><strong>לא קיים</strong></div>
             </div>
             <div class="cmp-row">
                 <div class="cmp-key">כשהוא עוזב</div>
-                <div class="cmp-bad"><span class="ci">✕</span>לוקח איתו כל מה שלימדת אותו</div>
-                <div class="cmp-good"><span class="ci">✓</span><strong>הידע נשאר אצלך, בכתב</strong></div>
+                <div class="cmp-bad"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-x"/></svg></span>לוקח איתו כל מה שלימדת אותו</div>
+                <div class="cmp-good"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span><strong>הידע נשאר אצלך, בכתב</strong></div>
             </div>
             <div class="cmp-row cmp-final">
                 <div class="cmp-key">עלות לחודש</div>
-                <div class="cmp-bad"><span class="ci">✕</span>7,040 ש״ח + תנאים סוציאליים</div>
-                <div class="cmp-good"><span class="ci">✓</span><span style="color:var(--wa)">כ-210 ש״ח</span></div>
+                <div class="cmp-bad"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-x"/></svg></span>7,040 ש״ח + תנאים סוציאליים</div>
+                <div class="cmp-good"><span class="ci"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span><span style="color:var(--wa)">כ-210 ש״ח</span></div>
             </div>
         </div>
 
@@ -1084,7 +1194,7 @@
         <div class="growth-chart reveal" id="growthChart">
             <div class="gc-col" style="--h:0.63%">
                 <div class="gc-plot">
-                    <div class="gc-crown">👑</div>
+                    <div class="gc-crown"><svg class="ico" aria-hidden="true"><use href="#i-trend"/></svg></div>
                     <div class="gc-amount" style="color:var(--wa)">210 ₪</div>
                     <div class="gc-bar bar-wa"></div>
                 </div>
@@ -1156,10 +1266,10 @@
                 </div>
                 <div class="wa-thread">
                     <div class="wa-msg in">היי, ראיתי את הסטורי. כמה עולה הטיפול הראשון?<span class="wa-t">02:47</span></div>
-                    <div class="wa-msg out"><span class="wa-agent-tag">✦ סוכן</span>היי דנה, הטיפול הראשון 340 ש״ח והוא כולל אבחון של 20 דקות. יש לי תור פנוי מחר ב-16:30 ואחד ביום חמישי ב-11:00, מה נוח לך?<span class="wa-t">02:47 <span class="wa-check">✓✓</span></span></div>
+                    <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>היי דנה, הטיפול הראשון 340 ש״ח והוא כולל אבחון של 20 דקות. יש לי תור פנוי מחר ב-16:30 ואחד ביום חמישי ב-11:00, מה נוח לך?<span class="wa-t">02:47 <span class="wa-check">✓✓</span></span></div>
                     <div class="wa-msg in">מחר ב-16:30 מעולה<span class="wa-t">02:49</span></div>
                 </div>
-                <div class="wa-result">✓ תור נסגר, בלי שאף אחד התעורר</div>
+                <div class="wa-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> תור נסגר, בלי שאף אחד התעורר</div>
             </div>
 
             <!-- 2 -->
@@ -1174,10 +1284,10 @@
                 </div>
                 <div class="wa-thread">
                     <div class="wa-msg in">יש לכם משלוח לצפון? אני מקרית מוצקין<span class="wa-t">13:20</span></div>
-                    <div class="wa-msg out"><span class="wa-agent-tag">✦ סוכן</span>כן, לקרית מוצקין המשלוח 29 ש״ח ומגיע תוך יומיים עסקים. מעל 400 ש״ח הוא חינם. רוצה שאשלח לך את הקטלוג?<span class="wa-t">13:20 <span class="wa-check">✓✓</span></span></div>
+                    <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>כן, לקרית מוצקין המשלוח 29 ש״ח ומגיע תוך יומיים עסקים. מעל 400 ש״ח הוא חינם. רוצה שאשלח לך את הקטלוג?<span class="wa-t">13:20 <span class="wa-check">✓✓</span></span></div>
                     <div class="wa-msg in">כן תשלח<span class="wa-t">13:21</span></div>
                 </div>
-                <div class="wa-result">✓ ענה בשבת, כשהעסק סגור</div>
+                <div class="wa-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> ענה בשבת, כשהעסק סגור</div>
             </div>
 
             <!-- 3 -->
@@ -1192,9 +1302,9 @@
                 </div>
                 <div class="wa-thread">
                     <div class="wa-msg in">הזמנתי לפני שבוע ועדיין לא קיבלתי כלום, זה ממש לא בסדר<span class="wa-t">21:05</span></div>
-                    <div class="wa-msg out"><span class="wa-agent-tag">✦ סוכן</span>מיכל, אני מבין ומצטער. בדקתי, החבילה יצאה ביום שני ותקועה במיון בראשון לציון. אני מעביר את זה לאורן מהצוות עכשיו, והוא חוזר אלייך עד מחר ב-10:00 עם פתרון.<span class="wa-t">21:05 <span class="wa-check">✓✓</span></span></div>
+                    <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>מיכל, אני מבין ומצטער. בדקתי, החבילה יצאה ביום שני ותקועה במיון בראשון לציון. אני מעביר את זה לאורן מהצוות עכשיו, והוא חוזר אלייך עד מחר ב-10:00 עם פתרון.<span class="wa-t">21:05 <span class="wa-check">✓✓</span></span></div>
                 </div>
-                <div class="wa-result">✓ זיהה לקוח כועס והעביר לבן אדם</div>
+                <div class="wa-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> זיהה לקוח כועס והעביר לבן אדם</div>
             </div>
 
             <!-- 4 -->
@@ -1209,11 +1319,11 @@
                 </div>
                 <div class="wa-thread">
                     <div class="wa-msg in">מה שעות הפעילות שלכם?<span class="wa-t">07:12</span></div>
-                    <div class="wa-msg out"><span class="wa-agent-tag">✦ סוכן</span>ראשון עד חמישי 9:00 עד 18:00, שישי 9:00 עד 13:00. אני זמין פה בכל שעה, אז אם יש משהו שאפשר לסגור עכשיו תגיד לי.<span class="wa-t">07:12 <span class="wa-check">✓✓</span></span></div>
+                    <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>ראשון עד חמישי 9:00 עד 18:00, שישי 9:00 עד 13:00. אני זמין פה בכל שעה, אז אם יש משהו שאפשר לסגור עכשיו תגיד לי.<span class="wa-t">07:12 <span class="wa-check">✓✓</span></span></div>
                     <div class="wa-msg in">אז בעצם אתה עונה תמיד?<span class="wa-t">07:13</span></div>
                     <div class="wa-msg out">תמיד<span class="wa-t">07:13 <span class="wa-check">✓✓</span></span></div>
                 </div>
-                <div class="wa-result">✓ אחת מ-12 השאלות שחוזרות כל יום</div>
+                <div class="wa-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> אחת מ-12 השאלות שחוזרות כל יום</div>
             </div>
 
             <!-- 5 -->
@@ -1228,11 +1338,11 @@
                 </div>
                 <div class="wa-thread">
                     <div class="wa-msg in">היי, אני מתלבטת בין החבילה הבסיסית למורחבת<span class="wa-t">23:58</span></div>
-                    <div class="wa-msg out"><span class="wa-agent-tag">✦ סוכן</span>שאלה טובה. אם את מפרסמת פחות מפעמיים בשבוע הבסיסית מספיקה. אם את מעלה תוכן כל יום, המורחבת חוסכת לך בערך 6 שעות בחודש. כמה את מעלה בשבוע?<span class="wa-t">23:58 <span class="wa-check">✓✓</span></span></div>
+                    <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>שאלה טובה. אם את מפרסמת פחות מפעמיים בשבוע הבסיסית מספיקה. אם את מעלה תוכן כל יום, המורחבת חוסכת לך בערך 6 שעות בחודש. כמה את מעלה בשבוע?<span class="wa-t">23:58 <span class="wa-check">✓✓</span></span></div>
                     <div class="wa-msg in">כל יום כמעט<span class="wa-t">23:59</span></div>
                     <div class="wa-msg out">אז המורחבת. שולח לך קישור לתשלום<span class="wa-t">23:59 <span class="wa-check">✓✓</span></span></div>
                 </div>
-                <div class="wa-result">✓ ייעץ, לא רק ענה</div>
+                <div class="wa-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> ייעץ, לא רק ענה</div>
             </div>
 
             <!-- 6 -->
@@ -1247,17 +1357,17 @@
                 </div>
                 <div class="wa-thread">
                     <div class="wa-msg in">אפשר לשלם בביט?<span class="wa-t">04:33</span></div>
-                    <div class="wa-msg out"><span class="wa-agent-tag">✦ סוכן</span>כן, ביט, אשראי או העברה. איזה מהם נוח לך?<span class="wa-t">04:33 <span class="wa-check">✓✓</span></span></div>
+                    <div class="wa-msg out"><span class="wa-agent-tag">סוכן</span>כן, ביט, אשראי או העברה. איזה מהם נוח לך?<span class="wa-t">04:33 <span class="wa-check">✓✓</span></span></div>
                     <div class="wa-msg in"><span class="wa-typing"><i></i><i></i><i></i></span></div>
                 </div>
-                <div class="wa-result">✓ 4 בלילה, זמן תגובה 6 שניות</div>
+                <div class="wa-result"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg> 4 בלילה, זמן תגובה 6 שניות</div>
             </div>
 
         </div>
     </div>
     <div class="container">
         <p style="text-align:center;font-size:13px;color:var(--text-dim);margin-top:24px">
-            ✏️ הדוגמאות להמחשה. החלף אותן בצילומי מסך אמיתיים מהסוכן שלך.
+            הדוגמאות להמחשה. החלף אותן בצילומי מסך אמיתיים מהסוכן שלך.
         </p>
     </div>
 </section>
@@ -1420,19 +1530,19 @@
         <p class="section-sub reveal stagger-1">אם אחד מהמשפטים האלה נכון לגביך, אתה במקום הנכון</p>
 
         <ul class="who-list">
-            <li class="who-item glass reveal stagger-1"><span class="who-check">✓</span><span>יש לך <strong>עסק שמקבל הודעות בוואטסאפ או באינסטגרם</strong>, ואתה או מישהו מטעמך עונה עליהן ידנית</span></li>
-            <li class="who-item glass reveal stagger-2"><span class="who-check">✓</span><span>אתה <strong>שוקל לגייס איש שירות</strong> ומעדיף לא להתחיל עם משכורת של 7,000 בחודש</span></li>
-            <li class="who-item glass reveal stagger-3"><span class="who-check">✓</span><span>יש לך כבר עובד שירות, ואתה רוצה <strong>שהוא יטפל בדברים שבאמת דורשים בן אדם</strong></span></li>
-            <li class="who-item glass reveal stagger-4"><span class="who-check">✓</span><span>אתה <strong>נותן שירות ללקוחות אחרים</strong> ורוצה למכור להם את זה כשירות משלך</span></li>
-            <li class="who-item glass reveal stagger-5"><span class="who-check">✓</span><span>לא כתבת שורת קוד בחיים, ו<strong>אתה בסדר עם ללחוץ על כפתורים לפי הוראות</strong></span></li>
+            <li class="who-item glass reveal stagger-1"><span class="who-check"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span><span>יש לך <strong>עסק שמקבל הודעות בוואטסאפ או באינסטגרם</strong>, ואתה או מישהו מטעמך עונה עליהן ידנית</span></li>
+            <li class="who-item glass reveal stagger-2"><span class="who-check"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span><span>אתה <strong>שוקל לגייס איש שירות</strong> ומעדיף לא להתחיל עם משכורת של 7,000 בחודש</span></li>
+            <li class="who-item glass reveal stagger-3"><span class="who-check"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span><span>יש לך כבר עובד שירות, ואתה רוצה <strong>שהוא יטפל בדברים שבאמת דורשים בן אדם</strong></span></li>
+            <li class="who-item glass reveal stagger-4"><span class="who-check"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span><span>אתה <strong>נותן שירות ללקוחות אחרים</strong> ורוצה למכור להם את זה כשירות משלך</span></li>
+            <li class="who-item glass reveal stagger-5"><span class="who-check"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span><span>לא כתבת שורת קוד בחיים, ו<strong>אתה בסדר עם ללחוץ על כפתורים לפי הוראות</strong></span></li>
         </ul>
 
         <div class="notfor-card reveal">
             <h3>ולמי זה לא מתאים</h3>
             <ul>
-                <li><span class="nf-x">✕</span>למי שמחפש כפתור אחד שעושה הכל לבד. יש פה עבודה של כמה שעות, ואחריה זה עובד</li>
-                <li><span class="nf-x">✕</span>למי שאין לו עדיין עסק ולקוחות שכותבים לו. תחזור אלינו כשיהיו</li>
-                <li><span class="nf-x">✕</span>למי שרוצה שהסוכן ידבר בשם העסק בלי שאף אחד יבדוק אותו בשבועיים הראשונים</li>
+                <li><span class="nf-x"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-x"/></svg></span>למי שמחפש כפתור אחד שעושה הכל לבד. יש פה עבודה של כמה שעות, ואחריה זה עובד</li>
+                <li><span class="nf-x"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-x"/></svg></span>למי שאין לו עדיין עסק ולקוחות שכותבים לו. תחזור אלינו כשיהיו</li>
+                <li><span class="nf-x"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-x"/></svg></span>למי שרוצה שהסוכן ידבר בשם העסק בלי שאף אחד יבדוק אותו בשבועיים הראשונים</li>
             </ul>
         </div>
     </div>
@@ -1442,7 +1552,7 @@
 <section class="section band-alt">
     <div class="container">
         <div class="about-card glass reveal">
-            <!-- ✏️ החלף בתמונה: <img src="amit.jpg" alt="עמית ליטמן"> -->
+            <!-- החלף בתמונה: <img src="amit.jpg" alt="עמית ליטמן"> -->
             <div class="about-avatar">
                 תמונה של עמית<br>(9:16)
             </div>
@@ -1453,7 +1563,7 @@
                     כאלה שמנהלים שירות לקוחות שלם בוואטסאפ ובאינסטגרם בלי בן אדם מאחורי המקלדת.
                 </p>
                 <p>
-                    <!-- ✏️ ערוך: כמה סוכנים בנית, לאילו עסקים, כמה הודעות הם מטפלים בחודש, כמה זה חסך ללקוחות -->
+                    <!-- ערוך: כמה סוכנים בנית, לאילו עסקים, כמה הודעות הם מטפלים בחודש, כמה זה חסך ללקוחות -->
                     בניתי סוכנים לעסקים בתחומים שונים, מקליניקות ועד חנויות אונליין,
                     וראיתי את אותו דבר קורה בכל אחד מהם: מה שהיה תיק שלם של עובד
                     הפך למערכת שעולה <span class="marker-wa">פחות משבעה שקלים ביום</span>.
@@ -1469,7 +1579,7 @@
                     <span class="about-tag">אוטומציות</span>
                 </div>
                 <a href="https://www.instagram.com/amit.litman/" target="_blank" rel="noopener" class="about-ig">
-                    <span>📷</span> <span dir="ltr">@amit.litman</span>
+                    <svg class="ico ico-sm" aria-hidden="true"><use href="#i-instagram"/></svg> <span dir="ltr">@amit.litman</span>
                 </a>
             </div>
         </div>
@@ -1485,7 +1595,7 @@
     </div>
     <div class="vid-test-wrap" style="padding: 0 24px;">
         <div class="vid-test-track" id="vidTestTrack">
-            <!-- ✏️ שים כתובות וידאו ב-CONFIG.TESTIMONIAL_VIDEOS, ותמונות כ-vid-cover-N.jpg -->
+            <!-- שים כתובות וידאו ב-CONFIG.TESTIMONIAL_VIDEOS, ותמונות כ-vid-cover-N.jpg -->
             <div class="vid-test-card active" data-vidx="0">
                 <div class="vid-test-thumb" onclick="playVidTest(0)">
                     <span>vid-cover-1.jpg</span>
@@ -1576,18 +1686,18 @@
                 <div class="price-perday">פחות מחמש שעות עבודה של עובד שירות</div>
 
                 <ul class="price-features">
-                    <li><span class="pf-icon">✦</span> כל הקורס, מהחיבור הראשון עד סוכן שעונה לבד</li>
-                    <li><span class="pf-icon">✦</span> חיבור לוואטסאפ ולאינסטגרם, שלב אחרי שלב</li>
-                    <li><span class="pf-icon">✦</span> הפרומפטים והתבניות שעמית עובד איתם</li>
-                    <li><span class="pf-icon">✦</span> איך מלמדים את הסוכן להשתפר בכל שבוע</li>
-                    <li><span class="pf-icon">✦</span> גישה לכל החיים, כולל עדכונים</li>
+                    <li><span class="pf-icon"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span> כל הקורס, מהחיבור הראשון עד סוכן שעונה לבד</li>
+                    <li><span class="pf-icon"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span> חיבור לוואטסאפ ולאינסטגרם, שלב אחרי שלב</li>
+                    <li><span class="pf-icon"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span> הפרומפטים והתבניות שעמית עובד איתם</li>
+                    <li><span class="pf-icon"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span> איך מלמדים את הסוכן להשתפר בכל שבוע</li>
+                    <li><span class="pf-icon"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-check"/></svg></span> גישה לכל החיים, כולל עדכונים</li>
                 </ul>
 
                 <a href="#" target="_blank" rel="noopener" class="cta-btn js-checkout" id="registerBtn">אני רוצה את הסוכן שלי</a>
 
                 <div class="guarantee-wrap">
                     <div class="guarantee-badge">
-                        <div class="guarantee-icon">🛡️</div>
+                        <div class="guarantee-icon"><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg></div>
                         <div class="guarantee-text">
                             <div class="guarantee-title">14 יום להתחרט</div>
                             <div class="guarantee-desc">תעבור על הקורס, תבנה את הסוכן. לא ראית ערך, תכתוב לנו ותקבל את הכסף בחזרה</div>
@@ -1607,7 +1717,7 @@
         <div style="height: 24px;"></div>
 
         <div class="faq-item reveal">
-            <div class="faq-q" onclick="toggleFaq(this)"><span>כמה הסוכן עולה לי בחודש אחרי הקורס?</span><span class="faq-arrow">▼</span></div>
+            <div class="faq-q" onclick="toggleFaq(this)"><span>כמה הסוכן עולה לי בחודש אחרי הקורס?</span><span class="faq-arrow"><svg class="ico" aria-hidden="true"><use href="#i-chevron"/></svg></span></div>
             <div class="faq-a">
                 <p>סביב <span class="num-hl">210 שקלים בחודש</span> לעסק בנפח רגיל, כלומר פחות משבעה שקלים ליום. הסכום מורכב מהמנוי לכלים ומעלות ההודעות עצמן, ובקורס אתה רואה בדיוק מה משלמים ולמי.</p>
                 <div class="faq-callout">
@@ -1619,7 +1729,7 @@
             </div>
         </div>
         <div class="faq-item reveal stagger-1">
-            <div class="faq-q" onclick="toggleFaq(this)"><span>איך סוכן ב-210 שקלים מחליף עובד ב-7,040?</span><span class="faq-arrow">▼</span></div>
+            <div class="faq-q" onclick="toggleFaq(this)"><span>איך סוכן ב-210 שקלים מחליף עובד ב-7,040?</span><span class="faq-arrow"><svg class="ico" aria-hidden="true"><use href="#i-chevron"/></svg></span></div>
             <div class="faq-a">
                 <p>כי רוב מה שעובד שירות עושה זה לחזור על עצמו. שתים-עשרה שאלות שחוזרות, אותן תשובות, כל יום מחדש. מכונה עושה את זה מצוין, ובן אדם מתחיל להקטין ראש אחרי שבועיים.</p>
                 <p>הפער בעלות הוא פי 33, וזה עדיין החלק הפחות מעניין. עובד עונה 8 שעות ביום, 22 ימים בחודש, סך הכל <span class="num-bad">176 שעות</span>. הסוכן עונה <span class="num-hl">720 שעות</span>. אתה משלם שלושה אחוזים מהמחיר ומקבל פי ארבעה זמן כיסוי.</p>
@@ -1627,23 +1737,23 @@
             </div>
         </div>
         <div class="faq-item reveal stagger-2">
-            <div class="faq-q" onclick="toggleFaq(this)"><span>אני אפס בטכנולוגיה, אני אצליח?</span><span class="faq-arrow">▼</span></div>
+            <div class="faq-q" onclick="toggleFaq(this)"><span>אני אפס בטכנולוגיה, אני אצליח?</span><span class="faq-arrow"><svg class="ico" aria-hidden="true"><use href="#i-chevron"/></svg></span></div>
             <div class="faq-a"><p>אין בקורס שורת קוד אחת. אתה פותח מסך שני, רואה את עמית לוחץ, עוצר את הסרטון ולוחץ אותו דבר. אם אתה יודע לפתוח אקסל ולשלוח הודעה בוואטסאפ, יש לך את כל הרקע שצריך.</p></div>
         </div>
         <div class="faq-item reveal stagger-3">
-            <div class="faq-q" onclick="toggleFaq(this)"><span>צריך מספר חדש? מה עם הוואטסאפ הקיים שלי?</span><span class="faq-arrow">▼</span></div>
+            <div class="faq-q" onclick="toggleFaq(this)"><span>צריך מספר חדש? מה עם הוואטסאפ הקיים שלי?</span><span class="faq-arrow"><svg class="ico" aria-hidden="true"><use href="#i-chevron"/></svg></span></div>
             <div class="faq-a"><p>אפשר לחבר את המספר העסקי שכבר יש לך. בקורס עמית עובר על שתי האפשרויות, מספר קיים ומספר ייעודי, ומסביר מתי כדאי כל אחת. רוב העסקים נשארים עם המספר שהלקוחות שלהם כבר מכירים.</p></div>
         </div>
         <div class="faq-item reveal stagger-4">
-            <div class="faq-q" onclick="toggleFaq(this)"><span>הוא יישמע כמו רובוט ויבריח לי לקוחות?</span><span class="faq-arrow">▼</span></div>
+            <div class="faq-q" onclick="toggleFaq(this)"><span>הוא יישמע כמו רובוט ויבריח לי לקוחות?</span><span class="faq-arrow"><svg class="ico" aria-hidden="true"><use href="#i-chevron"/></svg></span></div>
             <div class="faq-a"><p>זה תלוי לגמרי במה שמזינים לו, ולכן חלק שלם בקורס מוקדש לזה. אתה מלמד אותו את הטון שלך, את המילים שאתה משתמש בהן, ואת הרשימה של מה שאסור לו להגיד. בנוסף אתה מגדיר מתי הוא מפסיק ומעביר לבן אדם, למשל כשלקוח כועס או כשמדובר בסכום גדול.</p></div>
         </div>
         <div class="faq-item reveal stagger-5">
-            <div class="faq-q" onclick="toggleFaq(this)"><span>כמה זמן יש לי גישה לקורס?</span><span class="faq-arrow">▼</span></div>
+            <div class="faq-q" onclick="toggleFaq(this)"><span>כמה זמן יש לי גישה לקורס?</span><span class="faq-arrow"><svg class="ico" aria-hidden="true"><use href="#i-chevron"/></svg></span></div>
             <div class="faq-a"><p>לכל החיים, כולל עדכונים. הכלים בתחום הזה זזים מהר, וכשמשהו משתנה מהותית עמית מקליט את זה מחדש ואתה מקבל את זה בלי לשלם שוב.</p></div>
         </div>
         <div class="faq-item reveal stagger-5">
-            <div class="faq-q" onclick="toggleFaq(this)"><span>למה 197 ולא 997?</span><span class="faq-arrow">▼</span></div>
+            <div class="faq-q" onclick="toggleFaq(this)"><span>למה 197 ולא 997?</span><span class="faq-arrow"><svg class="ico" aria-hidden="true"><use href="#i-chevron"/></svg></span></div>
             <div class="faq-a"><p>זו קבוצת ההשקה. אנחנו רוצים מספר מספיק גדול של אנשים שיבנו סוכן ויספרו לנו איפה נתקעו, כדי שהגרסה הבאה תהיה טובה יותר. בתמורה אתה משלם חמישית מהמחיר. כשמחיר ההשקה נסגר, הוא נסגר.</p></div>
         </div>
     </div>
@@ -1671,7 +1781,7 @@
 
 <!-- NOTIFICATION POPUP -->
 <div class="notif-popup" id="notifPopup">
-    <span class="np-icon">🔔</span>
+    <span class="np-icon"><svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg></span>
     <div>
         <div class="np-text"><span class="np-name" id="npName">רועי א.</span> רכש את הקורס</div>
         <div class="np-time" id="npTime">לפני 4 דקות</div>
@@ -1681,7 +1791,7 @@
 <!-- EXIT INTENT -->
 <div class="exit-overlay" id="exitOverlay">
     <div class="exit-card">
-        <button class="exit-close" onclick="document.getElementById('exitOverlay').classList.remove('show')">✕</button>
+        <button class="exit-close" onclick="document.getElementById('exitOverlay').classList.remove('show')"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
         <h2>רגע לפני שאתה סוגר</h2>
         <p>
             197 שקלים זה מה שעובד שירות עולה לך בחמש שעות.
@@ -1701,7 +1811,7 @@
 
 <script>
 /* ═══════════════════════════════════════════════════
-   ⚙️ הגדרות - כל מה שצריך לערוך נמצא פה
+   הגדרות - כל מה שצריך לערוך נמצא פה
    ═══════════════════════════════════════════════════ */
 const CONFIG = {
     // קישור התשלום (Morning / Cardcom / Grow / Stripe וכו')
@@ -1727,6 +1837,24 @@ const CONFIG = {
     document.querySelectorAll('.js-checkout').forEach(function (a) {
         a.href = CONFIG.CHECKOUT_URL;
     });
+})();
+
+/* ====== PAIN STRIP ====== */
+(function () {
+    var items = document.querySelectorAll('.pain-strip .ps-item');
+    if (!items.length) return;
+    var fired = false;
+    function tick() {
+        if (fired) return;
+        var box = document.querySelector('.pain-strip');
+        if (box.getBoundingClientRect().top > window.innerHeight - 80) return;
+        fired = true;
+        items.forEach(function (el, i) {
+            setTimeout(function () { el.classList.add('on'); }, 260 + i * 190);
+        });
+    }
+    window.addEventListener('scroll', tick, { passive: true });
+    tick();
 })();
 
 /* ====== SCROLL PROGRESS ====== */
