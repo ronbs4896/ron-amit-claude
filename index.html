@@ -1364,9 +1364,12 @@
             .biz-picker { flex-wrap: nowrap; gap: 7px; }
             .biz-chip { padding: 9px 11px; font-size: 12.5px; white-space: nowrap; flex: 0 1 auto; min-width: 0; }
 
-            /* הגרף: שורה אחת גם במובייל, מהודקת שתשב ב-390 */
-            .growth-chart { height: 250px; gap: 7px; padding: 0 4px; }
+            /* הגרף: שורה אחת, כל העמודות על קו בסיס אחד */
+            .growth-chart { height: auto; gap: 7px; padding: 0 4px; }
             .gc-col { max-width: none; min-width: 0; }
+            /* גובה שרטוט קבוע לכולן: התחתית והתוויות מיושרות בקו ישר */
+            .gc-plot { height: 175px; flex: none; }
+            .gc-label { margin-top: 12px; }
             .gc-amount { font-size: 11.5px; margin-bottom: 8px; }
             .gc-bar { border-radius: 8px 8px 3px 3px; }
             .gc-label { font-size: 11px; margin-top: 10px; line-height: 1.3; }
