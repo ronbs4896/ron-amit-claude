@@ -1037,9 +1037,13 @@
         .logo-placeholder:hover { color: var(--text-mid); border-color: rgba(37,211,102,0.25); }
         .logo-placeholder img {
             display: none; height: 26px; width: auto;
-            filter: brightness(0) invert(1); opacity: 0.82;
         }
-        .logo-placeholder.has-logo { display: flex; align-items: center; }
+        /* צ'יפ לבן ללוגו צבעוני: המותג בצבעים האמיתיים שלו, קריא גם כשהכיתוב כהה */
+        .logo-placeholder.has-logo {
+            display: flex; align-items: center;
+            background: #FFFFFF; border-color: transparent;
+            padding: 11px 22px;
+        }
         .logo-placeholder.has-logo img { display: block; }
         .logo-placeholder.has-logo span { display: none; }
 
