@@ -214,6 +214,7 @@
 const CONFIG = {
     COURSE_URL: '#',            // קישור לאזור הקורס. חובה לפני עלייה לאוויר.
     WHATSAPP_GROUP_URL: '',     // קבוצת תלמידים. ריק = השורה מוסתרת
+    LEAD_WEBHOOK_URL: 'https://hook.eu2.make.com/vi7378f9adzlztb6qb94bwclumg2oach', // אותו Webhook כמו בדף המכירה. מעביר רוכש לרשימת הרוכשים ברב מסר
 };
 
 /* ── Meta Pixel: אירוע רכישה ── */
@@ -242,6 +243,28 @@ const CONFIG = {
         }, { eventID: eid });
         try { localStorage.setItem('rbs_purchase_done', String(Date.now())); } catch (e) {}
     }
+})();
+
+/* ── רב מסר: העברת הרוכש מרשימת ה-hotlist לרשימת הרוכשים ──
+   שולח פעם אחת לדפדפן, עם פרטי הליד שנשמרו בדף המכירה. */
+(function () {
+    if (!CONFIG.LEAD_WEBHOOK_URL) return;
+    if (localStorage.getItem('rbs_purchase_sent')) return;
+    var lead = null;
+    try { lead = JSON.parse(localStorage.getItem('rbs_lead') || 'null'); } catch (e) {}
+    if (!lead || !lead.email) return;
+    try {
+        fetch(CONFIG.LEAD_WEBHOOK_URL, {
+            method: 'POST', mode: 'no-cors', keepalive: true,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                stage: 'purchase', name: lead.name, phone: lead.phone, email: lead.email,
+                value: 293.82, currency: 'ILS',
+                ts: new Date().toISOString(), source: location.href
+            })
+        });
+        localStorage.setItem('rbs_purchase_sent', String(Date.now()));
+    } catch (e) {}
 })();
 
 /* ── קונפיג ── */

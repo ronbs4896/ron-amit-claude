@@ -2308,7 +2308,7 @@
 const CONFIG = {
     // קישור התשלום (Morning / Cardcom / Grow / Stripe וכו')
     CHECKOUT_URL: 'https://mrng.to/vkS6uOJNQB',
-    LEAD_WEBHOOK_URL: '',                    // Webhook ללידים (Make / Sheets). ריק = רק מעבר לתשלום
+    LEAD_WEBHOOK_URL: 'https://hook.eu2.make.com/vi7378f9adzlztb6qb94bwclumg2oach', // Webhook של Make → רב מסר (hotlist). ריק = רק מעבר לתשלום
 
     // מתי מחיר ההשקה נסגר (שעון ישראל)
     DEADLINE: '2026-09-01T23:59:00+03:00',
@@ -2369,7 +2369,7 @@ const CONFIG = {
         var btn = document.getElementById('ldSubmit');
         btn.disabled = true; btn.textContent = 'עוברים לתשלום...';
 
-        var lead = { name: name, phone: phone, email: email, terms: true,
+        var lead = { stage: 'lead', name: name, phone: phone, email: email, terms: true,
                      ts: new Date().toISOString(), source: location.href };
         try { localStorage.setItem('rbs_lead', JSON.stringify(lead)); } catch (err) {}
         if (typeof fbq === 'function') {
