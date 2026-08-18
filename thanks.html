@@ -214,7 +214,7 @@
 const CONFIG = {
     COURSE_URL: '#',            // קישור לאזור הקורס. חובה לפני עלייה לאוויר.
     WHATSAPP_GROUP_URL: '',     // קבוצת תלמידים. ריק = השורה מוסתרת
-    LEAD_WEBHOOK_URL: 'https://hook.eu2.make.com/vi7378f9adzlztb6qb94bwclumg2oach', // אותו Webhook כמו בדף המכירה. מעביר רוכש לרשימת הרוכשים ברב מסר
+    LEAD_WEBHOOK_URL: '/api/lead',  // אותה פונקציה כמו בדף המכירה. מעבירה רוכש לרשימת הרוכשים ברב מסר
 };
 
 /* ── Meta Pixel: אירוע רכישה ── */
@@ -262,7 +262,7 @@ const CONFIG = {
                 value: 293.82, currency: 'ILS',
                 ts: new Date().toISOString(), source: location.href
             })
-        });
+        }).catch(function () {});
         localStorage.setItem('rbs_purchase_sent', String(Date.now()));
     } catch (e) {}
 })();

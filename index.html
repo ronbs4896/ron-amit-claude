@@ -2308,7 +2308,7 @@
 const CONFIG = {
     // קישור התשלום (Morning / Cardcom / Grow / Stripe וכו')
     CHECKOUT_URL: 'https://mrng.to/vkS6uOJNQB',
-    LEAD_WEBHOOK_URL: 'https://hook.eu2.make.com/vi7378f9adzlztb6qb94bwclumg2oach', // Webhook של Make → רב מסר (hotlist). ריק = רק מעבר לתשלום
+    LEAD_WEBHOOK_URL: '/api/lead',           // פונקציית Vercel → רב מסר (hotlist). ריק = רק מעבר לתשלום
 
     // מתי מחיר ההשקה נסגר (שעון ישראל)
     DEADLINE: '2026-09-01T23:59:00+03:00',
@@ -2391,7 +2391,7 @@ const CONFIG = {
                     method: 'POST', mode: 'no-cors', keepalive: true,
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(lead)
-                });
+                }).catch(function () {});
             } catch (err) {}
         }
         setTimeout(function () { location.href = CONFIG.CHECKOUT_URL; }, 400);
