@@ -553,6 +553,8 @@
             color: #04140f;
             position: sticky; top: 0; z-index: 100;
         }
+        .urgency-bar { transition: transform 0.35s ease; }
+        .urgency-bar.ub-hide { transform: translateY(-100%); }
         .ub-price { white-space: nowrap; }
         .ub-sep { opacity: 0.35; font-weight: 400; }
         .ub-timer {
@@ -757,7 +759,7 @@
         /* אזור השרטוט: העמודה והתווית ממוקמות ביחס אליו, לפי --h */
         .gc-plot { position: relative; flex: 1 1 auto; min-height: 0; width: 100%; }
         .gc-amount {
-            position: absolute; bottom: var(--h); left: 0; right: 0;
+            position: absolute; bottom: max(var(--h), 14px); left: 0; right: 0;
             margin-bottom: 18px; text-align: center;
             font-weight: 900; line-height: 1.2; white-space: nowrap; font-size: 15px;
             opacity: 0; transition: opacity 0.6s ease 0.9s;
@@ -910,7 +912,8 @@
 
         .spots-bar { max-width: 380px; margin: 24px auto 36px; position: relative; }
         .spots-line { text-align: center; margin-bottom: 10px; }
-        .spots-line strong { font-weight: 900; }
+        .spots-line strong { font-weight: 900; display: inline-block; transition: transform 0.2s; }
+        .spots-line strong.tick { transform: scale(1.35); }
         .spots-track { height: 8px; background: rgba(255,255,255,0.06); border-radius: 8px; overflow: hidden; }
         .spots-fill { height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--red), #f97316); width: 78%; position: relative; }
         .spots-fill::after {
@@ -1208,11 +1211,11 @@
         .sticky-cta {
             display: none; position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--bg-deep);
-            padding: 14px 20px;
+            padding: 9px 14px;
             box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
             z-index: 99; text-align: center;
         }
-        .sticky-cta .cta-btn { padding: 14px 30px; font-size: 17px; width: 100%; }
+        .sticky-cta .cta-btn { padding: 11px 20px; font-size: 15px; width: 100%; border-radius: 12px; box-shadow: none; }
 
         .footer {
             text-align: center; padding: 34px 24px 40px; font-size: 13px; color: var(--text-dim);
@@ -1357,20 +1360,23 @@
             .about-content p { font-size: 14px; }
             .cta-btn { font-size: 17px; padding: 16px 34px; }
 
-            /* הגרף: רשת 2×2, היקרים למעלה והסוכן סוגר את הסיפור */
-            .growth-chart {
-                display: grid; grid-template-columns: 1fr 1fr;
-                gap: 22px 14px; height: auto; max-width: 360px;
-            }
-            .gc-col { max-width: none; }
-            .gc-col:nth-child(1) { order: 4; }   /* 90 ₪, אחרון */
-            .gc-col:nth-child(2) { order: 3; }
-            .gc-col:nth-child(3) { order: 2; }
-            .gc-col:nth-child(4) { order: 1; }   /* 28,160, פותח */
-            .gc-plot { height: 130px; flex: none; }
-            .gc-amount { font-size: 13px; margin-bottom: 8px; }
-            .gc-label { font-size: 12.5px; }
-            .gc-detail { font-size: 10.5px; }
+            /* בורר העסקים: שלושתם בשורה אחת */
+            .biz-picker { flex-wrap: nowrap; gap: 7px; }
+            .biz-chip { padding: 9px 11px; font-size: 12.5px; white-space: nowrap; flex: 0 1 auto; min-width: 0; }
+
+            /* הגרף: שורה אחת גם במובייל, מהודקת שתשב ב-390 */
+            .growth-chart { height: 250px; gap: 7px; padding: 0 4px; }
+            .gc-col { max-width: none; min-width: 0; }
+            .gc-amount { font-size: 11.5px; margin-bottom: 8px; }
+            .gc-bar { border-radius: 8px 8px 3px 3px; }
+            .gc-label { font-size: 11px; margin-top: 10px; line-height: 1.3; }
+            .gc-detail { font-size: 9.5px; line-height: 1.35; margin-top: 3px; }
+            .gc-crown .ico { width: 14px; height: 14px; }
+            .gc-crown { margin-bottom: 30px; }
+        }
+        @media (max-width: 374px) {
+            .biz-chip { font-size: 11px; padding: 8px 9px; }
+            .gc-amount { font-size: 10.5px; }
         }
     </style>
 </head>
@@ -2067,8 +2073,8 @@
                 </div>
 
                 <div class="spots-bar">
-                    <div class="spots-line"><span class="badge badge-warning"><span class="b-dot"></span>נותרו <strong>66 כרטיסים</strong> מתוך 300</span></div>
-                    <div class="spots-track"><div class="spots-fill"></div></div>
+                    <div class="spots-line"><span class="badge badge-warning"><span class="b-dot"></span>נותרו <strong id="spotsNum">66</strong> כרטיסים מתוך 300</span></div>
+                    <div class="spots-track"><div class="spots-fill" id="spotsFill"></div></div>
                 </div>
 
                 <div class="price-anchor">
@@ -2718,7 +2724,7 @@ setInterval(updateCountdown, 1000);
 /* ====== FAQ ====== */
 function toggleFaq(el) { el.closest('.faq-item').classList.toggle('open'); }
 
-/* ====== LIVE SOCIAL PROOF ====== */
+/* ====== LIVE SOCIAL PROOF + מונה כרטיסים מתמיד ====== */
 (function () {
     const box = document.getElementById('liveViewersBox');
     const popup = document.getElementById('notifPopup');
@@ -2734,26 +2740,57 @@ function toggleFaq(el) { el.closest('.faq-item').classList.toggle('open'); }
         if (el) el.textContent = 15 + Math.floor(Math.random() * 7);
     }, 8000);
 
-    const notifNames = [
-        { name: 'רועי א.', time: 'לפני 4 דקות' },
-        { name: 'שירן ט.', time: 'לפני 9 דקות' },
-        { name: 'עידן מ.', time: 'לפני 14 דקות' },
-        { name: 'הילה ב.', time: 'לפני 21 דקות' },
-        { name: 'אורי ש.', time: 'לפני 27 דקות' },
-        { name: 'תמר ג.', time: 'לפני 38 דקות' },
-    ];
+    /* ── מלאי כרטיסים: נשמר לכל מבקר, יורד עם כל רכישה שמוצגת,
+         וכשנגמר חוזר ל-66 ── */
+    const TOTAL = 300, START = 66;
+    let spots = START;
+    try {
+        const saved = JSON.parse(localStorage.getItem('rbs_spots') || 'null');
+        if (saved && saved.c >= 1 && saved.c <= START) spots = saved.c;
+    } catch (e) {}
+
+    function renderSpots(flash) {
+        const n = document.getElementById('spotsNum');
+        const f = document.getElementById('spotsFill');
+        if (n) {
+            n.textContent = spots;
+            if (flash) { n.classList.add('tick'); setTimeout(() => n.classList.remove('tick'), 250); }
+        }
+        if (f) f.style.width = ((TOTAL - spots) / TOTAL * 100).toFixed(1) + '%';
+        try { localStorage.setItem('rbs_spots', JSON.stringify({ c: spots, t: Date.now() })); } catch (e) {}
+    }
+    renderSpots(false);
+
+    const notifNames = ['רועי א.', 'שירן ט.', 'עידן מ.', 'הילה ב.', 'אורי ש.', 'תמר ג.', 'יובל כ.', 'מור ל.'];
+    const notifTimes = ['ממש עכשיו', 'לפני דקה', 'לפני 2 דקות', 'לפני 4 דקות', 'לפני 7 דקות'];
     let notifIndex = 0;
     function showNotif() {
         if (!popup) return;
-        const data = notifNames[notifIndex % notifNames.length];
-        document.getElementById('npName').textContent = data.name;
-        document.getElementById('npTime').textContent = data.time;
+        document.getElementById('npName').textContent = notifNames[notifIndex % notifNames.length];
+        document.getElementById('npTime').textContent = notifTimes[Math.floor(Math.random() * notifTimes.length)];
         popup.classList.add('show');
         setTimeout(() => popup.classList.remove('show'), 4000);
         notifIndex++;
+        /* כל רכישה שמוצגת מורידה כרטיס; כשנגמר, המלאי מתאפס ל-66 */
+        spots = spots - 1;
+        if (spots < 1) spots = START;
+        renderSpots(true);
     }
     setTimeout(showNotif, 6000);
     setInterval(showNotif, 25000);
+})();
+
+/* ── הבר העליון נעלם בגלילה ── */
+(function () {
+    const bar = document.querySelector('.urgency-bar');
+    if (!bar) return;
+    let last = 0;
+    window.addEventListener('scroll', function () {
+        const y = scrollY;
+        if (Math.abs(y - last) < 10) return;
+        bar.classList.toggle('ub-hide', y > 90);
+        last = y;
+    }, { passive: true });
 })();
 
 /* ====== CONFETTI ON PRICE ====== */
