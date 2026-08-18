@@ -925,10 +925,14 @@
 
         .price-anchor { margin-bottom: 12px; position: relative; }
         .price-original { font-size: 24px; font-weight: 700; color: var(--text-dim); text-decoration: line-through; display: inline-block; }
-        .price-amount { margin-bottom: 10px; position: relative; }
+        .price-amount {
+            margin-bottom: 10px; position: relative;
+            display: flex; align-items: baseline; justify-content: center;
+            gap: 10px; flex-wrap: wrap;
+        }
         .pa-number { font-size: clamp(56px, 14vw, 80px); font-weight: 900; color: var(--text); line-height: 1; }
-        .pa-currency { font-size: 28px; font-weight: 700; color: var(--text-mid); vertical-align: top; }
-        .pa-vat { display: block; font-size: 14px; color: var(--text-dim); margin-top: 6px; }
+        .pa-currency { font-size: 24px; font-weight: 700; color: var(--text-mid); white-space: nowrap; }
+        .pa-vat { flex-basis: 100%; font-size: 14px; color: var(--text-dim); margin-top: 2px; }
         .price-perday { position: relative; font-size: 14px; color: var(--wa); font-weight: 700; margin-bottom: 30px; }
 
         .price-features { list-style: none; text-align: right; max-width: 440px; margin: 0 auto 36px; position: relative; }
@@ -940,7 +944,7 @@
         .price-features li:last-child { border-bottom: none; }
         .pf-icon .ico { width: 12px; height: 12px; }
         .pf-icon {
-            width: 22px; height: 22px; border-radius: 6px;
+            width: 22px; height: 22px; border-radius: 6px; margin-top: 1px;
             background: rgba(37, 211, 102, 0.13); color: var(--wa);
             display: flex; align-items: center; justify-content: center;
             flex-shrink: 0;
@@ -1350,6 +1354,14 @@
             .who-item { font-size: 14px; padding: 14px 16px; }
             .about-content p { font-size: 14px; }
             .cta-btn { font-size: 17px; padding: 16px 34px; }
+
+            /* כרטיס המחיר */
+            .price-inner { padding: 34px 16px; }
+            .pa-number { font-size: 54px; }
+            .pa-currency { font-size: 18px; }
+            .price-features li { font-size: 13.5px; gap: 10px; padding: 10px 0; }
+            .price-features { margin-bottom: 26px; }
+            .price-perday { font-size: 13px; }
 
             /* בורר העסקים: שלושתם בשורה אחת */
             .biz-picker { flex-wrap: nowrap; gap: 7px; }
@@ -2182,12 +2194,20 @@
 <div class="exit-overlay" id="exitOverlay">
     <div class="exit-card">
         <button class="exit-close" onclick="document.getElementById('exitOverlay').classList.remove('show')"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
-        <h2>רגע לפני שאתה סוגר</h2>
-        <p>
-            249 ש״ח + מע״מ, פחות ממה שעובד שירות עולה לך ביום עבודה אחד.
-            <br>הסוכן יענה במקומו בשנה הקרובה, כולל בלילות ובשבתות.
+        <h2>כל חודש כזה עולה לך 7,040 ש״ח</h2>
+        <p style="margin-bottom:18px">
+            זה המחיר של עובד שירות. וזה גם המחיר של להישאר העובד הזה בעצמך, רק שאצלך זה יוצא מהלילות ומהשבתות.
+        </p>
+        <div class="faq-callout" style="text-align:right;margin:0 0 16px">
+            <div class="fc-row"><span>עובד שירות לקוחות</span><b class="fc-bad">7,040 ₪ בחודש, כל חודש</b></div>
+            <div class="fc-row"><span>הקורס, תשלום אחד</span><b>249 ₪ + מע״מ</b></div>
+            <div class="fc-row fc-win"><span>הפעלת הסוכן, 24/7</span><b>3 ₪ ביום</b></div>
+        </div>
+        <p style="font-size:15px;margin-bottom:20px">
+            ההפרש בשנה הראשונה: <b style="color:var(--wa);font-size:18px">83,400 ש״ח</b> שנשארים בעסק.
         </p>
         <a href="#register" class="cta-btn" onclick="document.getElementById('exitOverlay').classList.remove('show')">אני רוצה את הסוכן שלי</a>
+        <div class="cta-sub" style="margin-top:10px">גישה מיידית, והסוכן הראשון שלך עוד הערב</div>
     </div>
 </div>
 
@@ -2751,22 +2771,20 @@ function toggleFaq(el) { el.closest('.faq-item').classList.toggle('open'); }
         spots = spots - 1;
         if (spots < 1) spots = START;
         renderSpots(true);
-        setTimeout(drop, 40000 + Math.random() * 50000);
+        setTimeout(drop, 180000 + Math.random() * 300000);
     }
-    setTimeout(drop, 30000 + Math.random() * 30000);
+    setTimeout(drop, 90000 + Math.random() * 120000);
 })();
 
 /* ── הבר העליון נעלם בגלילה ── */
 (function () {
     const bar = document.querySelector('.urgency-bar');
     if (!bar) return;
-    let last = 0;
-    window.addEventListener('scroll', function () {
-        const y = scrollY;
-        if (Math.abs(y - last) < 10) return;
-        bar.classList.toggle('ub-hide', y > 90);
-        last = y;
-    }, { passive: true });
+    function upd() { bar.classList.toggle('ub-hide', (window.scrollY || document.documentElement.scrollTop || 0) > 90); }
+    window.addEventListener('scroll', upd, { passive: true });
+    window.addEventListener('touchmove', upd, { passive: true });
+    setInterval(upd, 500);
+    upd();
 })();
 
 /* ====== CONFETTI ON PRICE ====== */
