@@ -1193,6 +1193,10 @@
         }
         @keyframes exit-pop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .exit-close .ico { width: 15px; height: 15px; }
+        .exit-kicker {
+            font-size: 13px; font-weight: 800; color: var(--wa);
+            letter-spacing: 0.3px; margin-bottom: 10px;
+        }
         .exit-close {
             position: absolute; top: 16px; left: 16px;
             width: 32px; height: 32px; border-radius: 50%;
@@ -2194,9 +2198,10 @@
 <div class="exit-overlay" id="exitOverlay">
     <div class="exit-card">
         <button class="exit-close" onclick="document.getElementById('exitOverlay').classList.remove('show')"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
+        <div class="exit-kicker">רגע לפני שמוותרים על הקורס</div>
         <h2>כל חודש כזה עולה לך 7,040 ש״ח</h2>
         <p style="margin-bottom:18px">
-            זה המחיר של עובד שירות. וזה גם המחיר של להישאר העובד הזה בעצמך, רק שאצלך זה יוצא מהלילות ומהשבתות.
+            זה המחיר של עובד שירות. וזה גם המחיר של להמשיך לענות לבד, מהלילות ומהשבתות.
         </p>
         <div class="faq-callout" style="text-align:right;margin:0 0 16px">
             <div class="fc-row"><span>עובד שירות לקוחות</span><b class="fc-bad">7,040 ₪ בחודש, כל חודש</b></div>
