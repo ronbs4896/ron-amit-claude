@@ -218,7 +218,7 @@ const CONFIG = {
     COURSE_URL: '#',            // קישור לאזור הקורס. חובה לפני עלייה לאוויר.
     WHATSAPP_GROUP_URL: '',     // קבוצת תלמידים. ריק = השורה מוסתרת
     LEAD_WEBHOOK_URL: '/api/lead',  // אותה פונקציה כמו בדף המכירה. מעבירה רוכש לרשימת הרוכשים ברב מסר
-    CHECKOUT_PROVIDER: 'morning',   // 'morning' או 'grow'. משנים ברגע שהסליקה עוברת ל-Grow
+    CHECKOUT_PROVIDER: 'auto',      // 'auto' שואל את השרת. אפשר לקבע ל-'morning' או ל-'grow'
 };
 
 /* ── מזהים משותפים לדפדפן ולשרת ──
@@ -237,8 +237,8 @@ function rbsGrowCode() {
 /* ב-Grow ה-Webhook של השרת הוא מקור האמת, והוא יורה Purchase לפי מספר
    העסקה. הדפדפן מצטרף רק כשיש לו אותו מספר. בלעדיו הוא שותק, אחרת מטא
    הייתה מקבלת שני אירועים עם מזהים שונים וסופרת שתי רכישות. */
-function rbsPurchaseId(lead) {
-    if (CONFIG.CHECKOUT_PROVIDER === 'grow') {
+function rbsPurchaseId(lead, mode) {
+    if (mode === 'grow') {
         var code = rbsGrowCode();
         return code ? 'grow_' + code : '';
     }
@@ -246,7 +246,7 @@ function rbsPurchaseId(lead) {
 }
 
 /* ── Meta Pixel: אירוע רכישה ── */
-(function () {
+function rbsPixelPurchase(mode) {
     if (typeof fbq !== 'function') return;
     var PRICE = 293.82;   /* 249 + מע״מ, הסכום שחויב בפועל */
     var lead = null;
@@ -261,7 +261,7 @@ function rbsPurchaseId(lead) {
         });
     }
     /* Purchase נורה פעם אחת לדפדפן, שרענון של דף התודה לא יכפיל רכישות */
-    var eid = rbsPurchaseId(lead);
+    var eid = rbsPurchaseId(lead, mode);
     if (eid && !localStorage.getItem('rbs_purchase_done')) {
         fbq('track', 'Purchase', {
             value: PRICE, currency: 'ILS',
@@ -271,14 +271,14 @@ function rbsPurchaseId(lead) {
         }, { eventID: eid });
         try { localStorage.setItem('rbs_purchase_done', String(Date.now())); } catch (e) {}
     }
-})();
+}
 
 /* ── רב מסר: העברת הרוכש מרשימת ה-hotlist לרשימת הרוכשים ──
    שולח פעם אחת לדפדפן, עם פרטי הליד שנשמרו בדף המכירה. */
-(function () {
+function rbsReportPurchase(mode) {
     if (!CONFIG.LEAD_WEBHOOK_URL) return;
     /* ב-Grow ה-Webhook כבר העביר את הרוכש לרשימת הרוכשים ושלח Purchase למטא */
-    if (CONFIG.CHECKOUT_PROVIDER === 'grow') return;
+    if (mode === 'grow') return;
     if (localStorage.getItem('rbs_purchase_sent')) return;
     var lead = null;
     try { lead = JSON.parse(localStorage.getItem('rbs_lead') || 'null'); } catch (e) {}
@@ -288,7 +288,7 @@ function rbsPurchaseId(lead) {
     try { attr = JSON.parse(localStorage.getItem('rbs_attr') || '{}') || {}; } catch (e) {}
     var payload = {
         stage: 'purchase', name: lead.name, phone: lead.phone, email: lead.email,
-        event_id: rbsPurchaseId(lead),
+        event_id: rbsPurchaseId(lead, mode),
         fbp: rbsCookie('_fbp') || lead.fbp || '',
         fbc: rbsCookie('_fbc') || lead.fbc || '',
         value: 293.82, currency: 'ILS',
@@ -305,6 +305,30 @@ function rbsPurchaseId(lead) {
         }).catch(function () {});
         localStorage.setItem('rbs_purchase_sent', String(Date.now()));
     } catch (e) {}
+}
+
+/* ── מי הבעלים של אירוע הרכישה ──
+   כש-Grow מגדיר Webhook, השרת רואה כל עסקה — גם של מי שסגר את הדפדפן —
+   ומדווח לבדו. Grow לא מוסיף את מספר העסקה לכתובת ההפניה, ולכן לדפדפן
+   אין מזהה משותף לדווח איתו, וכל דיווח שלו היה נספר כרכישה שנייה.
+   'auto' שואל את השרת פעם אחת. אם הוא לא עונה, מדווחים כמו קודם: רכישה
+   שנספרה פעמיים עדיפה על רכישה שלא נספרה בכלל. */
+(function () {
+    var fixed = CONFIG.CHECKOUT_PROVIDER;
+    if (fixed !== 'auto') { rbsPixelPurchase(fixed); rbsReportPurchase(fixed); return; }
+
+    var started = false;
+    function go(mode) {
+        if (started) return;
+        started = true;
+        rbsPixelPurchase(mode);
+        rbsReportPurchase(mode);
+    }
+    var timer = setTimeout(function () { go('morning'); }, 1500);
+    fetch('/api/grow', { cache: 'no-store' })
+        .then(function (r) { return r.json(); })
+        .then(function (j) { clearTimeout(timer); go(j && j.configured ? 'grow' : 'morning'); })
+        .catch(function () { clearTimeout(timer); go('morning'); });
 })();
 
 /* ── קונפיג ── */

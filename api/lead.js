@@ -248,6 +248,15 @@ module.exports = async (req, res) => {
         return res.status(400).json({ ok: false, error: 'bad email' });
     }
 
+    /* כשה-Webhook של Grow מוגדר, הוא הבעלים היחיד של הרכישות: הוא רואה
+       כל עסקה, גם של מי שלא חזר לדף התודה. דיווח רכישה מהדפדפן היה נספר
+       פעם שנייה במטא, כי אין לו את מספר העסקה שיאחד בין השניים. מסננים
+       אותו כאן, כדי שדגל שנשכח ב-thanks.html לא יעלה בכסף. */
+    if (stage === 'purchase' && process.env.GROW_URL_TOKEN) {
+        console.log('purchase from browser ignored, grow webhook owns it:', email);
+        return res.status(200).json({ ok: true, ignored: 'grow webhook owns purchases' });
+    }
+
     const payload = {
         stage: stage, name: name, phone: phone, email: email,
         value: b.value, currency: b.currency,

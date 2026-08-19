@@ -83,7 +83,11 @@ module.exports = async (req, res) => {
            ‎&simulate=1‎ שולח Purchase לדוגמה למטא, ורק כשהוגדר
            META_TEST_EVENT_CODE, כלומר האירוע נוחת ב-Test Events ולא
            בנתונים האמיתיים. הוא לא נוגע ברב מסר. */
-        if (!isSelftest(req)) return res.status(200).json({ ok: true, endpoint: 'grow webhook' });
+        /* configured אומר לדף התודה מי הבעלים של אירוע הרכישה. הוא לא חושף
+           שום סוד, רק אם ה-Webhook מוגדר בכלל. */
+        if (!isSelftest(req)) {
+            return res.status(200).json({ ok: true, endpoint: 'grow webhook', configured: !!expectedUrl });
+        }
         if (!expectedUrl || !sameSecret(urlToken(req), expectedUrl)) {
             return res.status(401).json({ ok: false, error: 'הטוקן שבכתובת לא תואם ל-GROW_URL_TOKEN שב-Vercel' });
         }
