@@ -69,6 +69,9 @@ function shape(b) {
 }
 
 module.exports = async (req, res) => {
+    /* Grow בודק לפעמים שהכתובת חיה לפני שהוא שומר את ההגדרה. GET לא עושה
+       כלום מלבד לענות, כדי שהבדיקה הזאת לא תיכשל. */
+    if (req.method === 'GET') return res.status(200).json({ ok: true, endpoint: 'grow webhook' });
     if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'POST only' });
 
     const b = readBody(req);
