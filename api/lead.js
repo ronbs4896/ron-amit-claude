@@ -4,27 +4,39 @@
      stage:"lead"     → נרשם לרשימת ה-hotlist
      stage:"purchase" → נרשם לרשימת הרוכשים ונמחק מה-hotlist
 
-   משתני סביבה (Vercel → Settings → Environment Variables), כולם חובה:
-     RAV_C_KEY / RAV_C_SECRET   מפתחות ה-client מרב מסר
-     RAV_U_KEY / RAV_U_SECRET   מפתחות המשתמש מרב מסר
-     RAV_LIST_HOTLIST           מזהה רשימת ה-hotlist (מספר)
-     RAV_LIST_BUYERS            מזהה רשימת הרוכשים (מספר)
+   משתני סביבה (Vercel → Settings → Environment Variables):
+     RAV_CLIENT_ID / RAV_CLIENT_SECRET / RAV_USER_TOKEN
+                       שלושת הפרטים ממסך "מפתח כללי לחשבון" ברב מסר
+                       (הגדרות → חיבורים חיצוניים API)
+     RAV_LIST_HOTLIST  מזהה רשימת ה-hotlist (מספר)
+     RAV_LIST_BUYERS   מזהה רשימת הרוכשים (מספר)
+     RAV_SELFTEST=1    זמני: מאפשר לפתוח בדפדפן ‎/api/lead?selftest=1‎
+                       כדי לוודא שהחיבור עובד ולקבל את מזהי הרשימות.
+                       למחוק אחרי שההגדרה הושלמה.
+     RAV_U_KEY / RAV_U_SECRET
+                       אופציונלי: זוג מפתחות משתמש בסכמה הישנה שמנפיקה
+                       התמיכה (03-7177777). אם הם מוגדרים, הם גוברים על
+                       RAV_USER_TOKEN.
 
-   מבנה האימות לפי התיעוד הרשמי: github.com/responder/restapi */
+   ה-API לפי התיעוד הרשמי: github.com/responder/restapi
+   האימות מנסה שתי וריאציות: הכותרת הקלאסית (MD5 + nonce) ואם היא
+   נדחית — Bearer עם ה-User Token. הווריאציה שעבדה נרשמת בלוגים. */
 
 const crypto = require('crypto');
 
-const API_BASE = 'https://api.responder.co.il/main/lists/';
+const API_BASE = 'https://api.responder.co.il/main/';
 
 function md5(s) { return crypto.createHash('md5').update(s).digest('hex'); }
 
-function authHeader() {
+function classicHeader() {
     const nonce = crypto.randomBytes(16).toString('hex');
+    const uKey = process.env.RAV_U_KEY || process.env.RAV_USER_TOKEN;
+    const uSecret = process.env.RAV_U_SECRET || process.env.RAV_USER_TOKEN;
     const parts = {
-        c_key: process.env.RAV_C_KEY,
-        c_secret: md5(process.env.RAV_C_SECRET + nonce),
-        u_key: process.env.RAV_U_KEY,
-        u_secret: md5(process.env.RAV_U_SECRET + nonce),
+        c_key: process.env.RAV_CLIENT_ID,
+        c_secret: md5(process.env.RAV_CLIENT_SECRET + nonce),
+        u_key: uKey,
+        u_secret: md5(uSecret + nonce),
         nonce: nonce,
         timestamp: Math.floor(Date.now() / 1000),
     };
@@ -33,24 +45,64 @@ function authHeader() {
         .join(',');
 }
 
-async function rav(method, listId, subscribers) {
-    const r = await fetch(API_BASE + listId + '/subscribers', {
-        method: method,
-        headers: {
-            'Authorization': authHeader(),
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({ subscribers: JSON.stringify(subscribers) }).toString(),
-    });
-    const text = await r.text();
-    let data; try { data = JSON.parse(text); } catch (e) { data = { raw: text.slice(0, 300) }; }
-    /* נשמר בלוגים של Vercel (Deployments → Functions) לצורך דיבוג */
-    console.log(method, listId, r.status, JSON.stringify(data).slice(0, 500));
-    if (!r.ok) throw new Error('rav ' + method + ' ' + r.status);
-    return data;
+const AUTH_VARIANTS = [
+    { name: 'classic', header: classicHeader },
+    { name: 'bearer', header: () => 'Bearer ' + process.env.RAV_USER_TOKEN },
+];
+
+/* קריאה לרב מסר. מנסה את וריאציות האימות לפי הסדר; 401/403 = לנסות את הבאה */
+async function rav(method, path, form) {
+    let last = null;
+    for (const v of AUTH_VARIANTS) {
+        const r = await fetch(API_BASE + path, {
+            method: method,
+            headers: {
+                'Authorization': v.header(),
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: form ? new URLSearchParams(form).toString() : undefined,
+        });
+        const text = await r.text();
+        let data; try { data = JSON.parse(text); } catch (e) { data = { raw: text.slice(0, 300) }; }
+        /* נשמר בלוגים של Vercel (Deployments → Functions) לצורך דיבוג */
+        console.log(v.name, method, path, r.status, JSON.stringify(data).slice(0, 500));
+        if (r.ok) return data;
+        last = { status: r.status, data: data, variant: v.name };
+        if (r.status !== 401 && r.status !== 403) break;
+    }
+    const err = new Error('rav ' + method + ' ' + last.status);
+    err.detail = last;
+    throw err;
+}
+
+function envMissing() {
+    const need = ['RAV_CLIENT_ID', 'RAV_CLIENT_SECRET', 'RAV_USER_TOKEN'];
+    return need.filter(k => !process.env[k]);
 }
 
 module.exports = async (req, res) => {
+    /* בדיקה עצמית: פותחים בדפדפן ‎/api/lead?selftest=1‎ (רק כש-RAV_SELFTEST=1).
+       מאמתת את החיבור ומחזירה את הרשימות בחשבון עם המזהים שלהן. */
+    if (req.method === 'GET') {
+        if (process.env.RAV_SELFTEST !== '1' || !req.query || req.query.selftest !== '1') {
+            return res.status(404).json({ ok: false });
+        }
+        const missing = envMissing();
+        if (missing.length) return res.status(500).json({ ok: false, missing: missing });
+        try {
+            const data = await rav('GET', 'lists');
+            const lists = (data.LISTS || []).map(l => ({ id: l.ID, name: l.DESCRIPTION || l.NAME }));
+            return res.status(200).json({
+                ok: true,
+                lists: lists,
+                hotlist_env: process.env.RAV_LIST_HOTLIST || null,
+                buyers_env: process.env.RAV_LIST_BUYERS || null,
+            });
+        } catch (e) {
+            return res.status(502).json({ ok: false, upstream: e.detail || e.message });
+        }
+    }
+
     if (req.method !== 'POST') return res.status(405).json({ ok: false });
 
     const b = req.body || {};
@@ -63,8 +115,7 @@ module.exports = async (req, res) => {
     }
 
     const HOT = process.env.RAV_LIST_HOTLIST, BUY = process.env.RAV_LIST_BUYERS;
-    if (!process.env.RAV_C_KEY || !process.env.RAV_C_SECRET ||
-        !process.env.RAV_U_KEY || !process.env.RAV_U_SECRET || !HOT || !BUY) {
+    if (envMissing().length || !HOT || !BUY) {
         console.log('rav-messer env vars missing');
         return res.status(500).json({ ok: false, error: 'env missing' });
     }
@@ -74,11 +125,11 @@ module.exports = async (req, res) => {
 
     try {
         if (stage === 'purchase') {
-            await rav('POST', BUY, [sub]);
+            await rav('POST', 'lists/' + BUY + '/subscribers', { subscribers: JSON.stringify([sub]) });
             /* רוכש יוצא מה-hotlist כדי שלא ימשיך לקבל מיילים של "בוא תקנה" */
-            await rav('DELETE', HOT, [{ EMAIL: email }]);
+            await rav('DELETE', 'lists/' + HOT + '/subscribers', { subscribers: JSON.stringify([{ EMAIL: email }]) });
         } else {
-            await rav('POST', HOT, [sub]);
+            await rav('POST', 'lists/' + HOT + '/subscribers', { subscribers: JSON.stringify([sub]) });
         }
         return res.status(200).json({ ok: true });
     } catch (e) {

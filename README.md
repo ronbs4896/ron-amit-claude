@@ -152,19 +152,25 @@ Serverless שרצה על Vercel מתוך `api/lead.js` ומדברת עם ה-API 
   כך שרוכשים לא ממשיכים לקבל מיילים של "בוא תקנה"
 
 המפתחות לא נמצאים בקוד. צריך להגדיר ב-Vercel
-(Project ← Settings ← Environment Variables, סביבת Production) שישה משתנים:
+(Project ← Settings ← Environment Variables, סביבת Production):
 
-| משתנה | מה זה |
+| משתנה | מאיפה |
 |---|---|
-| `RAV_C_KEY` / `RAV_C_SECRET` | מפתחות ה-client של רב מסר |
-| `RAV_U_KEY` / `RAV_U_SECRET` | מפתחות המשתמש |
+| `RAV_CLIENT_ID` | רב מסר ← הגדרות ← חיבורים חיצוניים (API) ← "מפתח כללי לחשבון" |
+| `RAV_CLIENT_SECRET` | שם |
+| `RAV_USER_TOKEN` | שם |
 | `RAV_LIST_HOTLIST` | מזהה רשימת ה-hotlist |
 | `RAV_LIST_BUYERS` | מזהה רשימת הרוכשים |
+| `RAV_SELFTEST` | זמני, שים `1` בזמן ההגדרה |
 
-את ארבעת המפתחות מבקשים מהתמיכה של רב מסר (03-7177777 או
-support@responder.co.il). מזהי הרשימות מופיעים בממשק רב מסר. אחרי הוספת
-המשתנים צריך Redeploy כדי שהפונקציה תקרא אותם. דיבוג: הלוגים של הפונקציה
+סדר ההגדרה: מזינים את שלושת המפתחות + `RAV_SELFTEST=1`, עושים Redeploy,
+ופותחים בדפדפן את `/api/lead?selftest=1`. אם החיבור תקין מוצגות כל
+הרשימות בחשבון עם המזהים שלהן — מעתיקים את שני המזהים למשתני הרשימות,
+Redeploy נוסף, ומוחקים את `RAV_SELFTEST`. דיבוג: הלוגים של הפונקציה
 נמצאים ב-Vercel תחת Deployments ← Functions.
+
+הפונקציה תומכת גם בסכמה הישנה של מפתחות מהתמיכה (03-7177777): אם מגדירים
+`RAV_U_KEY`/`RAV_U_SECRET` הם גוברים על ה-User Token.
 
 לחלופין קיים גם תרחיש Make מוכן ("קורס סוכני AI — לידים ורוכשים לרב מסר",
 כבוי) עם Webhook בכתובת `hook.eu2.make.com/vi7378f9adzlztb6qb94bwclumg2oach` —
