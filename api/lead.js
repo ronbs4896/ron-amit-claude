@@ -13,8 +13,8 @@
      RAV_SELFTEST=1    זמני: מאפשר לפתוח בדפדפן ‎/api/lead?selftest=1‎
                        כדי לאמת את החיבור ולקבל את מזהי הרשימות.
                        למחוק אחרי שההגדרה הושלמה.
-     RAV_U_SECRET      אופציונלי: "user secret" בסכמה הישנה, אם קיבלת
-                       מהתמיכה זוג מפתחות ולא טוקן אחד.
+     RAV_U_KEY / RAV_U_SECRET
+                       זוג המפתח והסוד שמנפיקה התמיכה (03-7177777).
 
    התיעוד הפתוח (github.com/responder/restapi) מתאר את הסכמה הישנה, ומסך
    המפתחות בחשבון הוא חדש יותר. לכן יש כאן כמה וריאציות אימות: הקוד מנסה
@@ -31,8 +31,9 @@ function creds() {
     return {
         cid: process.env.RAV_CLIENT_ID || '',
         csec: process.env.RAV_CLIENT_SECRET || '',
-        /* מפתח המשתמש: זוג מפתח+סוד מהתמיכה גובר על הטוקן שבמסך החשבון */
-        tok: process.env.RAV_U_KEY || process.env.RAV_USER_TOKEN || '',
+        tok: process.env.RAV_USER_TOKEN || '',
+        /* זוג המפתח והסוד מהתמיכה. בלעדיו נופלים חזרה לטוקן של מסך החשבון */
+        ukey: process.env.RAV_U_KEY || process.env.RAV_USER_TOKEN || '',
         usec: process.env.RAV_U_SECRET || process.env.RAV_USER_TOKEN || '',
     };
 }
@@ -46,13 +47,15 @@ function credsReport() {
 }
 
 /* ── וריאציות אימות ──
-   מה שכבר ידוע מהאבחון: כותרת בלי c_key מוחזרת עם 400 "Invalid consumer key",
-   ואילו c_key=Client ID עובר את הבדיקה הזאת ונופל אחריה. כלומר הכותרת
-   הקלאסית היא הנכונה ו-Client ID הוא ה-consumer key; מה שנשאר לברר הוא איך
-   נכנסים לתוכה פרטי המשתמש. לכן כל הווריאציות כאן חולקות את אותו שלד
-   ונבדלות רק בחלק המשתמש, באופן ההצפנה ובפרטים קטנים של הפורמט. */
+   מה שהאבחון כבר קבע: c_key חסר מוחזר עם 400 "Invalid consumer key", ואילו
+   c_key שאינו מוכר גורם ל-500 עם גוף ריק. מפתח לקוח מומצא מחזיר בדיוק את
+   אותו 500 כמו ה-Client ID של מסך החשבון, כלומר ה-Client ID אינו מפתח
+   לקוח של ה-API הזה. לעומתו, הזוג שמנפיקה התמיכה הוא באורך 32 תווים,
+   בדיוק כמו המפתחות שבתיעוד. לכן הווריאציות כאן מנסות את הזוג הזה בשני
+   התפקידים: כמפתח לקוח וכמפתח משתמש. */
 
-const sha256 = s => crypto.createHash('sha256').update(s).digest('hex');
+const sha1 = s => crypto.createHash('sha1').update(s).digest('hex');
+const hmac = (alg, key, data) => crypto.createHmac(alg, key).update(data).digest('hex');
 
 /* בונה כותרת מזוגות, בסדר שנשמר */
 function hdr(pairs, sep) {
@@ -74,144 +77,70 @@ function classicVariant(name, build) {
     };
 }
 
+/* כותרת מלאה: זוג לקוח + זוג משתמש, בהצפנה המתועדת */
+function pairVariant(name, pick) {
+    return classicVariant(name, (c, n, ts) => {
+        const p = pick(c);
+        return hdr([
+            ['c_key', p.ck], ['c_secret', md5(p.cs + n)],
+            ['u_key', p.uk], ['u_secret', md5(p.us + n)],
+            ['nonce', n], ['timestamp', ts],
+        ]);
+    });
+}
+
 const AUTH_VARIANTS = [
-    /* 1. הסכמה המתועדת, כשהטוקן משמש גם כמפתח וגם כסוד */
-    classicVariant('md5-token', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
-        ['u_key', c.tok], ['u_secret', md5(c.usec + n)],
+    /* 1. זוג התמיכה כמפתח הלקוח, והוא גם המשתמש */
+    pairVariant('support-pair-both', c => ({ ck: c.ukey, cs: c.usec, uk: c.ukey, us: c.usec })),
+    /* 2. זוג התמיכה כלקוח, הטוקן של מסך החשבון כמשתמש */
+    pairVariant('support-client+token-user', c => ({ ck: c.ukey, cs: c.usec, uk: c.tok, us: c.tok })),
+    /* 3. זוג התמיכה כלקוח, פרטי מסך החשבון כמשתמש */
+    pairVariant('support-client+account-user', c => ({ ck: c.ukey, cs: c.usec, uk: c.cid, us: c.csec })),
+    /* 4. הסכמה המתועדת כפשוטה: מסך החשבון כלקוח, זוג התמיכה כמשתמש */
+    pairVariant('account-client+support-user', c => ({ ck: c.cid, cs: c.csec, uk: c.ukey, us: c.usec })),
+    /* 5. זוג התמיכה כלקוח, בלי חלק משתמש */
+    classicVariant('support-client-only', (c, n, ts) => hdr([
+        ['c_key', c.ukey], ['c_secret', md5(c.usec + n)],
         ['nonce', n], ['timestamp', ts],
     ])),
-    /* 2. הטוקן כמפתח משתמש בלבד, בלי סוד משתמש */
-    classicVariant('md5-ukey-only', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
-        ['u_key', c.tok], ['nonce', n], ['timestamp', ts],
-    ])),
-    /* 3. בלי חלק משתמש בכלל. השגיאה שתחזור תגלה מה חסר */
-    classicVariant('md5-no-user', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
+    /* 6. זוג התמיכה כלקוח, בלי הצפנה */
+    classicVariant('support-pair-raw', (c, n, ts) => hdr([
+        ['c_key', c.ukey], ['c_secret', c.usec],
+        ['u_key', c.ukey], ['u_secret', c.usec],
         ['nonce', n], ['timestamp', ts],
     ])),
-    /* 4. שם שדה אחר לטוקן */
-    classicVariant('md5-u_token', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
-        ['u_token', c.tok], ['nonce', n], ['timestamp', ts],
-    ])),
-    /* 5. הטוקן כסוד המשתמש, ומפתח המשתמש הוא זהות הלקוח */
-    classicVariant('md5-ukey-cid', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
-        ['u_key', c.cid], ['u_secret', md5(c.tok + n)],
-        ['nonce', n], ['timestamp', ts],
-    ])),
-    /* 6. סוד המשתמש זהה לסוד הלקוח */
-    classicVariant('md5-usec-csec', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
-        ['u_key', c.tok], ['u_secret', md5(c.csec + n)],
-        ['nonce', n], ['timestamp', ts],
-    ])),
-    /* 7. הטוקן נשלח כמו שהוא, בלי הצפנה */
-    classicVariant('md5-usec-raw', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
-        ['u_key', c.tok], ['u_secret', c.usec],
-        ['nonce', n], ['timestamp', ts],
-    ])),
-    /* 8. שני הסודות בלי הצפנה */
-    classicVariant('raw-secrets', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', c.csec],
-        ['u_key', c.tok], ['u_secret', c.usec],
-        ['nonce', n], ['timestamp', ts],
-    ])),
-    /* 9. סדר הפוך בהצפנה: nonce ואז הסוד */
-    classicVariant('md5-reversed', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', md5(n + c.csec)],
-        ['u_key', c.tok], ['u_secret', md5(n + c.usec)],
-        ['nonce', n], ['timestamp', ts],
-    ])),
-    /* 10. sha256 במקום md5 */
-    classicVariant('sha256', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', sha256(c.csec + n)],
-        ['u_key', c.tok], ['u_secret', sha256(c.usec + n)],
-        ['nonce', n], ['timestamp', ts],
-    ])),
-    /* 11. חותמת זמן באלפיות שנייה */
-    classicVariant('md5-ms-timestamp', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
-        ['u_key', c.tok], ['u_secret', md5(c.usec + n)],
-        ['nonce', n], ['timestamp', Date.now()],
-    ])),
-    /* 12. רווח אחרי הפסיק, כמו בהרבה דוגמאות של OAuth 1 */
-    classicVariant('md5-spaced', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
-        ['u_key', c.tok], ['u_secret', md5(c.usec + n)],
-        ['nonce', n], ['timestamp', ts],
-    ], ', ')),
-    /* 13. הטוקן בכותרת נפרדת, לצד זיהוי הלקוח הקלאסי */
-    {
-        name: 'classic+token-header',
-        headers: () => {
-            const c = creds(), n = crypto.randomBytes(16).toString('hex');
-            return {
-                Authorization: hdr([
-                    ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
-                    ['nonce', n], ['timestamp', Math.floor(Date.now() / 1000)],
-                ]),
-                'X-User-Token': c.tok,
-            };
-        },
-    },
 ];
 
-/* ── בדיקות אבחון בלבד (רק ב-selftest) ──
-   כל הווריאציות עם c_key חוזרות עם 500 ריק, גם זו שלא שולחת פרטי משתמש
-   בכלל. לכן השאלה עכשיו היא מה בעצם אומר ה-500. שתי השורות הראשונות כאן
-   הן ניסוי הביקורת: אם מפתח לקוח מומצא מחזיר בדיוק אותו 500, אז 500 = מפתח
-   לא מוכר, וה-Client ID של המסך החדש אינו consumer key של ה-API הזה. אם
-   הוא דווקא יחזיר 400, סימן שה-Client ID שלך כן מוכר וצריך לתקן רק את אופן
-   ההצפנה של הסוד. שאר השורות סורקות נוסחאות הצפנה, בלי חלק משתמש. */
-const sha1 = s => crypto.createHash('sha1').update(s).digest('hex');
-const hmac = (alg, key, data) => crypto.createHmac(alg, key).update(data).digest('hex');
+/* ── בדיקות אבחון (רק ב-selftest) ──
+   השאלה היחידה שנשארה: איזה מהערכים שברשותנו הוא מפתח לקוח מוכר. כל שורה
+   כאן שולחת ערך אחר בתפקיד c_key, בלי חלק משתמש. ערך שיחזיר משהו אחר
+   מ-500 הוא המפתח הנכון, וזה מה שנועל את כל השאר. */
+function ckeyProbe(name, pick) {
+    return classicVariant(name, (c, n, ts) => {
+        const p = pick(c);
+        return hdr([
+            ['c_key', p.k], ['c_secret', md5(p.s + n)],
+            ['nonce', n], ['timestamp', ts],
+        ]);
+    });
+}
 
 const PROBE_VARIANTS = [
-    /* ניסוי ביקורת: מפתח לקוח שלא קיים */
-    classicVariant('control-fake-ckey', (c, n, ts) => hdr([
-        ['c_key', 'no-such-consumer-key-0000'], ['c_secret', md5('x' + n)],
-        ['nonce', n], ['timestamp', ts],
+    /* ביקורת: מפתח מומצא מול מפתח ריק, כדי לדעת מה כל קוד שגיאה אומר */
+    ckeyProbe('control-fake-ckey', () => ({ k: 'no-such-consumer-key-0000', s: 'x' })),
+    ckeyProbe('control-empty-ckey', () => ({ k: '', s: 'x' })),
+    /* כל ערך שברשותנו, בתפקיד מפתח הלקוח */
+    ckeyProbe('ckey-is-client-id', c => ({ k: c.cid, s: c.csec })),
+    ckeyProbe('ckey-is-client-secret', c => ({ k: c.csec, s: c.cid })),
+    ckeyProbe('ckey-is-user-token', c => ({ k: c.tok, s: c.tok })),
+    ckeyProbe('ckey-is-support-key', c => ({ k: c.ukey, s: c.usec })),
+    ckeyProbe('ckey-is-support-secret', c => ({ k: c.usec, s: c.ukey })),
+    /* אותו מפתח תמיכה, נוסחאות הצפנה חלופיות לסוד */
+    classicVariant('support-sha1', (c, n, ts) => hdr([
+        ['c_key', c.ukey], ['c_secret', sha1(c.usec + n)], ['nonce', n], ['timestamp', ts],
     ])),
-    /* ניסוי ביקורת: מפתח לקוח ריק */
-    classicVariant('control-empty-ckey', (c, n, ts) => hdr([
-        ['c_key', ''], ['c_secret', md5('x' + n)],
-        ['nonce', n], ['timestamp', ts],
-    ])),
-    /* הטוקן כמפתח הלקוח, למקרה שהתפקידים הפוכים */
-    classicVariant('swap-token-as-ckey', (c, n, ts) => hdr([
-        ['c_key', c.tok], ['c_secret', md5(c.csec + n)],
-        ['u_key', c.cid], ['u_secret', md5(c.csec + n)],
-        ['nonce', n], ['timestamp', ts],
-    ])),
-    /* מכאן: נוסחאות הצפנה לסוד הלקוח, בלי חלק משתמש */
-    classicVariant('csec-md5-plain', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', md5(c.csec)], ['nonce', n], ['timestamp', ts],
-    ])),
-    classicVariant('csec-sha1', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', sha1(c.csec + n)], ['nonce', n], ['timestamp', ts],
-    ])),
-    classicVariant('csec-hmac-md5', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', hmac('md5', c.csec, n)], ['nonce', n], ['timestamp', ts],
-    ])),
-    classicVariant('csec-hmac-sha256', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', hmac('sha256', c.csec, n)], ['nonce', n], ['timestamp', ts],
-    ])),
-    classicVariant('csec-with-timestamp', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', md5(c.csec + n + ts)], ['nonce', n], ['timestamp', ts],
-    ])),
-    classicVariant('csec-cid-prefix', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', md5(c.cid + c.csec + n)], ['nonce', n], ['timestamp', ts],
-    ])),
-    classicVariant('csec-uppercase', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', md5(c.csec + n).toUpperCase()], ['nonce', n], ['timestamp', ts],
-    ])),
-    classicVariant('csec-base64', (c, n, ts) => hdr([
-        ['c_key', c.cid], ['c_secret', Buffer.from(c.csec).toString('base64')],
-        ['nonce', n], ['timestamp', ts],
+    classicVariant('support-hmac-md5', (c, n, ts) => hdr([
+        ['c_key', c.ukey], ['c_secret', hmac('md5', c.usec, n)], ['nonce', n], ['timestamp', ts],
     ])),
 ];
 
