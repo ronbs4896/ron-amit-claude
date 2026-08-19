@@ -218,7 +218,6 @@ const CONFIG = {
     COURSE_URL: '#',            // קישור לאזור הקורס. חובה לפני עלייה לאוויר.
     WHATSAPP_GROUP_URL: '',     // קבוצת תלמידים. ריק = השורה מוסתרת
     LEAD_WEBHOOK_URL: '/api/lead',  // אותה פונקציה כמו בדף המכירה. מעבירה רוכש לרשימת הרוכשים ברב מסר
-    CHECKOUT_PROVIDER: 'auto',      // 'auto' שואל את השרת. אפשר לקבע ל-'morning' או ל-'grow'
 };
 
 /* ── מזהים משותפים לדפדפן ולשרת ──
@@ -228,25 +227,30 @@ function rbsCookie(name) {
     var m = document.cookie.match('(^|; )' + name + '=([^;]*)');
     return m ? decodeURIComponent(m[2]) : '';
 }
-/* מספר העסקה, כפי ש-Grow מוסיף אותו לכתובת ההפניה אחרי תשלום */
-function rbsGrowCode() {
-    var q = new URLSearchParams(location.search), keys = ['transactionCode', 'transaction_code', 'transactionId', 'asmachta', 'code'];
-    for (var i = 0; i < keys.length; i++) { var v = q.get(keys[i]); if (v) return v; }
-    return '';
-}
-/* ב-Grow ה-Webhook של השרת הוא מקור האמת, והוא יורה Purchase לפי מספר
-   העסקה. הדפדפן מצטרף רק כשיש לו אותו מספר. בלעדיו הוא שותק, אחרת מטא
-   הייתה מקבלת שני אירועים עם מזהים שונים וסופרת שתי רכישות. */
-function rbsPurchaseId(lead, mode) {
-    if (mode === 'grow') {
-        var code = rbsGrowCode();
-        return code ? 'grow_' + code : '';
+/* ── מזהה הרכישה ──
+   Grow לא מעביר את מספר העסקה לכתובת ההפניה, ולכן אי אפשר לבנות עליו.
+   במקומו: המייל והתאריך. השרת מחשב בדיוק את אותו הדבר מתוך ה-Webhook,
+   ולכן שני הצדדים יכולים לדווח בלי לתאם — מטא רואה מזהה זהה וממזגת.
+
+   FNV-1a, אותו מימוש בדיוק כמו ב-api/_shared.js. לא הצפנה, רק דרך לא
+   להכניס כתובת מייל לתוך מזהה שנשלח החוצה. */
+function rbsFnv1a(str) {
+    var h = 0x811c9dc5;
+    for (var i = 0; i < str.length; i++) {
+        h ^= str.charCodeAt(i);
+        h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
     }
-    return 'purch_' + ((lead && lead.ts) ? lead.ts.replace(/[^0-9]/g, '') : Date.now());
+    return h.toString(16);
+}
+function rbsPurchaseId(lead) {
+    var email = String((lead && lead.email) || '').trim().toLowerCase();
+    if (!email) return '';
+    var day = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    return 'pur_' + rbsFnv1a(email) + '_' + day;
 }
 
 /* ── Meta Pixel: אירוע רכישה ── */
-function rbsPixelPurchase(mode) {
+function rbsPixelPurchase() {
     if (typeof fbq !== 'function') return;
     var PRICE = 293.82;   /* 249 + מע״מ, הסכום שחויב בפועל */
     var lead = null;
@@ -261,7 +265,7 @@ function rbsPixelPurchase(mode) {
         });
     }
     /* Purchase נורה פעם אחת לדפדפן, שרענון של דף התודה לא יכפיל רכישות */
-    var eid = rbsPurchaseId(lead, mode);
+    var eid = rbsPurchaseId(lead);
     if (eid && !localStorage.getItem('rbs_purchase_done')) {
         fbq('track', 'Purchase', {
             value: PRICE, currency: 'ILS',
@@ -275,10 +279,8 @@ function rbsPixelPurchase(mode) {
 
 /* ── רב מסר: העברת הרוכש מרשימת ה-hotlist לרשימת הרוכשים ──
    שולח פעם אחת לדפדפן, עם פרטי הליד שנשמרו בדף המכירה. */
-function rbsReportPurchase(mode) {
+function rbsReportPurchase() {
     if (!CONFIG.LEAD_WEBHOOK_URL) return;
-    /* ב-Grow ה-Webhook כבר העביר את הרוכש לרשימת הרוכשים ושלח Purchase למטא */
-    if (mode === 'grow') return;
     if (localStorage.getItem('rbs_purchase_sent')) return;
     var lead = null;
     try { lead = JSON.parse(localStorage.getItem('rbs_lead') || 'null'); } catch (e) {}
@@ -288,7 +290,7 @@ function rbsReportPurchase(mode) {
     try { attr = JSON.parse(localStorage.getItem('rbs_attr') || '{}') || {}; } catch (e) {}
     var payload = {
         stage: 'purchase', name: lead.name, phone: lead.phone, email: lead.email,
-        event_id: rbsPurchaseId(lead, mode),
+        event_id: rbsPurchaseId(lead),
         fbp: rbsCookie('_fbp') || lead.fbp || '',
         fbc: rbsCookie('_fbc') || lead.fbc || '',
         value: 293.82, currency: 'ILS',
@@ -307,29 +309,11 @@ function rbsReportPurchase(mode) {
     } catch (e) {}
 }
 
-/* ── מי הבעלים של אירוע הרכישה ──
-   כש-Grow מגדיר Webhook, השרת רואה כל עסקה — גם של מי שסגר את הדפדפן —
-   ומדווח לבדו. Grow לא מוסיף את מספר העסקה לכתובת ההפניה, ולכן לדפדפן
-   אין מזהה משותף לדווח איתו, וכל דיווח שלו היה נספר כרכישה שנייה.
-   'auto' שואל את השרת פעם אחת. אם הוא לא עונה, מדווחים כמו קודם: רכישה
-   שנספרה פעמיים עדיפה על רכישה שלא נספרה בכלל. */
-(function () {
-    var fixed = CONFIG.CHECKOUT_PROVIDER;
-    if (fixed !== 'auto') { rbsPixelPurchase(fixed); rbsReportPurchase(fixed); return; }
-
-    var started = false;
-    function go(mode) {
-        if (started) return;
-        started = true;
-        rbsPixelPurchase(mode);
-        rbsReportPurchase(mode);
-    }
-    var timer = setTimeout(function () { go('morning'); }, 1500);
-    fetch('/api/grow', { cache: 'no-store' })
-        .then(function (r) { return r.json(); })
-        .then(function (j) { clearTimeout(timer); go(j && j.configured ? 'grow' : 'morning'); })
-        .catch(function () { clearTimeout(timer); go('morning'); });
-})();
+/* שני הצדדים מדווחים תמיד. ה-Webhook של Grow רואה גם את מי שלא חזר
+   לדף התודה, ודף התודה מכסה את המקרה שבו ה-Webhook לא הגיע. המזהה
+   המשותף הוא מה שמונע ספירה כפולה, ולכן אין צורך להחליט מי הבעלים. */
+rbsPixelPurchase();
+rbsReportPurchase();
 
 /* ── קונפיג ── */
 var $id = function (x) { return document.getElementById(x); };

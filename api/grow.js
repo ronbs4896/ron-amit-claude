@@ -20,7 +20,7 @@
    ומי שימצא אותה יוכל להזריק רכישות מזויפות לפיקסל ולרשימת הדיוור. */
 
 const crypto = require('crypto');
-const { readBody, sendToMake, sendToMeta, COURSE_PRICE } = require('./_shared.js');
+const { readBody, sendToMake, sendToMeta, purchaseEventId, COURSE_PRICE } = require('./_shared.js');
 
 /* שמות השדות של Grow. מקבלים גם וריאציות, כי חלק מהמסכים שולחים
    ‎snake_case‎ וחלק ‎camelCase‎. */
@@ -151,9 +151,8 @@ module.exports = async (req, res) => {
         return res.status(200).json({ ok: true, ignored: 'no contact' });
     }
 
-    /* אותו מזהה שדף התודה משתמש בו, כדי שמטא תמזג ולא תספור פעמיים */
-    const eventId = code ? 'grow_' + code : 'grow_' + crypto.createHash('sha1')
-        .update(email + '|' + value).digest('hex').slice(0, 16);
+    /* אותו מזהה בדיוק שדף התודה מחשב, כדי שמטא תמזג את שני העותקים */
+    const eventId = purchaseEventId(email);
 
     /* אם נעביר את fbp/fbc בשדות המותאמים של דף התשלום, הם יחזרו לכאן
        וישפרו את ההתאמה. עד אז מטא מתאימה לפי המייל והטלפון המוצפנים. */

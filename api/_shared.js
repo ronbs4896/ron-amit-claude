@@ -122,7 +122,30 @@ async function sendToMeta(o) {
     return { ok: r.ok, status: r.status };
 }
 
+/* ── מזהה הרכישה ──
+   חייב לצאת זהה בדפדפן ובשרת, אחרת מטא סופרת שתי רכישות על מכירה אחת.
+   Grow לא מעביר את מספר העסקה לכתובת ההפניה, ולכן הוא לא יכול לשמש כאן.
+   במקומו נגזר המזהה מהמייל ומהתאריך: שני הצדדים מכירים את שניהם, בלי
+   לתאם ובלי להיות תלויים בכך שה-Webhook בכלל יגיע.
+
+   FNV-1a. לא הצפנה, רק פונקציה קצרה שאפשר לממש זהה בשני הצדדים, ושלא
+   מכניסה כתובת מייל למזהה שנשלח למטא. */
+function fnv1a(str) {
+    let h = 0x811c9dc5;
+    for (let i = 0; i < str.length; i++) {
+        h ^= str.charCodeAt(i);
+        h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+    }
+    return h.toString(16);
+}
+
+function purchaseEventId(email, when) {
+    const d = when ? new Date(when) : new Date();
+    const day = d.toISOString().slice(0, 10).replace(/-/g, '');
+    return 'pur_' + fnv1a(String(email || '').trim().toLowerCase()) + '_' + day;
+}
+
 module.exports = {
-    readBody, sendToMake, sendToMeta, clientIp,
+    readBody, sendToMake, sendToMeta, clientIp, purchaseEventId,
     COURSE_NAME, COURSE_ID, COURSE_PRICE,
 };
