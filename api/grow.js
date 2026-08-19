@@ -52,6 +52,11 @@ function sameSecret(a, b) {
     return x.length === y.length && crypto.timingSafeEqual(x, y);
 }
 
+function isSelftest(req) {
+    if (req.query && req.query.selftest === '1') return true;
+    return /[?&]selftest=1(&|$)/.test(req.url || '');
+}
+
 function urlToken(req) {
     if (req.query && req.query.t) return String(req.query.t);
     const m = /[?&]t=([^&]+)/.exec(req.url || '');
@@ -69,16 +74,47 @@ function shape(b) {
 }
 
 module.exports = async (req, res) => {
-    /* Grow בודק לפעמים שהכתובת חיה לפני שהוא שומר את ההגדרה. GET לא עושה
-       כלום מלבד לענות, כדי שהבדיקה הזאת לא תיכשל. */
-    if (req.method === 'GET') return res.status(200).json({ ok: true, endpoint: 'grow webhook' });
+    const expectedUrl = process.env.GROW_URL_TOKEN;
+    const expectedKey = process.env.GROW_WEBHOOK_KEY;
+
+    if (req.method === 'GET') {
+        /* ‎?selftest=1‎ מאמת שהטוקן שבכתובת זהה לזה שב-Vercel, ומדווח מה
+           מוגדר. מחזיר קיים או לא קיים בלבד, אף פעם לא ערכים.
+           ‎&simulate=1‎ שולח Purchase לדוגמה למטא, ורק כשהוגדר
+           META_TEST_EVENT_CODE, כלומר האירוע נוחת ב-Test Events ולא
+           בנתונים האמיתיים. הוא לא נוגע ברב מסר. */
+        if (!isSelftest(req)) return res.status(200).json({ ok: true, endpoint: 'grow webhook' });
+        if (!expectedUrl || !sameSecret(urlToken(req), expectedUrl)) {
+            return res.status(401).json({ ok: false, error: 'הטוקן שבכתובת לא תואם ל-GROW_URL_TOKEN שב-Vercel' });
+        }
+        const report = {
+            ok: true,
+            url_token: true,
+            webhook_key_set: !!expectedKey,
+            meta_capi_token_set: !!process.env.META_CAPI_TOKEN,
+            meta_test_event_code_set: !!process.env.META_TEST_EVENT_CODE,
+            learn_mode: process.env.GROW_LEARN === '1',
+        };
+        if (/[?&]simulate=1(&|$)/.test(req.url || '')) {
+            if (!process.env.META_TEST_EVENT_CODE) {
+                report.simulate = 'דלוג: בלי META_TEST_EVENT_CODE האירוע היה נכנס לנתונים האמיתיים';
+            } else {
+                const r = await sendToMeta({
+                    eventName: 'Purchase', eventId: 'grow_selftest_' + Date.now(),
+                    sourceUrl: 'https://ron-amit-claude.vercel.app/thanks',
+                    name: 'בדיקה בדיקה', email: 'selftest@example.com', phone: '0500000000',
+                    value: COURSE_PRICE, currency: 'ILS',
+                });
+                report.simulate = r;
+            }
+        }
+        return res.status(200).json(report);
+    }
     if (req.method !== 'POST') return res.status(405).json({ ok: false, error: 'POST only' });
 
     const b = readBody(req);
 
     /* ── 1. אימות ── */
-    const expectedUrl = process.env.GROW_URL_TOKEN;
-    const expectedKey = process.env.GROW_WEBHOOK_KEY;
     if (!expectedUrl && !expectedKey) {
         console.log('grow: refusing, neither GROW_URL_TOKEN nor GROW_WEBHOOK_KEY is set');
         return res.status(401).json({ ok: false, error: 'webhook not configured' });
