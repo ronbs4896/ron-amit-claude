@@ -31,9 +31,18 @@ function creds() {
     return {
         cid: process.env.RAV_CLIENT_ID || '',
         csec: process.env.RAV_CLIENT_SECRET || '',
-        tok: process.env.RAV_USER_TOKEN || '',
+        /* מפתח המשתמש: זוג מפתח+סוד מהתמיכה גובר על הטוקן שבמסך החשבון */
+        tok: process.env.RAV_U_KEY || process.env.RAV_USER_TOKEN || '',
         usec: process.env.RAV_U_SECRET || process.env.RAV_USER_TOKEN || '',
     };
+}
+
+/* דיווח נוכחות בלבד: אורך המחרוזת, בלי לחשוף ערכים */
+function credsReport() {
+    const keys = ['RAV_CLIENT_ID', 'RAV_CLIENT_SECRET', 'RAV_USER_TOKEN', 'RAV_U_KEY', 'RAV_U_SECRET'];
+    const out = {};
+    for (const k of keys) out[k] = process.env[k] ? process.env[k].length + ' chars' : 'not set';
+    return out;
 }
 
 /* ── וריאציות אימות ──
@@ -151,6 +160,61 @@ const AUTH_VARIANTS = [
     },
 ];
 
+/* ── בדיקות אבחון בלבד (רק ב-selftest) ──
+   כל הווריאציות עם c_key חוזרות עם 500 ריק, גם זו שלא שולחת פרטי משתמש
+   בכלל. לכן השאלה עכשיו היא מה בעצם אומר ה-500. שתי השורות הראשונות כאן
+   הן ניסוי הביקורת: אם מפתח לקוח מומצא מחזיר בדיוק אותו 500, אז 500 = מפתח
+   לא מוכר, וה-Client ID של המסך החדש אינו consumer key של ה-API הזה. אם
+   הוא דווקא יחזיר 400, סימן שה-Client ID שלך כן מוכר וצריך לתקן רק את אופן
+   ההצפנה של הסוד. שאר השורות סורקות נוסחאות הצפנה, בלי חלק משתמש. */
+const sha1 = s => crypto.createHash('sha1').update(s).digest('hex');
+const hmac = (alg, key, data) => crypto.createHmac(alg, key).update(data).digest('hex');
+
+const PROBE_VARIANTS = [
+    /* ניסוי ביקורת: מפתח לקוח שלא קיים */
+    classicVariant('control-fake-ckey', (c, n, ts) => hdr([
+        ['c_key', 'no-such-consumer-key-0000'], ['c_secret', md5('x' + n)],
+        ['nonce', n], ['timestamp', ts],
+    ])),
+    /* ניסוי ביקורת: מפתח לקוח ריק */
+    classicVariant('control-empty-ckey', (c, n, ts) => hdr([
+        ['c_key', ''], ['c_secret', md5('x' + n)],
+        ['nonce', n], ['timestamp', ts],
+    ])),
+    /* הטוקן כמפתח הלקוח, למקרה שהתפקידים הפוכים */
+    classicVariant('swap-token-as-ckey', (c, n, ts) => hdr([
+        ['c_key', c.tok], ['c_secret', md5(c.csec + n)],
+        ['u_key', c.cid], ['u_secret', md5(c.csec + n)],
+        ['nonce', n], ['timestamp', ts],
+    ])),
+    /* מכאן: נוסחאות הצפנה לסוד הלקוח, בלי חלק משתמש */
+    classicVariant('csec-md5-plain', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', md5(c.csec)], ['nonce', n], ['timestamp', ts],
+    ])),
+    classicVariant('csec-sha1', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', sha1(c.csec + n)], ['nonce', n], ['timestamp', ts],
+    ])),
+    classicVariant('csec-hmac-md5', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', hmac('md5', c.csec, n)], ['nonce', n], ['timestamp', ts],
+    ])),
+    classicVariant('csec-hmac-sha256', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', hmac('sha256', c.csec, n)], ['nonce', n], ['timestamp', ts],
+    ])),
+    classicVariant('csec-with-timestamp', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', md5(c.csec + n + ts)], ['nonce', n], ['timestamp', ts],
+    ])),
+    classicVariant('csec-cid-prefix', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', md5(c.cid + c.csec + n)], ['nonce', n], ['timestamp', ts],
+    ])),
+    classicVariant('csec-uppercase', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', md5(c.csec + n).toUpperCase()], ['nonce', n], ['timestamp', ts],
+    ])),
+    classicVariant('csec-base64', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', Buffer.from(c.csec).toString('base64')],
+        ['nonce', n], ['timestamp', ts],
+    ])),
+];
+
 /* הווריאציה שהצליחה לאחרונה. המופע של הפונקציה חי בין קריאות, אז זה חוסך ניסיונות */
 let preferred = null;
 
@@ -225,7 +289,7 @@ module.exports = async (req, res) => {
         if (missing.length) return res.status(500).json({ ok: false, missing: missing });
 
         /* במקביל, כדי לא לחרוג מזמן הריצה של הפונקציה */
-        const tried = await Promise.all(AUTH_VARIANTS.map(v =>
+        const tried = await Promise.all(AUTH_VARIANTS.concat(PROBE_VARIANTS).map(v =>
             attempt(v, 'GET', 'lists').catch(e => ({ variant: v.name, ok: false, error: e.message }))
         ));
         const win = tried.find(t => t.ok);
@@ -233,6 +297,7 @@ module.exports = async (req, res) => {
             return res.status(502).json({
                 ok: false,
                 hint: 'no auth variant accepted, send this output to Claude',
+                creds: credsReport(),
                 tried: tried.map(t => ({ variant: t.variant, status: t.status, body: t.body, error: t.error })),
             });
         }
