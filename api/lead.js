@@ -36,66 +36,117 @@ function creds() {
     };
 }
 
-/* כל וריאציה מחזירה אובייקט כותרות שלם */
+/* ── וריאציות אימות ──
+   מה שכבר ידוע מהאבחון: כותרת בלי c_key מוחזרת עם 400 "Invalid consumer key",
+   ואילו c_key=Client ID עובר את הבדיקה הזאת ונופל אחריה. כלומר הכותרת
+   הקלאסית היא הנכונה ו-Client ID הוא ה-consumer key; מה שנשאר לברר הוא איך
+   נכנסים לתוכה פרטי המשתמש. לכן כל הווריאציות כאן חולקות את אותו שלד
+   ונבדלות רק בחלק המשתמש, באופן ההצפנה ובפרטים קטנים של הפורמט. */
+
+const sha256 = s => crypto.createHash('sha256').update(s).digest('hex');
+
+/* בונה כותרת מזוגות, בסדר שנשמר */
+function hdr(pairs, sep) {
+    return pairs
+        .filter(p => p[1] !== undefined && p[1] !== null)
+        .map(p => p[0] + '=' + encodeURIComponent(p[1]))
+        .join(sep || ',');
+}
+
+function classicVariant(name, build) {
+    return {
+        name: name,
+        headers: () => {
+            const c = creds();
+            const nonce = crypto.randomBytes(16).toString('hex');
+            const ts = Math.floor(Date.now() / 1000);
+            return { Authorization: build(c, nonce, ts) };
+        },
+    };
+}
+
 const AUTH_VARIANTS = [
+    /* 1. הסכמה המתועדת, כשהטוקן משמש גם כמפתח וגם כסוד */
+    classicVariant('md5-token', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
+        ['u_key', c.tok], ['u_secret', md5(c.usec + n)],
+        ['nonce', n], ['timestamp', ts],
+    ])),
+    /* 2. הטוקן כמפתח משתמש בלבד, בלי סוד משתמש */
+    classicVariant('md5-ukey-only', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
+        ['u_key', c.tok], ['nonce', n], ['timestamp', ts],
+    ])),
+    /* 3. בלי חלק משתמש בכלל. השגיאה שתחזור תגלה מה חסר */
+    classicVariant('md5-no-user', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
+        ['nonce', n], ['timestamp', ts],
+    ])),
+    /* 4. שם שדה אחר לטוקן */
+    classicVariant('md5-u_token', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
+        ['u_token', c.tok], ['nonce', n], ['timestamp', ts],
+    ])),
+    /* 5. הטוקן כסוד המשתמש, ומפתח המשתמש הוא זהות הלקוח */
+    classicVariant('md5-ukey-cid', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
+        ['u_key', c.cid], ['u_secret', md5(c.tok + n)],
+        ['nonce', n], ['timestamp', ts],
+    ])),
+    /* 6. סוד המשתמש זהה לסוד הלקוח */
+    classicVariant('md5-usec-csec', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
+        ['u_key', c.tok], ['u_secret', md5(c.csec + n)],
+        ['nonce', n], ['timestamp', ts],
+    ])),
+    /* 7. הטוקן נשלח כמו שהוא, בלי הצפנה */
+    classicVariant('md5-usec-raw', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
+        ['u_key', c.tok], ['u_secret', c.usec],
+        ['nonce', n], ['timestamp', ts],
+    ])),
+    /* 8. שני הסודות בלי הצפנה */
+    classicVariant('raw-secrets', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', c.csec],
+        ['u_key', c.tok], ['u_secret', c.usec],
+        ['nonce', n], ['timestamp', ts],
+    ])),
+    /* 9. סדר הפוך בהצפנה: nonce ואז הסוד */
+    classicVariant('md5-reversed', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', md5(n + c.csec)],
+        ['u_key', c.tok], ['u_secret', md5(n + c.usec)],
+        ['nonce', n], ['timestamp', ts],
+    ])),
+    /* 10. sha256 במקום md5 */
+    classicVariant('sha256', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', sha256(c.csec + n)],
+        ['u_key', c.tok], ['u_secret', sha256(c.usec + n)],
+        ['nonce', n], ['timestamp', ts],
+    ])),
+    /* 11. חותמת זמן באלפיות שנייה */
+    classicVariant('md5-ms-timestamp', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
+        ['u_key', c.tok], ['u_secret', md5(c.usec + n)],
+        ['nonce', n], ['timestamp', Date.now()],
+    ])),
+    /* 12. רווח אחרי הפסיק, כמו בהרבה דוגמאות של OAuth 1 */
+    classicVariant('md5-spaced', (c, n, ts) => hdr([
+        ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
+        ['u_key', c.tok], ['u_secret', md5(c.usec + n)],
+        ['nonce', n], ['timestamp', ts],
+    ], ', ')),
+    /* 13. הטוקן בכותרת נפרדת, לצד זיהוי הלקוח הקלאסי */
     {
-        /* הסכמה המתועדת: סודות עוברים md5 יחד עם nonce */
-        name: 'classic-md5',
+        name: 'classic+token-header',
         headers: () => {
-            const c = creds(), nonce = crypto.randomBytes(16).toString('hex');
-            return { Authorization: [
-                'c_key=' + encodeURIComponent(c.cid),
-                'c_secret=' + encodeURIComponent(md5(c.csec + nonce)),
-                'u_key=' + encodeURIComponent(c.tok),
-                'u_secret=' + encodeURIComponent(md5(c.usec + nonce)),
-                'nonce=' + encodeURIComponent(nonce),
-                'timestamp=' + Math.floor(Date.now() / 1000),
-            ].join(',') };
-        },
-    },
-    {
-        /* אותה כותרת, בלי הצפנה: יש חשבונות שבהם הסוד נשלח כמו שהוא */
-        name: 'classic-raw',
-        headers: () => {
-            const c = creds(), nonce = crypto.randomBytes(16).toString('hex');
-            return { Authorization: [
-                'c_key=' + encodeURIComponent(c.cid),
-                'c_secret=' + encodeURIComponent(c.csec),
-                'u_key=' + encodeURIComponent(c.tok),
-                'u_secret=' + encodeURIComponent(c.usec),
-                'nonce=' + encodeURIComponent(nonce),
-                'timestamp=' + Math.floor(Date.now() / 1000),
-            ].join(',') };
-        },
-    },
-    {
-        /* טוקן בסגנון OAuth, שמתאים לשמות שבמסך החדש */
-        name: 'bearer',
-        headers: () => ({ Authorization: 'Bearer ' + creds().tok }),
-    },
-    {
-        /* טוקן בתוספת זהות הלקוח */
-        name: 'bearer+client',
-        headers: () => {
-            const c = creds();
+            const c = creds(), n = crypto.randomBytes(16).toString('hex');
             return {
-                Authorization: 'Bearer ' + c.tok,
-                'client-id': c.cid,
-                'client-secret': c.csec,
+                Authorization: hdr([
+                    ['c_key', c.cid], ['c_secret', md5(c.csec + n)],
+                    ['nonce', n], ['timestamp', Math.floor(Date.now() / 1000)],
+                ]),
+                'X-User-Token': c.tok,
             };
-        },
-    },
-    {
-        /* טוקן חשוף בכותרת, בלי סכמה */
-        name: 'raw-token',
-        headers: () => ({ Authorization: creds().tok }),
-    },
-    {
-        /* בלי Authorization בכלל, הכל בכותרות ייעודיות */
-        name: 'x-headers',
-        headers: () => {
-            const c = creds();
-            return { 'X-Client-Id': c.cid, 'X-Client-Secret': c.csec, 'X-User-Token': c.tok };
         },
     },
 ];
@@ -173,11 +224,10 @@ module.exports = async (req, res) => {
         const missing = envMissing();
         if (missing.length) return res.status(500).json({ ok: false, missing: missing });
 
-        const tried = [];
-        for (const v of AUTH_VARIANTS) {
-            try { tried.push(await attempt(v, 'GET', 'lists')); }
-            catch (e) { tried.push({ variant: v.name, ok: false, error: e.message }); }
-        }
+        /* במקביל, כדי לא לחרוג מזמן הריצה של הפונקציה */
+        const tried = await Promise.all(AUTH_VARIANTS.map(v =>
+            attempt(v, 'GET', 'lists').catch(e => ({ variant: v.name, ok: false, error: e.message }))
+        ));
         const win = tried.find(t => t.ok);
         if (!win) {
             return res.status(502).json({
