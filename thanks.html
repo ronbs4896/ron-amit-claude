@@ -220,6 +220,17 @@ const CONFIG = {
     LEAD_WEBHOOK_URL: '/api/lead',  // אותה פונקציה כמו בדף המכירה. מעבירה רוכש לרשימת הרוכשים ברב מסר
 };
 
+/* ── מזהים משותפים לדפדפן ולשרת ──
+   event_id זהה בשני הצדדים, כדי שמטא תאחד את הרכישה ולא תספור אותה פעמיים.
+   _fbp ו-_fbc הם הקוקיז של הפיקסל. אם נמחקו, לוקחים את מה שנשמר עם הליד. */
+function rbsCookie(name) {
+    var m = document.cookie.match('(^|; )' + name + '=([^;]*)');
+    return m ? decodeURIComponent(m[2]) : '';
+}
+function rbsPurchaseId(lead) {
+    return 'purch_' + ((lead && lead.ts) ? lead.ts.replace(/[^0-9]/g, '') : Date.now());
+}
+
 /* ── Meta Pixel: אירוע רכישה ── */
 (function () {
     if (typeof fbq !== 'function') return;
@@ -237,7 +248,7 @@ const CONFIG = {
     }
     /* Purchase נורה פעם אחת לדפדפן, שרענון של דף התודה לא יכפיל רכישות */
     if (!localStorage.getItem('rbs_purchase_done')) {
-        var eid = 'purch_' + ((lead && lead.ts) ? lead.ts.replace(/[^0-9]/g, '') : Date.now());
+        var eid = rbsPurchaseId(lead);
         fbq('track', 'Purchase', {
             value: PRICE, currency: 'ILS',
             content_name: 'סוכני AI בוואטסאפ - קורס דיגיטלי',
@@ -261,6 +272,9 @@ const CONFIG = {
     try { attr = JSON.parse(localStorage.getItem('rbs_attr') || '{}') || {}; } catch (e) {}
     var payload = {
         stage: 'purchase', name: lead.name, phone: lead.phone, email: lead.email,
+        event_id: rbsPurchaseId(lead),
+        fbp: rbsCookie('_fbp') || lead.fbp || '',
+        fbc: rbsCookie('_fbc') || lead.fbc || '',
         value: 293.82, currency: 'ILS',
         ts: new Date().toISOString(), source: location.href
     };

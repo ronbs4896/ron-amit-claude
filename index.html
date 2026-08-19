@@ -2465,6 +2465,19 @@ var RBS_ATTR = (function () {
 /* ══ הרשמה: ולידציה אחת לשני הטפסים, זה שבכרטיס המחיר וזה שבפופ-אפ ══ */
 var RBS_LEAD = (function () {
     function clean(v) { return String(v || '').trim().replace(/\s+/g, ' '); }
+
+    /* מזהי מטא שמאפשרים לשרת לזהות את אותו גולש: _fbp נוצר על ידי הפיקסל,
+       _fbc נוצר מקליק על מודעה. אם הקוקי עוד לא נכתב, בונים אותו מה-fbclid */
+    function cookie(name) {
+        var m = document.cookie.match('(^|; )' + name + '=([^;]*)');
+        return m ? decodeURIComponent(m[2]) : '';
+    }
+    function fbc() {
+        var c = cookie('_fbc');
+        if (c) return c;
+        var id = RBS_ATTR.fbclid || new URLSearchParams(location.search).get('fbclid');
+        return id ? 'fb.1.' + Date.now() + '.' + id : '';
+    }
     function digits(v) { return String(v || '').replace(/[^0-9]/g, ''); }
 
     /* שם: שתי מילים לפחות, אותיות בלבד, עברית או אנגלית */
@@ -2564,8 +2577,10 @@ var RBS_LEAD = (function () {
     /* שליחה: שמירה, פיקסל, Webhook, ואז דף התשלום */
     function submit(data, btn, btnLabel) {
         if (btn) { btn.disabled = true; btn.textContent = 'עוברים לתשלום...'; }
+        var eventId = 'lead_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
         var lead = {
-            stage: 'lead', name: clean(data.name), phone: normPhone(data.phone),
+            stage: 'lead', event_id: eventId, fbp: cookie('_fbp'), fbc: fbc(),
+            name: clean(data.name), phone: normPhone(data.phone),
             email: clean(data.email).toLowerCase(), country: phoneInfo(data.phone).country || '',
             terms: true, ts: new Date().toISOString(), source: location.href
         };
@@ -2583,8 +2598,9 @@ var RBS_LEAD = (function () {
             });
             fbq('track', 'Lead', {
                 content_name: 'סוכני AI בוואטסאפ - קורס דיגיטלי',
+                content_ids: ['ai-agents-course'], content_type: 'product',
                 currency: 'ILS', value: 293.82
-            });
+            }, { eventID: eventId });
         }
         if (CONFIG.LEAD_WEBHOOK_URL) {
             try {

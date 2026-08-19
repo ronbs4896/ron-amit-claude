@@ -10,6 +10,7 @@
 
    משתני סביבה (Vercel → Settings → Environment Variables):
      MAKE_WEBHOOK_URL  ה-Webhook של תרחיש Make. יש ברירת מחדל בקוד.
+     META_CAPI_TOKEN   Access Token לשליחת אירועים למטא מהשרת (Conversions API)
      RAV_CLIENT_ID / RAV_CLIENT_SECRET / RAV_USER_TOKEN
                        שלושת הפרטים ממסך "מפתח כללי לחשבון" ברב מסר
                        (הגדרות → חיבורים חיצוניים API)
@@ -230,6 +231,88 @@ function isSelftest(req) {
     return /[?&]selftest=1(&|$)/.test(req.url || '');
 }
 
+
+/* ══════════ Meta Conversions API ══════════
+   הדפדפן כבר שולח Lead ו-Purchase, אבל חוסמי פרסומות, iOS והגבלות דפדפן
+   בולעים חלק מהם. כאן אותם אירועים נשלחים גם מהשרת, עם אותו event_id,
+   כך שמטא ממזגת אותם ולא סופרת פעמיים. הפרטים האישיים נשלחים מוצפנים
+   ב-SHA-256, כפי שמטא דורשת.
+
+   משתני סביבה:
+     META_CAPI_TOKEN        חובה. Access Token מ-Events Manager
+     META_PIXEL_ID          ברירת מחדל: הפיקסל שבדפים
+     META_TEST_EVENT_CODE   זמני, לבדיקה במסך Test Events */
+
+const META_PIXEL_ID = process.env.META_PIXEL_ID || '1410625827632523';
+const META_API = 'https://graph.facebook.com/v21.0/';
+
+function sha256(v) {
+    return crypto.createHash('sha256').update(String(v)).digest('hex');
+}
+
+/* מטא דורשת נרמול לפני ההצפנה: אותיות קטנות, בלי רווחים, טלפון עם קידומת מדינה */
+function hashed(v) {
+    v = String(v || '').trim().toLowerCase();
+    return v ? [sha256(v)] : undefined;
+}
+function hashedPhone(phone) {
+    let d = String(phone || '').replace(/[^0-9]/g, '');
+    if (!d) return undefined;
+    if (d.charAt(0) === '0') d = '972' + d.slice(1);          /* ישראלי מקומי */
+    else if (d.length === 10) d = '1' + d;                    /* אמריקאי בלי קידומת */
+    return [sha256(d)];
+}
+
+function clientIp(req) {
+    const fwd = req.headers['x-forwarded-for'];
+    return fwd ? String(fwd).split(',')[0].trim() : (req.headers['x-real-ip'] || '');
+}
+
+async function sendToMeta(req, b, stage) {
+    const token = process.env.META_CAPI_TOKEN;
+    if (!token) return { skipped: 'no token' };
+
+    const name = String(b.name || '').trim().split(/\s+/);
+    const purchase = stage === 'purchase';
+    const event = {
+        event_name: purchase ? 'Purchase' : 'Lead',
+        event_time: Math.floor(Date.now() / 1000),
+        event_id: b.event_id || undefined,
+        event_source_url: b.source || undefined,
+        action_source: 'website',
+        user_data: {
+            em: hashed(b.email),
+            ph: hashedPhone(b.phone),
+            fn: hashed(name[0]),
+            ln: name.length > 1 ? hashed(name.slice(1).join(' ')) : undefined,
+            country: hashed(b.country === 'US' ? 'us' : 'il'),
+            client_ip_address: clientIp(req) || undefined,
+            client_user_agent: req.headers['user-agent'] || undefined,
+            fbp: b.fbp || undefined,
+            fbc: b.fbc || undefined,
+        },
+        custom_data: {
+            currency: 'ILS',
+            value: purchase ? Number(b.value || 293.82) : 293.82,
+            content_name: 'סוכני AI בוואטסאפ - קורס דיגיטלי',
+            content_ids: ['ai-agents-course'],
+            content_type: 'product',
+        },
+    };
+
+    const payload = { data: [event] };
+    if (process.env.META_TEST_EVENT_CODE) payload.test_event_code = process.env.META_TEST_EVENT_CODE;
+
+    const r = await fetch(META_API + META_PIXEL_ID + '/events?access_token=' + encodeURIComponent(token), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+    });
+    const text = await r.text();
+    console.log('meta capi', event.event_name, r.status, text.slice(0, 200));
+    return { ok: r.ok, status: r.status };
+}
+
 module.exports = async (req, res) => {
     /* בדיקה עצמית: פותחים בדפדפן ‎/api/lead?selftest=1‎ (רק כש-RAV_SELFTEST=1).
        מריצה את כל וריאציות האימות מול רשימת הרשימות ומחזירה מה ענה רב מסר
@@ -310,6 +393,10 @@ module.exports = async (req, res) => {
             console.log('rav-messer error:', e.message, JSON.stringify(e.detail || {}).slice(0, 300));
         }
     }
+
+    /* 3. מטא, מהשרת. כישלון כאן לא מפיל את הליד */
+    try { await sendToMeta(req, b, stage); }
+    catch (e) { console.log('meta capi error:', e.message); }
 
     if (!delivered) console.log('lead not delivered:', email);
     return res.status(delivered ? 200 : 502).json({ ok: delivered });
