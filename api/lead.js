@@ -80,11 +80,28 @@ function envMissing() {
     return need.filter(k => !process.env[k]);
 }
 
+/* Vercel מפענח JSON לבד, אבל רק כשהגיעה כותרת Content-Type מתאימה.
+   כאן מקבלים גם גוף גולמי, שלא נאבד ליד בגלל כותרת חסרה. */
+function readBody(req) {
+    const b = req.body;
+    if (b && typeof b === 'object' && !Buffer.isBuffer(b)) return b;
+    const raw = Buffer.isBuffer(b) ? b.toString('utf8') : (typeof b === 'string' ? b : '');
+    if (!raw) return {};
+    try { return JSON.parse(raw); } catch (e) {}
+    try { return Object.fromEntries(new URLSearchParams(raw)); } catch (e) {}
+    return {};
+}
+
+function isSelftest(req) {
+    if (req.query && req.query.selftest === '1') return true;
+    return /[?&]selftest=1(&|$)/.test(req.url || '');
+}
+
 module.exports = async (req, res) => {
     /* בדיקה עצמית: פותחים בדפדפן ‎/api/lead?selftest=1‎ (רק כש-RAV_SELFTEST=1).
        מאמתת את החיבור ומחזירה את הרשימות בחשבון עם המזהים שלהן. */
     if (req.method === 'GET') {
-        if (process.env.RAV_SELFTEST !== '1' || !req.query || req.query.selftest !== '1') {
+        if (process.env.RAV_SELFTEST !== '1' || !isSelftest(req)) {
             return res.status(404).json({ ok: false });
         }
         const missing = envMissing();
@@ -105,7 +122,7 @@ module.exports = async (req, res) => {
 
     if (req.method !== 'POST') return res.status(405).json({ ok: false });
 
-    const b = req.body || {};
+    const b = readBody(req);
     const email = String(b.email || '').trim();
     const name = String(b.name || '').trim().slice(0, 120);
     const phone = String(b.phone || '').replace(/[^0-9]/g, '');

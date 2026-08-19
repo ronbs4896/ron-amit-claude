@@ -255,7 +255,7 @@ const CONFIG = {
     if (!lead || !lead.email) return;
     try {
         fetch(CONFIG.LEAD_WEBHOOK_URL, {
-            method: 'POST', mode: 'no-cors', keepalive: true,
+            method: 'POST', keepalive: true,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 stage: 'purchase', name: lead.name, phone: lead.phone, email: lead.email,

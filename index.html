@@ -2388,7 +2388,7 @@ const CONFIG = {
         if (CONFIG.LEAD_WEBHOOK_URL) {
             try {
                 fetch(CONFIG.LEAD_WEBHOOK_URL, {
-                    method: 'POST', mode: 'no-cors', keepalive: true,
+                    method: 'POST', keepalive: true,
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(lead)
                 }).catch(function () {});
