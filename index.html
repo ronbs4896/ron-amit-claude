@@ -1297,6 +1297,16 @@
         }
         .exit-card h2 { font-size: 24px; font-weight: 900; margin-bottom: 12px; }
         .exit-card p { font-size: 15px; color: var(--text-mid); margin-bottom: 24px; line-height: 1.8; }
+        /* הוויתור. מנוסח כך שקריאה שלו תעלה מחיר, ולכן הוא שקט ולא כפתור */
+        .exit-decline {
+            display: block; width: 100%; margin: 18px auto 0; padding: 10px 4px;
+            background: none; border: 0; cursor: pointer;
+            font-family: inherit; font-size: 13.5px; line-height: 1.7;
+            color: var(--text-dim); transition: color .15s;
+        }
+        .exit-decline b { color: #ff8f8f; font-weight: 900; white-space: nowrap; }
+        .exit-decline u { text-underline-offset: 3px; white-space: nowrap; }
+        .exit-decline:hover { color: var(--text-mid); }
 
         /* ====== STICKY MOBILE ====== */
         .sticky-cta {
@@ -2389,6 +2399,9 @@
         </p>
         <a href="#register" class="cta-btn" onclick="document.getElementById('exitOverlay').classList.remove('show')">אני רוצה את הסוכן שלי</a>
         <div class="cta-sub" style="margin-top:10px">גישה מיידית, והסוכן הראשון שלך עוד הערב</div>
+        <button type="button" class="exit-decline" onclick="document.getElementById('exitOverlay').classList.remove('show')">
+            אני מעדיף להפסיד <b>7,040₪</b> כל חודש במקום <u>ללמוד בעצמי</u>...
+        </button>
     </div>
 </div>
 
