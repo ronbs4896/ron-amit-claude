@@ -657,6 +657,7 @@
             color: #04140f; padding: 20px 48px;
             border-radius: 16px; font-size: 21px; font-weight: 900;
             text-decoration: none; border: none; cursor: pointer;
+            font-family: inherit;
             position: relative; overflow: hidden;
             transition: transform 0.3s, box-shadow 0.3s;
             box-shadow: var(--shadow-glow);
@@ -1309,13 +1310,12 @@
             font-family: 'Heebo', system-ui, sans-serif; letter-spacing: 0.2px;
         }
         @media (max-width: 560px) {
-            .li-row { flex-direction: column; gap: 0; }
             .lead-inline .ld-check { font-size: 12px; }
         }
 
         .lead-inline { max-width: 460px; margin: 0 auto; text-align: right; }
-        .li-row { display: flex; gap: 10px; }
-        .li-col { flex: 1; min-width: 0; }
+        .li-row { display: block; }
+        .li-col { min-width: 0; }
         .li-phone { display: flex; gap: 7px; }
         .li-phone select {
             flex-shrink: 0; width: 88px; padding: 12px 8px;
@@ -1327,6 +1327,8 @@
         .li-phone select option { background: var(--bg-deep); color: var(--text); }
         .li-phone input { flex: 1; min-width: 0; }
         .ld-field.good input { border-color: rgba(37, 211, 102, 0.5); background: rgba(37, 211, 102, 0.05); }
+        .ld-field.bad .li-phone select { border-color: rgba(239, 68, 68, 0.55); }
+        .ld-field.good .li-phone select { border-color: rgba(37, 211, 102, 0.5); }
         .ld-err a { color: var(--wa); cursor: pointer; text-decoration: underline; }
         .lead-inline .ld-submit { margin-top: 14px; }
         .lead-inline .ld-check { margin-top: 12px; font-size: 12.5px; }
