@@ -218,6 +218,7 @@ const CONFIG = {
     COURSE_URL: '#',            // קישור לאזור הקורס. חובה לפני עלייה לאוויר.
     WHATSAPP_GROUP_URL: '',     // קבוצת תלמידים. ריק = השורה מוסתרת
     LEAD_WEBHOOK_URL: '/api/lead',  // אותה פונקציה כמו בדף המכירה. מעבירה רוכש לרשימת הרוכשים ברב מסר
+    CHECKOUT_PROVIDER: 'morning',   // 'morning' או 'grow'. משנים ברגע שהסליקה עוברת ל-Grow
 };
 
 /* ── מזהים משותפים לדפדפן ולשרת ──
@@ -227,7 +228,20 @@ function rbsCookie(name) {
     var m = document.cookie.match('(^|; )' + name + '=([^;]*)');
     return m ? decodeURIComponent(m[2]) : '';
 }
+/* מספר העסקה, כפי ש-Grow מוסיף אותו לכתובת ההפניה אחרי תשלום */
+function rbsGrowCode() {
+    var q = new URLSearchParams(location.search), keys = ['transactionCode', 'transaction_code', 'transactionId', 'asmachta', 'code'];
+    for (var i = 0; i < keys.length; i++) { var v = q.get(keys[i]); if (v) return v; }
+    return '';
+}
+/* ב-Grow ה-Webhook של השרת הוא מקור האמת, והוא יורה Purchase לפי מספר
+   העסקה. הדפדפן מצטרף רק כשיש לו אותו מספר. בלעדיו הוא שותק, אחרת מטא
+   הייתה מקבלת שני אירועים עם מזהים שונים וסופרת שתי רכישות. */
 function rbsPurchaseId(lead) {
+    if (CONFIG.CHECKOUT_PROVIDER === 'grow') {
+        var code = rbsGrowCode();
+        return code ? 'grow_' + code : '';
+    }
     return 'purch_' + ((lead && lead.ts) ? lead.ts.replace(/[^0-9]/g, '') : Date.now());
 }
 
@@ -247,8 +261,8 @@ function rbsPurchaseId(lead) {
         });
     }
     /* Purchase נורה פעם אחת לדפדפן, שרענון של דף התודה לא יכפיל רכישות */
-    if (!localStorage.getItem('rbs_purchase_done')) {
-        var eid = rbsPurchaseId(lead);
+    var eid = rbsPurchaseId(lead);
+    if (eid && !localStorage.getItem('rbs_purchase_done')) {
         fbq('track', 'Purchase', {
             value: PRICE, currency: 'ILS',
             content_name: 'סוכני AI בוואטסאפ - קורס דיגיטלי',
@@ -263,6 +277,8 @@ function rbsPurchaseId(lead) {
    שולח פעם אחת לדפדפן, עם פרטי הליד שנשמרו בדף המכירה. */
 (function () {
     if (!CONFIG.LEAD_WEBHOOK_URL) return;
+    /* ב-Grow ה-Webhook כבר העביר את הרוכש לרשימת הרוכשים ושלח Purchase למטא */
+    if (CONFIG.CHECKOUT_PROVIDER === 'grow') return;
     if (localStorage.getItem('rbs_purchase_sent')) return;
     var lead = null;
     try { lead = JSON.parse(localStorage.getItem('rbs_lead') || 'null'); } catch (e) {}
