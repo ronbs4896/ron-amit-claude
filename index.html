@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>סוכן AI בוואטסאפ | עמית ליטמן</title>
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M34 8a22 22 0 1 1-19.8 31.6L8 57l17.8-5.8A22 22 0 0 1 34 8Z' fill='none' stroke='%2312d18e' stroke-width='5' stroke-linejoin='round'/%3E%3Crect x='22' y='23' width='25' height='5' rx='2.5' fill='%23fff'/%3E%3Crect x='22' y='32' width='19' height='5' rx='2.5' fill='%23fff'/%3E%3Crect x='22' y='41' width='16' height='5' rx='2.5' fill='%23fff'/%3E%3Ccircle cx='44' cy='43.5' r='3.4' fill='%2312d18e'/%3E%3C/svg%3E">
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="logo-mark.png">
     <meta name="description" content="קורס דיגיטלי לבניית סוכן AI שעונה ללקוחות שלך בוואטסאפ ובאינסטגרם 24 שעות ביממה, ב-3 שקלים ליום.">
 
@@ -1316,19 +1316,7 @@
         .lead-inline { max-width: 460px; margin: 0 auto; text-align: right; }
         .li-row { display: block; }
         .li-col { min-width: 0; }
-        .li-phone { display: flex; gap: 7px; }
-        .li-phone select {
-            flex-shrink: 0; width: 88px; padding: 12px 8px;
-            background: rgba(255, 255, 255, 0.05); color: var(--text);
-            border: 1px solid var(--glass-border); border-radius: 12px;
-            font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
-        }
-        .li-phone select:focus { outline: none; border-color: var(--wa); }
-        .li-phone select option { background: var(--bg-deep); color: var(--text); }
-        .li-phone input { flex: 1; min-width: 0; }
         .ld-field.good input { border-color: rgba(37, 211, 102, 0.5); background: rgba(37, 211, 102, 0.05); }
-        .ld-field.bad .li-phone select { border-color: rgba(239, 68, 68, 0.55); }
-        .ld-field.good .li-phone select { border-color: rgba(37, 211, 102, 0.5); }
         .ld-err a { color: var(--wa); cursor: pointer; text-decoration: underline; }
         .lead-inline .ld-submit { margin-top: 14px; }
         .lead-inline .ld-check { margin-top: 12px; font-size: 12.5px; }
@@ -2172,13 +2160,7 @@
                         </div>
                         <div class="ld-field li-col" id="lifPhone">
                             <label for="liPhone">טלפון נייד</label>
-                            <div class="li-phone">
-                                <select id="liCountry" aria-label="קידומת">
-                                    <option value="IL" selected>IL +972</option>
-                                    <option value="US">US +1</option>
-                                </select>
-                                <input id="liPhone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" placeholder="050-000-0000">
-                            </div>
+                            <input id="liPhone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" placeholder="050-000-0000">
                             <div class="ld-err"></div>
                         </div>
                     </div>
@@ -2358,13 +2340,7 @@
                 </div>
                 <div class="ld-field" id="ldfPhone">
                     <label for="ldPhone">טלפון נייד</label>
-                    <div class="li-phone">
-                        <select id="ldCountry" aria-label="קידומת">
-                            <option value="IL" selected>IL +972</option>
-                            <option value="US">US +1</option>
-                        </select>
-                        <input id="ldPhone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" placeholder="050-000-0000">
-                    </div>
+                    <input id="ldPhone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" placeholder="050-000-0000">
                     <div class="ld-err"></div>
                 </div>
                 <div class="ld-field" id="ldfEmail">
@@ -2465,23 +2441,38 @@ var RBS_LEAD = (function () {
         return '';
     }
 
-    /* טלפון: נייד ישראלי אמיתי, או מספר אמריקאי לפי כללי NANP */
-    function phoneError(v, country) {
-        var d = digits(v);
-        if (!d) return 'בלי טלפון אין איך לחזור אליך';
-        if (country === 'US') {
-            if (d.length === 11 && d.charAt(0) === '1') d = d.slice(1);
-            if (d.length !== 10) return 'מספר אמריקאי הוא 10 ספרות, כולל אזור חיוג';
-            if (!/^[2-9][0-9]{2}[2-9][0-9]{6}$/.test(d)) return 'המספר לא תקין. אזור חיוג ומספר מתחילים בספרה 2 עד 9';
-            return '';
-        }
+    /* טלפון: מזהים לבד אם זה ישראלי או אמריקאי, לפי מה שהוקלד.
+       ישראלי חייב להיות נייד עם קידומת שקיימת, אמריקאי לפי כללי NANP. */
+    function phoneInfo(v) {
+        var raw = String(v || '').trim();
+        var d = digits(raw);
+        var intl = raw.charAt(0) === '+';
+        if (!d) return { error: 'בלי טלפון אין איך לחזור אליך' };
+
+        /* ישראל: 972 בהתחלה, או מספר מקומי שמתחיל ב-0 */
+        var isIL = d.slice(0, 3) === '972' || (d.charAt(0) === '0' && d.slice(0, 4) !== '0001');
         if (d.slice(0, 3) === '972') d = '0' + d.slice(3);
-        if (d.charAt(0) !== '0') return 'מספר ישראלי מתחיל ב-0';
-        if (d.length !== 10) return 'מספר נייד ישראלי הוא 10 ספרות';
-        if (d.slice(0, 2) !== '05') return 'צריך מספר נייד, שמתחיל ב-05';
-        if (!/^05[0-58][0-9]{7}$/.test(d)) return 'אין קידומת כזאת בישראל. בדוק את הספרה השלישית';
-        return '';
+        if (isIL) {
+            if (d.length < 10) return { error: 'חסרות ספרות. מספר נייד ישראלי הוא 10 ספרות' };
+            if (d.length > 10) return { error: 'יותר מדי ספרות למספר ישראלי' };
+            if (d.slice(0, 2) !== '05') return { error: 'צריך מספר נייד, שמתחיל ב-05' };
+            if (!/^05[0-58][0-9]{7}$/.test(d)) return { error: 'אין קידומת כזאת בישראל. בדוק את הספרה השלישית' };
+            return { country: 'IL', value: d };
+        }
+
+        /* ארצות הברית וקנדה */
+        var us = d;
+        if (us.length === 11 && us.charAt(0) === '1') us = us.slice(1);
+        if (us.length === 10) {
+            if (!/^[2-9][0-9]{2}[2-9][0-9]{6}$/.test(us)) {
+                return { error: 'המספר לא תקין. אזור חיוג ומספר מתחילים בספרה 2 עד 9' };
+            }
+            return { country: 'US', value: '+1' + us };
+        }
+        if (intl || d.length > 11) return { error: 'המספר לא נראה תקין. אפשר ישראלי או אמריקאי' };
+        return { error: 'מספר נייד מלא, למשל 050-000-0000' };
     }
+    function phoneError(v) { return phoneInfo(v).error || ''; }
 
     /* מייל: מבנה תקין, ותיקון שגיאות הקלדה נפוצות */
     var TYPOS = {
@@ -2513,29 +2504,20 @@ var RBS_LEAD = (function () {
     }
 
     /* מה שנשלח הלאה: ישראלי בפורמט מקומי, אמריקאי עם קידומת בינלאומית */
-    function normPhone(v, country) {
-        var d = digits(v);
-        if (country === 'US') {
-            if (d.length === 11 && d.charAt(0) === '1') d = d.slice(1);
-            return '+1' + d;
-        }
-        if (d.slice(0, 3) === '972') d = '0' + d.slice(3);
-        return d;
-    }
-    function pixelPhone(v, country) {
-        var d = digits(v);
-        if (country === 'US') { return d.length === 11 && d.charAt(0) === '1' ? d : '1' + d; }
-        if (d.slice(0, 3) === '972') return d;
-        return '972' + d.replace(/^0/, '');
+    function normPhone(v) { return phoneInfo(v).value || digits(v); }
+    function pixelPhone(v) {
+        var info = phoneInfo(v);
+        if (info.country === 'US') return '1' + digits(info.value);
+        return '972' + digits(info.value).replace(/^0/, '');
     }
 
     /* שליחה: שמירה, פיקסל, Webhook, ואז דף התשלום */
     function submit(data, btn, btnLabel) {
         if (btn) { btn.disabled = true; btn.textContent = 'עוברים לתשלום...'; }
         var lead = {
-            stage: 'lead', name: clean(data.name), phone: normPhone(data.phone, data.country),
-            email: clean(data.email).toLowerCase(), country: data.country, terms: true,
-            ts: new Date().toISOString(), source: location.href
+            stage: 'lead', name: clean(data.name), phone: normPhone(data.phone),
+            email: clean(data.email).toLowerCase(), country: phoneInfo(data.phone).country || '',
+            terms: true, ts: new Date().toISOString(), source: location.href
         };
         Object.keys(RBS_ATTR).forEach(function (k) {
             if (lead[k] === undefined) lead[k] = RBS_ATTR[k];
@@ -2546,7 +2528,7 @@ var RBS_LEAD = (function () {
             var parts = lead.name.split(' ');
             fbq('init', '1410625827632523', {
                 em: lead.email,
-                ph: pixelPhone(data.phone, data.country),
+                ph: pixelPhone(data.phone),
                 fn: parts[0] || '', ln: parts.slice(1).join(' ') || ''
             });
             fbq('track', 'Lead', {
@@ -2567,8 +2549,8 @@ var RBS_LEAD = (function () {
     }
 
     return {
-        nameError: nameError, phoneError: phoneError, emailError: emailError,
-        emailSuggestion: emailSuggestion, submit: submit, clean: clean
+        nameError: nameError, phoneError: phoneError, phoneInfo: phoneInfo,
+        emailError: emailError, emailSuggestion: emailSuggestion, submit: submit, clean: clean
     };
 })();
 
@@ -2577,11 +2559,9 @@ function rbsWireForm(o) {
     var form = document.getElementById(o.form);
     if (!form) return;
     var byId = function (x) { return document.getElementById(x); };
-    var country = function () { return o.country && byId(o.country) ? byId(o.country).value : 'IL'; };
-
     var fields = [
         { wrap: o.nameWrap, input: o.name, check: function (v) { return RBS_LEAD.nameError(v); } },
-        { wrap: o.phoneWrap, input: o.phone, check: function (v) { return RBS_LEAD.phoneError(v, country()); } },
+        { wrap: o.phoneWrap, input: o.phone, check: function (v) { return RBS_LEAD.phoneError(v); } },
         { wrap: o.emailWrap, input: o.email, check: function (v) { return RBS_LEAD.emailError(v); } }
     ];
 
@@ -2619,13 +2599,6 @@ function rbsWireForm(o) {
         input.addEventListener('blur', function () { wrap.dataset.touched = '1'; show(f); });
         input.addEventListener('input', function () { show(f); });
     });
-    if (o.country && byId(o.country)) {
-        byId(o.country).addEventListener('change', function () {
-            var us = this.value === 'US';
-            byId(o.phone).placeholder = us ? '(555) 000-0000' : '050-000-0000';
-            show(fields[1]);
-        });
-    }
     /* לחיצה על ההצעה מתקנת את הכתובת */
     form.addEventListener('click', function (e) {
         var fix = e.target.closest('a[data-fix]');
@@ -2653,8 +2626,7 @@ function rbsWireForm(o) {
         }
         if (!ok) { if (firstBad) firstBad.focus(); return; }
         RBS_LEAD.submit({
-            name: byId(o.name).value, phone: byId(o.phone).value,
-            email: byId(o.email).value, country: country()
+            name: byId(o.name).value, phone: byId(o.phone).value, email: byId(o.email).value
         }, byId(o.submit));
     });
 }
@@ -2665,7 +2637,7 @@ function rbsWireForm(o) {
     /* הטופס שבכרטיס המחיר */
     rbsWireForm({
         form: 'inlineForm', name: 'liName', nameWrap: 'lifName',
-        phone: 'liPhone', phoneWrap: 'lifPhone', country: 'liCountry',
+        phone: 'liPhone', phoneWrap: 'lifPhone',
         email: 'liEmail', emailWrap: 'lifEmail',
         terms: 'liTerms', termsWrap: 'lifTerms', submit: 'liSubmit'
     });
@@ -2675,7 +2647,7 @@ function rbsWireForm(o) {
     if (!overlay) return;
     rbsWireForm({
         form: 'leadForm', name: 'ldName', nameWrap: 'ldfName',
-        phone: 'ldPhone', phoneWrap: 'ldfPhone', country: 'ldCountry',
+        phone: 'ldPhone', phoneWrap: 'ldfPhone',
         email: 'ldEmail', emailWrap: 'ldfEmail',
         terms: 'ldTerms', termsWrap: 'ldfTerms', submit: 'ldSubmit'
     });
