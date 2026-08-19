@@ -2421,7 +2421,7 @@
    ═══════════════════════════════════════════════════ */
 const CONFIG = {
     // קישור התשלום (Morning / Cardcom / Grow / Stripe וכו')
-    CHECKOUT_URL: 'https://mrng.to/vkS6uOJNQB',
+    CHECKOUT_URL: 'https://pay.grow.link/NzQzMTA~143716badbe4bab51e3061353cce2522-Mzg2NTQxOQ',
     LEAD_WEBHOOK_URL: '/api/lead',           // פונקציית Vercel → רב מסר (hotlist). ריק = רק מעבר לתשלום
 
     // מתי מחיר ההשקה נסגר (שעון ישראל)
@@ -2578,6 +2578,30 @@ var RBS_LEAD = (function () {
         });
     }
 
+    /* דף התשלום של Grow, עם מה שכבר מילאו כאן.
+       ‎pageField‎ ממלא מראש את הטופס שם, כדי שלא יקלידו הכל פעמיים.
+       ‎cField‎ הם שדות מותאמים ש-Grow מחזיר אלינו ב-Webhook אחרי התשלום,
+       ושם הם מזהים את הגולש מול מטא ואת מקור הקמפיין. */
+    function checkoutUrl(lead) {
+        var base = CONFIG.CHECKOUT_URL;
+        if (!base || base === '#') return base;
+        var q = [];
+        function add(k, v) {
+            if (v) q.push(encodeURIComponent(k) + '=' + encodeURIComponent(String(v).slice(0, 180)));
+        }
+        add('pageField[fullName]', lead.name);
+        add('pageField[phone]', lead.phone);
+        add('pageField[email]', lead.email);
+        add('cField1', lead.fbp);
+        add('cField2', lead.fbc);
+        add('cField3', [lead.utm_source, lead.utm_medium, lead.utm_campaign,
+                        lead.utm_content, lead.utm_term, lead.ref]
+                       .map(function (v) { return String(v || '').replace(/\|/g, ' '); })
+                       .join('|').replace(/\|+$/, ''));
+        if (!q.length) return base;
+        return base + (base.indexOf('?') === -1 ? '?' : '&') + q.join('&');
+    }
+
     /* שליחה: שמירה, פיקסל, Webhook, ואז דף התשלום */
     function submit(data, btn, btnLabel) {
         if (btn) { btn.disabled = true; btn.textContent = 'עוברים לתשלום...'; }
@@ -2615,7 +2639,7 @@ var RBS_LEAD = (function () {
                 }).catch(function () {});
             } catch (err) {}
         }
-        setTimeout(function () { location.href = CONFIG.CHECKOUT_URL; }, 400);
+        setTimeout(function () { location.href = checkoutUrl(lead); }, 400);
     }
 
     return {

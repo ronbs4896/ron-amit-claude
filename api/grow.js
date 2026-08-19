@@ -155,6 +155,11 @@ module.exports = async (req, res) => {
        וישפרו את ההתאמה. עד אז מטא מתאימה לפי המייל והטלפון המוצפנים. */
     const fbp = pick(b, 'fbp', 'cField1', 'custom1');
     const fbc = pick(b, 'fbc', 'cField2', 'custom2');
+    /* cField3 נשלח מדף המכירה כמחרוזת אחת מופרדת בקו אנכי, באותו סדר */
+    const utm = pick(b, 'cField3', 'custom3').split('|');
+    const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'ref'];
+    const attribution = {};
+    UTM_KEYS.forEach((k, i) => { if (utm[i]) attribution[k] = utm[i]; });
 
     let metaOk = false, ravOk = false;
 
@@ -173,13 +178,13 @@ module.exports = async (req, res) => {
 
     /* ── 4. רב מסר, דרך אותו תרחיש Make שכבר עובד ── */
     try {
-        ravOk = await sendToMake({
+        ravOk = await sendToMake(Object.assign({
             stage: 'purchase', name: name, phone: phone, email: email,
             value: value, currency: 'ILS',
             ts: new Date().toISOString(),
             source: 'grow-webhook',
             transaction: code, asmachta: pick(b, 'asmachta'),
-        });
+        }, attribution));
     } catch (e) { console.log('grow → make error:', e.message); }
 
     console.log('grow purchase', code, 'meta:', metaOk, 'rav:', ravOk);
