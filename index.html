@@ -3,19 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>סוכן AI בוואטסאפ | עמית ליטמן</title>
+    <title>הקורס המלא לבניית סוכני AI בוואטסאפ</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="logo-mark.png">
-    <meta name="description" content="קורס דיגיטלי לבניית סוכן AI שעונה ללקוחות שלך בוואטסאפ ובאינסטגרם 24 שעות ביממה, ב-3 שקלים ליום.">
+    <meta name="description" content="הקורס המלא לבניית סוכני AI בוואטסאפ: סוכן שעונה ללקוחות שלך 24 שעות ביממה, בוואטסאפ ובאינסטגרם, בשלושה שקלים ליום.">
 
     <!-- OG / שיתוף -->
-    <meta property="og:title" content="סוכן AI שעונה ללקוחות שלך 24/7 ב-3 ש״ח ליום">
-    <meta property="og:description" content="קורס דיגיטלי לבניית סוכן שירות בוואטסאפ ובאינסטגרם. 249 ש״ח + מע״מ במקום 997.">
+    <meta property="og:site_name" content="WhatsApp AI Agents">
+    <meta property="og:title" content="הקורס המלא לבניית סוכני AI בוואטסאפ">
+    <meta property="og:description" content="סוכן שעונה ללקוחות שלך 24/7 בוואטסאפ ובאינסטגרם, בשלושה שקלים ליום. 249 ש״ח + מע״מ במקום 997.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ron-amit-claude.vercel.app/">
-    <meta property="og:image" content="https://ron-amit-claude.vercel.app/amit.jpg">
+    <meta property="og:image" content="https://ron-amit-claude.vercel.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="WhatsApp AI Agents - הקורס המלא לבניית סוכני AI בוואטסאפ">
     <link rel="canonical" href="https://ron-amit-claude.vercel.app/">
     <meta property="og:locale" content="he_IL">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="הקורס המלא לבניית סוכני AI בוואטסאפ">
+    <meta name="twitter:description" content="סוכן שעונה ללקוחות שלך 24/7 בוואטסאפ ובאינסטגרם, בשלושה שקלים ליום.">
+    <meta name="twitter:image" content="https://ron-amit-claude.vercel.app/og-image.png">
 
 
     <!-- Meta Pixel Code -->
@@ -221,9 +229,17 @@
             background: rgba(239, 68, 68, 0.15); color: #ff9b9b;
             border-color: rgba(239, 68, 68, 0.28);
         }
-        .badge-success, .hero-badge, .about-tag, .wa-agent-tag {
+        .badge-success, .hero-badge, .wa-agent-tag {
             background: rgba(37, 211, 102, 0.14); color: #34e07a;
             border-color: rgba(37, 211, 102, 0.28);
+        }
+        .about-tag {
+            background: rgba(255, 255, 255, 0.035); color: var(--text-mid);
+            border-color: rgba(255, 255, 255, 0.10); font-weight: 600;
+        }
+        .about-tag::before {
+            content: ''; width: 5px; height: 5px; border-radius: 50%;
+            background: var(--wa); flex-shrink: 0;
         }
         .badge-warning {
             background: rgba(245, 158, 11, 0.15); color: #fbbf24;
@@ -878,28 +894,40 @@
         .notfor-card .nf-x { color: var(--red); flex-shrink: 0; margin-top: 5px; display: inline-flex; }
         .notfor-card .nf-x .ico { width: 13px; height: 13px; }
 
+        /* הביוגרפיה צריכה שתי עמודות אמיתיות, לכן הרצועה הזאת רחבה מהשאר */
+        @media (min-width: 900px) { .container-wide { max-width: 980px; } }
+
         /* ====== ABOUT ====== */
-        .about-card { padding: 48px 36px; display: flex; gap: 36px; align-items: flex-start; }
+        .about-card {
+            padding: 46px 46px; text-align: right;
+            display: grid; grid-template-columns: minmax(0, 1fr) 288px; gap: 48px; align-items: start;
+        }
+        .about-side { order: 2; }
+        .about-content { order: 1; }
         .about-avatar {
-            width: 280px; border-radius: 20px;
-            flex-shrink: 0; overflow: hidden;
-            border: 2px solid var(--glass-border);
-            aspect-ratio: 1/1;
-            position: relative;
+            width: 100%; border-radius: 18px;
+            overflow: hidden; aspect-ratio: 1/1; position: relative;
+            border: 1px solid var(--glass-border);
             background: var(--bg-card);
             display: flex; align-items: center; justify-content: center;
             color: var(--text-dim); font-size: 13px; text-align: center; padding: 12px;
         }
         .about-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
-        .about-content { padding-top: 8px; }
-        .about-content h2 { font-size: 26px; font-weight: 900; margin-bottom: 16px; }
-        .about-content p { font-size: 15px; color: var(--text-mid); line-height: 2; }
-        .about-content p + p { margin-top: 12px; }
-        .about-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+        .about-id { margin-top: 18px; }
+        .ai-name { font-size: 19px; font-weight: 900; color: var(--text); line-height: 1.3; }
+        .ai-role { font-size: 13.5px; color: var(--text-dim); margin-top: 3px; }
+        .about-content h2 { font-size: 27px; font-weight: 900; margin-bottom: 18px; letter-spacing: -0.4px; }
+        .about-content p { font-size: 15px; color: var(--text-mid); line-height: 1.95; }
+        .about-content p + p { margin-top: 14px; }
+        .about-lead { font-size: 16.5px; color: var(--text); }
+        .about-tags {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-top: 26px;
+            padding-top: 20px; border-top: 1px solid var(--line-soft);
+        }
         .about-ig {
-            display: inline-flex; align-items: center; gap: 8px; margin-top: 18px;
-            font-size: 14px; font-weight: 700; color: var(--text-mid); text-decoration: none;
-            border: 1px solid var(--glass-border); border-radius: 50px; padding: 8px 18px;
+            display: inline-flex; align-items: center; gap: 8px; margin-top: 14px;
+            font-size: 13.5px; font-weight: 700; color: var(--text-mid); text-decoration: none;
+            border: 1px solid var(--glass-border); border-radius: 50px; padding: 7px 16px;
             transition: color 0.3s, border-color 0.3s;
         }
         .about-ig:hover { color: var(--text); border-color: rgba(37,211,102,0.35); }
@@ -1229,6 +1257,8 @@
         }
         .sticky-cta .cta-btn { padding: 11px 20px; font-size: 15px; width: 100%; border-radius: 12px; box-shadow: none; }
 
+        .f-logo { width: 190px; height: auto; display: block; margin: 0 auto 20px; opacity: 0.9; }
+        .tk-mark { width: 26px; height: 26px; vertical-align: -6px; margin-left: 9px; }
         .footer {
             text-align: center; padding: 34px 24px 40px; font-size: 13px; color: var(--text-dim);
             border-top: 1px solid var(--line);
@@ -1332,7 +1362,9 @@
 
         /* ====== RESPONSIVE ====== */
         @media (max-width: 768px) {
-            .about-card { flex-direction: column; align-items: center; text-align: center; padding: 36px 24px; }
+            .about-card { grid-template-columns: 1fr; gap: 26px; text-align: center; padding: 32px 22px; }
+            .about-side { order: 1; max-width: 240px; margin: 0 auto; }
+            .about-content { order: 2; }
             .about-avatar { width: 180px; min-height: 300px; }
             .about-content h2 { text-align: center; }
             .about-tags { justify-content: center; }
@@ -2011,21 +2043,28 @@
 
 <!-- ABOUT AMIT -->
 <section class="section band-alt">
-    <div class="container">
+    <div class="container container-wide">
         <div class="about-card glass reveal">
-            <!-- החלף בתמונה: <img src="amit.jpg" alt="עמית ליטמן"> -->
-            <div class="about-avatar">
-                תמונה של עמית (1:1)
-                <img src="amit.jpg" alt="עמית ליטמן" style="position:absolute;inset:0" onerror="this.remove()">
+            <div class="about-side">
+                <div class="about-avatar">
+                    תמונה של עמית (1:1)
+                    <img src="amit.jpg" alt="עמית ליטמן" style="position:absolute;inset:0" onerror="this.remove()">
+                </div>
+                <div class="about-id">
+                    <div class="ai-name">עמית ליטמן</div>
+                    <div class="ai-role">בונה סוכני AI לעסקים בישראל</div>
+                    <a href="https://www.instagram.com/amit.litman/" target="_blank" rel="noopener" class="about-ig">
+                        <svg class="ico ico-sm" aria-hidden="true"><use href="#i-instagram"/></svg> <span dir="ltr">@amit.litman</span>
+                    </a>
+                </div>
             </div>
             <div class="about-content">
                 <h2>מי מעביר את הקורס</h2>
-                <p>
-                    קוראים לי <strong>עמית ליטמן</strong>, ואני בונה סוכני AI לעסקים בישראל,
-                    כאלה שמנהלים שירות לקוחות שלם בוואטסאפ ובאינסטגרם בלי בן אדם מאחורי המקלדת.
+                <p class="about-lead">
+                    אני בונה סוכני AI לעסקים בישראל, כאלה שמנהלים שירות לקוחות שלם
+                    בוואטסאפ ובאינסטגרם בלי בן אדם מאחורי המקלדת.
                 </p>
                 <p>
-                    <!-- ערוך: כמה סוכנים בנית, לאילו עסקים, כמה הודעות הם מטפלים בחודש, כמה זה חסך ללקוחות -->
                     בניתי סוכנים לעסקים בתחומים שונים, מקליניקות ועד חנויות אונליין,
                     וראיתי את אותו דבר קורה בכל אחד מהם: מה שהיה תיק שלם של עובד
                     הפך למערכת שעולה <span class="marker-wa">שלושה שקלים ביום</span>.
@@ -2040,9 +2079,6 @@
                     <span class="about-tag">וואטסאפ ואינסטגרם</span>
                     <span class="about-tag">אוטומציות</span>
                 </div>
-                <a href="https://www.instagram.com/amit.litman/" target="_blank" rel="noopener" class="about-ig">
-                    <svg class="ico ico-sm" aria-hidden="true"><use href="#i-instagram"/></svg> <span dir="ltr">@amit.litman</span>
-                </a>
             </div>
         </div>
     </div>
@@ -2327,6 +2363,7 @@
 <div class="tk-overlay" id="leadOverlay" onclick="if(event.target===this)this.classList.remove('show')">
     <div class="tk-card" role="dialog" aria-modal="true" aria-label="הרשמה" style="max-width:430px">
         <div class="tk-head">
+            <img src="logo-mark.png" alt="" class="tk-mark" onerror="this.remove()">
             עוד צעד אחד ואתה בפנים
             <button class="tk-close" onclick="document.getElementById('leadOverlay').classList.remove('show')" aria-label="סגירה"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
         </div>
@@ -2362,6 +2399,7 @@
 
 <!-- FOOTER -->
 <div class="footer">
+    <img src="logo.png" alt="WhatsApp AI Agents" class="f-logo" onerror="this.remove()">
     <div class="f-links">
         <a onclick="document.getElementById('tkOverlay').classList.add('show')">תקנון ומדיניות ביטול</a>
         <a href="https://www.instagram.com/amit.litman/" target="_blank" rel="noopener">אינסטגרם</a>
