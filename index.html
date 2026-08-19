@@ -2549,6 +2549,18 @@ var RBS_LEAD = (function () {
         return '972' + digits(info.value).replace(/^0/, '');
     }
 
+    /* כוונת רכישה: נורה פעם אחת, ברגע שנוגעים בטופס או נפתח הפופ-אפ */
+    var intentFired = false;
+    function intent() {
+        if (intentFired || typeof fbq !== 'function') return;
+        intentFired = true;
+        fbq('track', 'InitiateCheckout', {
+            content_name: 'סוכני AI בוואטסאפ - קורס דיגיטלי',
+            content_ids: ['ai-agents-course'], content_type: 'product',
+            currency: 'ILS', value: 293.82
+        });
+    }
+
     /* שליחה: שמירה, פיקסל, Webhook, ואז דף התשלום */
     function submit(data, btn, btnLabel) {
         if (btn) { btn.disabled = true; btn.textContent = 'עוברים לתשלום...'; }
@@ -2588,7 +2600,8 @@ var RBS_LEAD = (function () {
 
     return {
         nameError: nameError, phoneError: phoneError, phoneInfo: phoneInfo,
-        emailError: emailError, emailSuggestion: emailSuggestion, submit: submit, clean: clean
+        emailError: emailError, emailSuggestion: emailSuggestion,
+        submit: submit, intent: intent, clean: clean
     };
 })();
 
@@ -2634,6 +2647,7 @@ function rbsWireForm(o) {
     fields.forEach(function (f) {
         var wrap = byId(f.wrap), input = byId(f.input);
         if (!wrap || !input) return;
+        input.addEventListener('focus', function () { RBS_LEAD.intent(); });
         input.addEventListener('blur', function () { wrap.dataset.touched = '1'; show(f); });
         input.addEventListener('input', function () { show(f); });
     });
@@ -2695,13 +2709,7 @@ function rbsWireForm(o) {
         if (exit) exit.classList.remove('show');
         overlay.classList.add('show');
         setTimeout(function () { document.getElementById('ldName').focus(); }, 180);
-        if (typeof fbq === 'function') {
-            fbq('track', 'InitiateCheckout', {
-                content_name: 'סוכני AI בוואטסאפ - קורס דיגיטלי',
-                content_ids: ['ai-agents-course'], content_type: 'product',
-                currency: 'ILS', value: 293.82
-            });
-        }
+        RBS_LEAD.intent();
     }
 
     /* כפתור שמצביע על סקשן ההרשמה גולל לטופס במקום לפתוח פופ-אפ */
