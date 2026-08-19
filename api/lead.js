@@ -4,7 +4,12 @@
      stage:"lead"     → נרשם לרשימת ה-hotlist
      stage:"purchase" → נרשם לרשימת הרוכשים ונמחק מה-hotlist
 
+   מסלול המסירה: קודם ה-Webhook של Make, שכבר מחזיק מפתח לקוח מאושר מול
+   רב מסר ולכן צריך רק את המפתח והסוד של החשבון. אם הוא לא זמין, מנסים את
+   ה-API של רב מסר ישירות (דורש consumer key משלנו, שטרם קיבלנו).
+
    משתני סביבה (Vercel → Settings → Environment Variables):
+     MAKE_WEBHOOK_URL  ה-Webhook של תרחיש Make. יש ברירת מחדל בקוד.
      RAV_CLIENT_ID / RAV_CLIENT_SECRET / RAV_USER_TOKEN
                        שלושת הפרטים ממסך "מפתח כללי לחשבון" ברב מסר
                        (הגדרות → חיבורים חיצוניים API)
@@ -184,6 +189,25 @@ async function rav(method, path, form) {
     throw err;
 }
 
+/* ── מסירה דרך Make ──
+   התרחיש "קורס סוכני AI — לידים ורוכשים לרב מסר" מקבל את אותו JSON ומנתב
+   ליד ל-hotlist ורכישה לרשימת הרוכשים. Make רשום אצל רב מסר כאפליקציה
+   מאושרת, ולכן החיבור שם דורש רק את מפתח וסוד החשבון. */
+const MAKE_WEBHOOK_URL = process.env.MAKE_WEBHOOK_URL ||
+    'https://hook.eu2.make.com/vi7378f9adzlztb6qb94bwclumg2oach';
+
+async function sendToMake(payload) {
+    if (!MAKE_WEBHOOK_URL) return false;
+    const r = await fetch(MAKE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+    });
+    const text = await r.text();
+    console.log('make', r.status, (text || '').slice(0, 120));
+    return r.ok;
+}
+
 function envMissing() {
     const need = ['RAV_CLIENT_ID', 'RAV_CLIENT_SECRET', 'RAV_USER_TOKEN'];
     return need.filter(k => !process.env[k]);
@@ -252,26 +276,36 @@ module.exports = async (req, res) => {
         return res.status(400).json({ ok: false, error: 'bad email' });
     }
 
+    const payload = {
+        stage: stage, name: name, phone: phone, email: email,
+        value: b.value, currency: b.currency,
+        ts: b.ts || new Date().toISOString(), source: b.source || '',
+    };
+
+    /* 1. Make. זה המסלול שעובד היום, כי מפתח הלקוח שלו מאושר אצל רב מסר */
+    let delivered = false;
+    try { delivered = await sendToMake(payload); }
+    catch (e) { console.log('make error:', e.message); }
+
+    /* 2. גיבוי: ה-API של רב מסר ישירות, כשיהיה לנו מפתח לקוח משלנו */
     const HOT = process.env.RAV_LIST_HOTLIST, BUY = process.env.RAV_LIST_BUYERS;
-    if (envMissing().length || !HOT || !BUY) {
-        console.log('rav-messer env vars missing');
-        return res.status(500).json({ ok: false, error: 'env missing' });
-    }
-
-    /* PHONE_IGNORE: שלא נאבד ליד בגלל טלפון שרב מסר לא מקבל */
-    const sub = { NAME: name, EMAIL: email, PHONE: phone, PHONE_IGNORE: true, NOTIFY: 2 };
-
-    try {
-        if (stage === 'purchase') {
-            await rav('POST', 'lists/' + BUY + '/subscribers', { subscribers: JSON.stringify([sub]) });
-            /* רוכש יוצא מה-hotlist כדי שלא ימשיך לקבל מיילים של "בוא תקנה" */
-            await rav('DELETE', 'lists/' + HOT + '/subscribers', { subscribers: JSON.stringify([{ EMAIL: email }]) });
-        } else {
-            await rav('POST', 'lists/' + HOT + '/subscribers', { subscribers: JSON.stringify([sub]) });
+    if (!delivered && !envMissing().length && HOT && BUY) {
+        /* PHONE_IGNORE: שלא נאבד ליד בגלל טלפון שרב מסר לא מקבל */
+        const sub = { NAME: name, EMAIL: email, PHONE: phone, PHONE_IGNORE: true, NOTIFY: 2 };
+        try {
+            if (stage === 'purchase') {
+                await rav('POST', 'lists/' + BUY + '/subscribers', { subscribers: JSON.stringify([sub]) });
+                /* רוכש יוצא מה-hotlist כדי שלא ימשיך לקבל מיילים של "בוא תקנה" */
+                await rav('DELETE', 'lists/' + HOT + '/subscribers', { subscribers: JSON.stringify([{ EMAIL: email }]) });
+            } else {
+                await rav('POST', 'lists/' + HOT + '/subscribers', { subscribers: JSON.stringify([sub]) });
+            }
+            delivered = true;
+        } catch (e) {
+            console.log('rav-messer error:', e.message, JSON.stringify(e.detail || {}).slice(0, 300));
         }
-        return res.status(200).json({ ok: true });
-    } catch (e) {
-        console.log('rav-messer error:', e.message, JSON.stringify(e.detail || {}).slice(0, 300));
-        return res.status(502).json({ ok: false });
     }
+
+    if (!delivered) console.log('lead not delivered:', email);
+    return res.status(delivered ? 200 : 502).json({ ok: delivered });
 };
