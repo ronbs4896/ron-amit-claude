@@ -253,15 +253,22 @@ const CONFIG = {
     var lead = null;
     try { lead = JSON.parse(localStorage.getItem('rbs_lead') || 'null'); } catch (e) {}
     if (!lead || !lead.email) return;
+    /* אותו מקור שנשמר בדף המכירה, כדי לדעת איזה קמפיין הביא רכישה ולא רק ליד */
+    var attr = {};
+    try { attr = JSON.parse(localStorage.getItem('rbs_attr') || '{}') || {}; } catch (e) {}
+    var payload = {
+        stage: 'purchase', name: lead.name, phone: lead.phone, email: lead.email,
+        value: 293.82, currency: 'ILS',
+        ts: new Date().toISOString(), source: location.href
+    };
+    Object.keys(attr).forEach(function (k) {
+        if (payload[k] === undefined) payload[k] = attr[k];
+    });
     try {
         fetch(CONFIG.LEAD_WEBHOOK_URL, {
             method: 'POST', keepalive: true,
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                stage: 'purchase', name: lead.name, phone: lead.phone, email: lead.email,
-                value: 293.82, currency: 'ILS',
-                ts: new Date().toISOString(), source: location.href
-            })
+            body: JSON.stringify(payload)
         }).catch(function () {});
         localStorage.setItem('rbs_purchase_sent', String(Date.now()));
     } catch (e) {}

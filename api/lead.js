@@ -281,6 +281,11 @@ module.exports = async (req, res) => {
         value: b.value, currency: b.currency,
         ts: b.ts || new Date().toISOString(), source: b.source || '',
     };
+    /* מקור הליד. נשלח כמחרוזות קצרות, כדי שיישב בשדות המותאמים של רב מסר */
+    for (const k of ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
+                     'ref', 'fbclid', 'gclid', 'ttclid', 'landing_page', 'referrer', 'first_seen']) {
+        payload[k] = b[k] ? String(b[k]).slice(0, 200) : '';
+    }
 
     /* 1. Make. זה המסלול שעובד היום, כי מפתח הלקוח שלו מאושר אצל רב מסר */
     let delivered = false;

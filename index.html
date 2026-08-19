@@ -2323,6 +2323,34 @@ const CONFIG = {
     SHOW_LIVE_SOCIAL: true,
 };
 
+/* ══ מקור הליד: UTM, ref וכל מה שאפשר לעקוב אחריו ══
+   נשמר בביקור הראשון ולא נדרס אחר כך (first touch), כדי שהמקור שהביא את
+   הגולש יישאר גם אם הוא חזר אחר כך ישירות. נוסע עם הליד ועם הרכישה. */
+var RBS_ATTR = (function () {
+    var KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term',
+                'ref', 'fbclid', 'gclid', 'ttclid'];
+    var stored = null;
+    try { stored = JSON.parse(localStorage.getItem('rbs_attr') || 'null'); } catch (e) {}
+
+    var q = new URLSearchParams(location.search);
+    var fresh = {}, hasAny = false;
+    KEYS.forEach(function (k) {
+        var v = q.get(k);
+        if (v) { fresh[k] = String(v).slice(0, 120); hasAny = true; }
+    });
+
+    /* כותבים רק בביקור הראשון, או כשהגיע גולש עם סימון מקור חדש */
+    if (!stored || hasAny) {
+        fresh.landing_page = location.pathname + location.search;
+        fresh.referrer = document.referrer ? document.referrer.slice(0, 200) : '';
+        fresh.first_seen = new Date().toISOString();
+        stored = fresh;
+        try { localStorage.setItem('rbs_attr', JSON.stringify(stored)); } catch (e) {}
+    }
+    return stored || {};
+})();
+
+
 /* ====== החלת קישור התשלום על כל הכפתורים ====== */
 (function () {
     /* ── פופ-אפ הרשמה: כל כפתורי ה-CTA פותחים אותו, ורק טופס תקין ממשיך לסליקה ── */
@@ -2371,6 +2399,10 @@ const CONFIG = {
 
         var lead = { stage: 'lead', name: name, phone: phone, email: email, terms: true,
                      ts: new Date().toISOString(), source: location.href };
+        /* מצרפים את מקור הליד, בלי לדרוס שדה קיים */
+        Object.keys(RBS_ATTR).forEach(function (k) {
+            if (lead[k] === undefined) lead[k] = RBS_ATTR[k];
+        });
         try { localStorage.setItem('rbs_lead', JSON.stringify(lead)); } catch (err) {}
         if (typeof fbq === 'function') {
             /* Advanced Matching: מייל, טלפון בפורמט בינלאומי, שם פרטי ומשפחה */
