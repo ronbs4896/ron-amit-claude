@@ -1091,6 +1091,57 @@
         .logo-placeholder.has-logo img { display: block; }
         .logo-placeholder.has-logo span { display: none; }
 
+
+        /* ====== CLIENT LOGOS MARQUEE ====== */
+        .clients-section { padding: 62px 0 58px; position: relative; z-index: 1; overflow: hidden; }
+        /* זוהר ירוק רך מאחורי הרצועה, כדי שהצ'יפים הלבנים יישבו על המותג
+           ולא ייראו כמו מלבנים שהודבקו על רקע כהה */
+        .clients-section::before {
+            content: ''; position: absolute; inset: auto 0 -40% 0; height: 88%;
+            background: radial-gradient(60% 100% at 50% 100%, rgba(37, 211, 102, .14), transparent 70%);
+            pointer-events: none;
+        }
+        .clients-head { text-align: center; margin-bottom: 32px; }
+        .clients-eyebrow {
+            display: inline-block; font-size: 12.5px; font-weight: 900; letter-spacing: .08em;
+            color: var(--wa); margin-bottom: 12px;
+        }
+        .clients-head h2 { font-size: clamp(22px, 5.2vw, 32px); font-weight: 900; line-height: 1.35; }
+        .clients-head p { margin-top: 12px; color: var(--text-mid); font-size: 16px; }
+
+        /* מקצה לקצה: יוצא מהקונטיינר, כדי שהרצועה תיגע בשתי הפאות במובייל */
+        .clients-wrap {
+            overflow: hidden;
+            mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+        }
+        .clients-track {
+            display: flex; align-items: center; gap: 14px;
+            width: max-content;
+            animation: clients-scroll 42s linear infinite;
+        }
+        @keyframes clients-scroll { 0% { transform: translateX(50%); } 100% { transform: translateX(0); } }
+        .clients-wrap:hover .clients-track { animation-play-state: paused; }
+        @media (prefers-reduced-motion: reduce) { .clients-track { animation: none; } }
+
+        /* צ'יפ לבן: כל מותג נשאר בצבעים שלו, וקריא גם כשהכיתוב כהה */
+        .client-chip {
+            flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+            height: 82px; min-width: 150px; padding: 0 24px;
+            background: #fff; border-radius: 16px;
+            box-shadow: 0 2px 14px rgba(0, 0, 0, .28), 0 0 0 1px rgba(37, 211, 102, .18);
+        }
+        .client-chip img { max-height: 46px; max-width: 132px; width: auto; height: auto; object-fit: contain; display: block; }
+        /* לוגו לבן נבלע על רקע לבן, ולכן הוא מקבל צ'יפ כהה */
+        .client-chip.is-light { background: var(--bg-deep); border: 1px solid var(--line); box-shadow: none; }
+
+        @media (max-width: 720px) {
+            .clients-section { padding: 46px 0 44px; }
+            .clients-track { gap: 10px; animation-duration: 32s; }
+            .client-chip { height: 66px; min-width: 118px; padding: 0 16px; border-radius: 13px; }
+            .client-chip img { max-height: 36px; max-width: 104px; }
+        }
+
         /* ====== WHATSAPP DEMO SLIDER ====== */
         .wa-slider-section { padding: 70px 0; position: relative; z-index: 1; }
         .wa-slider-wrap { overflow: hidden; position: relative; padding: 20px 0; }
@@ -2044,6 +2095,20 @@
     </div>
 </section>
 
+<!-- CLIENT LOGOS -->
+<section class="clients-section band" id="clientsSection" style="display:none">
+    <div class="container">
+        <div class="clients-head">
+            <span class="clients-eyebrow">כבר בנינו להם סוכנים</span>
+            <h2>לקוחות שמשלמים עשרות אלפי שקלים על מה שאתה עומד לבנות לבד</h2>
+            <p>אותה מערכת בדיוק, אותם כלים, אותה שיטה. ההבדל היחיד הוא מי לוחץ על הכפתורים.</p>
+        </div>
+    </div>
+    <div class="clients-wrap">
+        <div class="clients-track" id="clientsTrack"></div>
+    </div>
+</section>
+
 <!-- ABOUT AMIT -->
 <section class="section band-alt">
     <div class="container container-wide">
@@ -2464,6 +2529,48 @@ var RBS_ATTR = (function () {
     return stored || {};
 })();
 
+
+
+/* ====== לוגואים של לקוחות ======
+   להוסיף לקוח = שורה אחת כאן, והקובץ ב-logos/clients/.
+   light: true ללוגו שהכיתוב שלו לבן, כדי שיקבל צ'יפ כהה ולא ייבלע.
+   קובץ שלא נטען מוריד את עצמו, והרצועה כולה מוסתרת אם נשארו פחות משלושה. */
+(function () {
+    var CLIENTS = [
+        { file: 'histadrut.png',      name: 'ההסתדרות הלאומית' },
+        { file: 'zeek.jpg',           name: 'Zeek' },
+        { file: 'arian-lev.webp',     name: 'אריאן לב' },
+        { file: 'michael-shalva.jpeg', name: 'מיכאל שלווה' },
+        { file: 'kroizer.svg',        name: 'קרויזר דיגיטל' },
+        { file: 'cyberoot.png',       name: 'Cyberoot' },
+        { file: 'ice-diamonds.jpg',   name: 'Ice Diamonds' },
+        { file: 'sandwich-bar.png',   name: 'Sandwich Bar', light: true }
+    ];
+
+    var track = document.getElementById('clientsTrack');
+    var section = document.getElementById('clientsSection');
+    if (!track || !section) return;
+
+    var alive = 0;
+    function chip(c) {
+        var d = document.createElement('div');
+        d.className = 'client-chip' + (c.light ? ' is-light' : '');
+        var img = document.createElement('img');
+        img.src = 'logos/clients/' + c.file;
+        img.alt = c.name;
+        /* בלי loading=lazy: הסקשן מתחיל מוסתר, ותמונה עצלה בתוך אלמנט מוסתר
+           לא נטענת לעולם, כך שהוא לא היה נחשף אף פעם */
+        img.onerror = function () { d.remove(); };
+        img.onload = function () {
+            if (++alive >= 3) section.style.display = '';
+        };
+        d.appendChild(img);
+        return d;
+    }
+
+    /* פעמיים את אותה רשימה: זה מה שמאפשר ללולאה להיסגר בלי קפיצה */
+    CLIENTS.concat(CLIENTS).forEach(function (c) { track.appendChild(chip(c)); });
+})();
 
 /* ====== החלת קישור התשלום על כל הכפתורים ====== */
 /* ══ הרשמה: ולידציה אחת לשני הטפסים, זה שבכרטיס המחיר וזה שבפופ-אפ ══ */
