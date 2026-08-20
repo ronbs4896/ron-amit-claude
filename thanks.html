@@ -215,7 +215,6 @@
 <script>
 /* ═════════ הגדרות, ערוך כאן ═════════ */
 const CONFIG = {
-    COURSE_URL: '#',            // קישור לאזור הקורס. חובה לפני עלייה לאוויר.
     WHATSAPP_GROUP_URL: '',     // קבוצת תלמידים. ריק = השורה מוסתרת
     LEAD_WEBHOOK_URL: '/api/lead',  // אותה פונקציה כמו בדף המכירה. מעבירה רוכש לרשימת הרוכשים ברב מסר
 };
@@ -317,8 +316,6 @@ rbsReportPurchase();
 
 /* ── קונפיג ── */
 var $id = function (x) { return document.getElementById(x); };
-var _cb = $id('courseBtn');
-if (_cb && CONFIG.COURSE_URL && CONFIG.COURSE_URL !== '#') _cb.href = CONFIG.COURSE_URL;
 if (CONFIG.WHATSAPP_GROUP_URL && $id('groupRow')) { $id('groupRow').style.display = 'flex'; $id('groupLink').href = CONFIG.WHATSAPP_GROUP_URL; }
 </script>
 </body>
