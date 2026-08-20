@@ -1,0 +1,408 @@
+<title>מיילים לסוכני AI בוואטסאפ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700&family=Heebo:wght@400;500;700;800&display=swap">
+
+<style>
+:root {
+    --paper:   #f6f9f7;
+    --card:    #ffffff;
+    --ink:     #0f201a;
+    --ink-mid: #4c5f58;
+    --ink-dim: #7d8f88;
+    --rule:    #dde6e1;
+    --rule-soft:#eaf0ed;
+    --accent:  #0d7f6f;
+    --accent-ink: #ffffff;
+    --flag:    #9a5b06;
+    --flag-bg: #fdf4e5;
+    --quote-bg:#f1f6f3;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --paper:   #0b1714;
+        --card:    #12211d;
+        --ink:     #eaf3ef;
+        --ink-mid: #a9bdb5;
+        --ink-dim: #748a82;
+        --rule:    #22352f;
+        --rule-soft:#1a2b26;
+        --accent:  #3ddc86;
+        --accent-ink: #08150f;
+        --flag:    #e0a253;
+        --flag-bg: #2a2114;
+        --quote-bg:#15251f;
+    }
+}
+:root[data-theme="dark"] {
+    --paper:   #0b1714;
+    --card:    #12211d;
+    --ink:     #eaf3ef;
+    --ink-mid: #a9bdb5;
+    --ink-dim: #748a82;
+    --rule:    #22352f;
+    --rule-soft:#1a2b26;
+    --accent:  #3ddc86;
+    --accent-ink: #08150f;
+    --flag:    #e0a253;
+    --flag-bg: #2a2114;
+    --quote-bg:#15251f;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Heebo', system-ui, sans-serif;
+    direction: rtl;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 20px 96px; }
+
+/* ── כותרת ── */
+header { padding: 64px 0 32px; border-bottom: 1px solid var(--rule); }
+h1 { font-size: clamp(30px, 6vw, 42px); font-weight: 800; line-height: 1.2; margin: 0 0 12px; text-wrap: balance; }
+.lede { font-size: 17px; color: var(--ink-mid); max-width: 58ch; margin: 0; }
+
+/* ── טבלת האסטרטגיה ── */
+.plan { margin: 36px 0 8px; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th, td { text-align: right; padding: 11px 14px 11px 0; border-bottom: 1px solid var(--rule-soft); vertical-align: top; }
+th { font-size: 12px; font-weight: 700; letter-spacing: .07em; color: var(--ink-dim); text-transform: uppercase; }
+td:first-child { font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+td:last-child, th:last-child { padding-left: 0; }
+
+/* ── כרטיס מייל ── */
+.mail {
+    background: var(--card);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    margin-top: 30px;
+    overflow: hidden;
+}
+.mail-head { padding: 20px 24px 16px; border-bottom: 1px solid var(--rule-soft); }
+.eyebrow {
+    font-size: 11.5px; font-weight: 700; letter-spacing: .1em;
+    color: var(--accent); margin-bottom: 7px;
+}
+.mail-head h2 { font-size: 21px; font-weight: 800; margin: 0 0 6px; }
+.job { font-size: 14.5px; color: var(--ink-mid); margin: 0; }
+
+/* ── שורות להעתקה ── */
+.field { display: flex; align-items: flex-start; gap: 12px; padding: 15px 24px; border-bottom: 1px solid var(--rule-soft); }
+.field-label {
+    flex: 0 0 76px; font-size: 12px; font-weight: 700; letter-spacing: .05em;
+    color: var(--ink-dim); padding-top: 4px;
+}
+.field-value { flex: 1; min-width: 0; font-size: 16.5px; font-weight: 500; }
+.field.pre .field-value { font-size: 14.5px; color: var(--ink-mid); font-weight: 400; }
+
+/* ── גוף המייל ── */
+.body-wrap { padding: 22px 24px 24px; }
+.body {
+    font-family: 'Frank Ruhl Libre', Georgia, serif;
+    font-size: 17.5px; line-height: 1.75;
+    background: var(--quote-bg);
+    border-radius: 10px;
+    padding: 24px 26px;
+    max-width: 62ch;
+}
+.body p { margin: 0 0 15px; }
+.body p:last-child { margin-bottom: 0; }
+.body b { font-weight: 700; }
+.ph {
+    unicode-bidi: isolate;
+    background: var(--rule-soft);
+    border-radius: 4px; padding: 1px 5px;
+    font-family: 'Heebo', sans-serif; font-size: .92em; font-weight: 500;
+    color: var(--ink-mid);
+}
+.body .btn-line {
+    font-family: 'Heebo', sans-serif; font-weight: 800; font-size: 16px;
+    color: var(--accent); letter-spacing: .01em;
+}
+.body .sign { color: var(--ink-mid); }
+
+/* ── כפתור העתקה ── */
+.copy {
+    flex: 0 0 auto;
+    font-family: 'Heebo', sans-serif; font-size: 12.5px; font-weight: 700;
+    color: var(--ink-mid); background: transparent;
+    border: 1px solid var(--rule); border-radius: 8px;
+    padding: 5px 12px; cursor: pointer;
+    transition: color .15s, border-color .15s, background .15s;
+}
+.copy:hover { color: var(--accent); border-color: var(--accent); }
+.copy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.copy.done { color: var(--accent-ink); background: var(--accent); border-color: var(--accent); }
+.body-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.body-bar span { font-size: 12px; font-weight: 700; letter-spacing: .05em; color: var(--ink-dim); }
+
+/* ── הערות ── */
+.note {
+    margin-top: 14px; padding: 14px 18px;
+    background: var(--flag-bg); border-radius: 10px;
+    font-size: 14.5px; color: var(--flag);
+    max-width: 62ch;
+}
+.note b { font-weight: 700; }
+
+.section-title { font-size: 24px; font-weight: 800; margin: 56px 0 6px; }
+.section-sub { color: var(--ink-mid); font-size: 16px; margin: 0 0 4px; max-width: 60ch; }
+ul.plain { padding: 0; margin: 14px 0 0; list-style: none; max-width: 62ch; }
+ul.plain li { padding: 9px 0; border-bottom: 1px solid var(--rule-soft); font-size: 15.5px; color: var(--ink-mid); }
+ul.plain li b { color: var(--ink); font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+@media (max-width: 560px) {
+    .field { flex-wrap: wrap; }
+    .field-label { flex-basis: 100%; padding-top: 0; }
+    .body { padding: 18px 16px; font-size: 16.5px; }
+    .body-wrap, .field, .mail-head { padding-left: 16px; padding-right: 16px; }
+}
+</style>
+
+<div class="wrap">
+
+<header>
+    <h1>מיילים לסוכני AI בוואטסאפ</h1>
+    <p class="lede">חמישה מיילים מוכנים להעתקה לרב מסר. אחד לרוכשים, וארבעה למי שמילא טופס ולא שילם. לכל מייל נושא, שורת תצוגה מקדימה, וגוף.</p>
+</header>
+
+<div class="plan">
+    <table>
+        <thead><tr><th>מייל</th><th>החסם שהוא מטפל בו</th><th>הכלי</th></tr></thead>
+        <tbody>
+            <tr><td>רוכשים</td><td>"קניתי, ועכשיו מה"</td><td>גישה מיידית ואדם שעונה</td></tr>
+            <tr><td>יום 0</td><td>תקלה בתשלום, או "רק רגע"</td><td>עזרה, בלי לחץ</td></tr>
+            <tr><td>יום 1</td><td>"זו עוד הוצאה"</td><td>מספרים ועלות אי-עשייה</td></tr>
+            <tr><td>יום 2</td><td>"אני לא טכנולוגי"</td><td>לקוחות אמיתיים ופירוק השיעורים</td></tr>
+            <tr><td>יום 3</td><td>"אעשה את זה אחר כך"</td><td>סוף מחיר ההשקה, ורשות לוותר</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ═══ רוכשים ═══ -->
+<article class="mail">
+    <div class="mail-head">
+        <div class="eyebrow">רוכשים · מיידי</div>
+        <h2>הגישה שלך מוכנה</h2>
+        <p class="job">נשלח מרשימת "Agents AI - רוכשים". המייל היחיד שרוכש מקבל, ולכן הוא צריך לענות על הכל: איפה נכנסים, מאיפה מתחילים, ולמי פונים.</p>
+    </div>
+    <div class="field">
+        <div class="field-label">נושא</div>
+        <div class="field-value" data-copy>הגישה שלך מוכנה</div>
+        <button class="copy">העתקה</button>
+    </div>
+    <div class="field pre">
+        <div class="field-label">תצוגה מקדימה</div>
+        <div class="field-value" data-copy>קישור כניסה בפנים, בלי סיסמה</div>
+        <button class="copy">העתקה</button>
+    </div>
+    <div class="body-wrap">
+        <div class="body-bar"><span>גוף המייל</span><button class="copy">העתקת הגוף</button></div>
+        <div class="body" data-copy>
+            <p>היי <span class="ph">{{שם פרטי}}</span>,</p>
+            <p>קיבלנו את התשלום, והגישה שלך לקורס פתוחה.</p>
+            <p class="btn-line">[ כניסה לקורס ]  ←  <span class="ph">{{קישור כניסה מהירה}}</span></p>
+            <p>הקישור מזהה אותך לבד, בלי סיסמה. שמור את המייל, הוא הכניסה שלך והוא אישי.</p>
+            <p>השיעור הראשון הוא חיבור הוואטסאפ, סריקת QR אחת. אם יש לך שעה וחצי פנויה הערב, יכול להיות לך סוכן שעונה ללקוחות עוד לפני שאתה הולך לישון.</p>
+            <p>ואם משהו לא מסתדר, תשיב למייל הזה. עמית קורא ועונה בעצמו, לא בוט ולא נציג. נתקעת בחיבור, או שהסוכן ענה משהו שלא היית אומר ללקוח שלך, תכתוב.</p>
+            <p class="sign">נתראה בפנים,<br>עמית ורון</p>
+        </div>
+    </div>
+</article>
+
+<!-- ═══ יום 0 ═══ -->
+<article class="mail">
+    <div class="mail-head">
+        <div class="eyebrow">נטישה · יום 0 · כמה שעות אחרי</div>
+        <h2>משהו נתקע?</h2>
+        <p class="job">חלק מהנוטשים לא ויתרו, הם נתקעו. המייל הזה מסיר תקלה ולא מוכר, ולכן הוא גם לא נשמע כמו מייל שיווקי.</p>
+    </div>
+    <div class="field">
+        <div class="field-label">נושא</div>
+        <div class="field-value" data-copy>משהו נתקע?</div>
+        <button class="copy">העתקה</button>
+    </div>
+    <div class="field pre">
+        <div class="field-label">תצוגה מקדימה</div>
+        <div class="field-value" data-copy>השארת פרטים ולא סיימת</div>
+        <button class="copy">העתקה</button>
+    </div>
+    <div class="body-wrap">
+        <div class="body-bar"><span>גוף המייל</span><button class="copy">העתקת הגוף</button></div>
+        <div class="body" data-copy>
+            <p>היי <span class="ph">{{שם פרטי}}</span>,</p>
+            <p>מילאת פרטים ולא השלמת את התשלום.</p>
+            <p>אם משהו נתקע בדרך, כרטיס שלא עבר או דף שקפא, תשיב למייל הזה ונסדר את זה תוך דקות.</p>
+            <p>ואם רצית לחשוב על זה עוד קצת, זה בסדר גמור. הקישור ממתין לך:</p>
+            <p class="btn-line">[ להשלים את ההרשמה ]</p>
+            <p>ואם יש שאלה שעצרה אותך, על הכלים או על הזמן שזה לוקח או על אם זה בכלל מתאים לעסק שלך, תכתוב לי אותה. עמית עונה בעצמו.</p>
+            <p class="sign">עמית ורון</p>
+        </div>
+    </div>
+</article>
+
+<!-- ═══ יום 1 ═══ -->
+<article class="mail">
+    <div class="mail-head">
+        <div class="eyebrow">נטישה · יום 1 · המראה</div>
+        <h2>293 שקלים, בערך חולצה</h2>
+        <p class="job">המייל שנושא את המשקל. המספרים עושים את העבודה, לא הטון. השורה "אני לא מנסה לגרום לך להרגיש רע" היא מה שמחזיק אותו, כי קופי שמודה בכוונה שלו קשה יותר לפטור מקופי שמסתיר אותה.</p>
+    </div>
+    <div class="field">
+        <div class="field-label">נושא</div>
+        <div class="field-value" data-copy>293 שקלים, בערך חולצה</div>
+        <button class="copy">העתקה</button>
+    </div>
+    <div class="field pre">
+        <div class="field-label">תצוגה מקדימה</div>
+        <div class="field-value" data-copy>המספרים, בלי לרכך</div>
+        <button class="copy">העתקה</button>
+    </div>
+    <div class="body-wrap">
+        <div class="body-bar"><span>גוף המייל</span><button class="copy">העתקת הגוף</button></div>
+        <div class="body" data-copy>
+            <p>היי <span class="ph">{{שם פרטי}}</span>,</p>
+            <p>הקורס עולה 293 שקלים. זו בערך חולצה בזארה, כזאת שתלבש עשר פעמים ותשכח ממנה.</p>
+            <p>עובד שירות לקוחות עולה 7,040 שקלים בחודש, לפני תנאים סוציאליים. הוא הולך הביתה בחמש, לוקח חופשה, חולה, ועוזב אחרי שנה. ואז מתחילים חפיפה מאפס.</p>
+            <p>סוכן עולה בערך 90 שקלים בחודש בכלים. שלושה שקלים ליום. הוא לא הולך הביתה.</p>
+            <p>ההפרש בשנה הראשונה: <b>83,400 שקלים</b> שנשארים בעסק שלך.</p>
+            <p>ובזמן שאתה קורא את זה, מישהו כותב לעסק שלך "היי, כמה זה עולה?". אם השעה אחרי שמונה בערב הוא לא יקבל תשובה עד מחר, ועד מחר הוא כבר קיבל תשובה ממישהו אחר.</p>
+            <p>אני לא מנסה לגרום לך להרגיש רע. אני מנסה שתראה את זה פעם אחת בגודל האמיתי.</p>
+            <p>כי 293 שקלים זה לא מה שעוצר אותך. מה שעוצר זה שקל יותר לענות לאותן שתים-עשרה שאלות כל יום מאשר להקדיש ערב אחד ולסדר את זה סופית.</p>
+            <p>והשאלה היחידה שנשארת היא מי מספיק אמיץ לא לוותר לעצמו.</p>
+            <p class="btn-line">[ אני רוצה את הסוכן שלי ]</p>
+            <p class="sign">עמית ורון</p>
+        </div>
+    </div>
+</article>
+
+<!-- ═══ יום 2 ═══ -->
+<article class="mail">
+    <div class="mail-head">
+        <div class="eyebrow">נטישה · יום 2 · ההתנגדות</div>
+        <h2>"אני לא טכנולוגי"</h2>
+        <p class="job">אחרי שהמספרים הכו, ההתנגדות שנשארת היא "זה לא בשבילי". שמות הלקוחות משרתים אותה, לא את המחיר.</p>
+    </div>
+    <div class="field">
+        <div class="field-label">נושא</div>
+        <div class="field-value" data-copy>"אני לא טכנולוגי"</div>
+        <button class="copy">העתקה</button>
+    </div>
+    <div class="field pre">
+        <div class="field-label">תצוגה מקדימה</div>
+        <div class="field-value" data-copy>ההסתדרות הלאומית שילמה עשרות אלפים על זה</div>
+        <button class="copy">העתקה</button>
+    </div>
+    <div class="body-wrap">
+        <div class="body-bar"><span>גוף המייל</span><button class="copy">העתקת הגוף</button></div>
+        <div class="body" data-copy>
+            <p>היי <span class="ph">{{שם פרטי}}</span>,</p>
+            <p>זה המשפט שאני מקבל הכי הרבה במיילים. יותר מ"כמה זה עולה".</p>
+            <p>אז הנה התשובה הכי כנה שיש לי.</p>
+            <p>בנינו סוכנים להסתדרות הלאומית, ל-Zeek, לסנדוויץ׳ בר, לקרויזר דיגיטל. חברות ששילמו עשרות אלפי שקלים על מערכת שנבנתה להן.</p>
+            <p>אותה מערכת בדיוק, אותם כלים, אותה שיטה. ההבדל היחיד הוא שהן שילמו על מישהו שילחץ על הכפתורים במקומן.</p>
+            <p>השיעור הראשון הוא סריקת QR אחת, כמו לחבר וואטסאפ ווב. בלי קוד ובלי התקנות.</p>
+            <p>השני הוא להדביק לסוכן את המחירון והנהלים שכבר יושבים לך בקובץ.</p>
+            <p>השלישי מחבר גם את האינסטגרם.</p>
+            <p>זה כל ה"טכנולוגי" שיש כאן.</p>
+            <p class="btn-line">[ אני רוצה את הסוכן שלי ]</p>
+            <p class="sign">עמית ורון</p>
+        </div>
+    </div>
+    <div class="body-wrap" style="padding-top:0">
+        <div class="note"><b>לבדוק לפני שליחה:</b> שמות הלקוחות מופיעים כאן במפורש. אם יש לקוח שלא אישר אזכור פומבי, להוריד אותו מהשורה. הלוגואים כבר מופיעים באתר, אבל מייל הוא אמירה ישירה יותר.</div>
+    </div>
+</article>
+
+<!-- ═══ יום 3 ═══ -->
+<article class="mail">
+    <div class="mail-head">
+        <div class="eyebrow">נטישה · יום 3 · סגירה</div>
+        <h2>אחרי מחר זה 997</h2>
+        <p class="job">דחיפות אמיתית בלבד, ורשות לומר לא. מייל שנותן לצאת ממנו בכבוד ממיר יותר ממייל שסוגר פינה.</p>
+    </div>
+    <div class="field">
+        <div class="field-label">נושא</div>
+        <div class="field-value" data-copy>אחרי מחר זה 997</div>
+        <button class="copy">העתקה</button>
+    </div>
+    <div class="field pre">
+        <div class="field-label">תצוגה מקדימה</div>
+        <div class="field-value" data-copy>המייל האחרון על זה</div>
+        <button class="copy">העתקה</button>
+    </div>
+    <div class="body-wrap">
+        <div class="body-bar"><span>גוף המייל</span><button class="copy">העתקת הגוף</button></div>
+        <div class="body" data-copy>
+            <p>היי <span class="ph">{{שם פרטי}}</span>,</p>
+            <p>זה המייל האחרון שתקבל ממני על הקורס.</p>
+            <p>מחיר ההשקה, 249 ₪ בתוספת מע״מ, נסגר ב<span class="ph">{{תאריך}}</span>. אחריו הוא חוזר ל-997.</p>
+            <p>אני לא אומר את זה כדי ללחוץ. אני אומר כי אם תפתח את המייל הזה בעוד שבועיים ותחליט שכן, זה כבר יעלה פי שלושה, ותכתוב לי "למה לא אמרת". אז אמרתי.</p>
+            <p>מהרגע שתלחץ, הגישה נפתחת. השיעור הראשון לוקח בערך עשרים דקות. אם תתחיל הערב, מחר בבוקר תראה ביומן השיחות מי כתב לך בלילה ומה הסוכן ענה לו.</p>
+            <p>ואם החלטת שלא, גם זה בסדר. תשאיר את המייל הזה. אם בעוד חצי שנה תמצא את עצמך עונה לאותה שאלה בפעם השלוש-מאות, תדע איפה למצוא אותנו.</p>
+            <p class="btn-line">[ אני רוצה את הסוכן שלי ]</p>
+            <p class="sign">עמית ורון</p>
+        </div>
+    </div>
+    <div class="body-wrap" style="padding-top:0">
+        <div class="note"><b>חובה לפני שליחה:</b> הנושא והגוף מבטיחים תאריך ומחיר. אם מחיר ההשקה לא באמת נסגר בתאריך מסוים, המייל הזה הופך להבטחה שלא מכובדת, וזה עולה יותר ממה שהוא מכניס. או שקובעים תאריך אמיתי, או שמחליפים את הדחיפות במשהו אחר.</div>
+    </div>
+</article>
+
+<h2 class="section-title">על הנושאים</h2>
+<p class="section-sub">אחוז פתיחה של 100% לא קיים, גם למיילים תפעוליים. מה שכן בשליטה הוא ההבדל בין נושא שנמחק בלי להיפתח לנושא שנפתח, וזה נקבע בשלושה דברים.</p>
+<ul class="plain">
+    <li><b>אורך.</b> בנייד נחתכות בערך 35 תווים. כל נושא כאן קצר מזה, כך שהוא נקרא במלואו.</li>
+    <li><b>מראה של הודעה, לא של קמפיין.</b> בלי אימוג׳י, בלי סימני קריאה, בלי מילים גדולות. "משהו נתקע?" נראה כמו מייל מאדם.</li>
+    <li><b>שורת התצוגה המקדימה.</b> הכי מוזנחת והכי משפיעה. היא השורה שמופיעה אחרי הנושא בתיבה, ובלעדיה הלקוח רואה את המילים הראשונות של המייל. לכל מייל כאן כתובה שורה משלו.</li>
+</ul>
+
+<h2 class="section-title">שלושה דברים לפני שזה יוצא</h2>
+<ul class="plain">
+    <li><b>התאריך ביום 3.</b> צריך תאריך אמיתי שבו המחיר עולה, אחרת המייל מבטיח דבר שלא קורה.</li>
+    <li><b>הספירה בדף.</b> אם "66 מתוך 300 כרטיסים" אמיתי, הוא שווה שורה ביום 3. אם לא, עדיף בלעדיו.</li>
+    <li><b>החתימה.</b> כרגע "עמית ורון". אם המיילים אמורים להישמע מעמית אישית, החתימה משתנה וגם כמה מהמשפטים.</li>
+</ul>
+
+</div>
+
+<script>
+document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+        var field = btn.closest('.field');
+        var target = field ? field.querySelector('[data-copy]')
+                           : btn.closest('.body-wrap').querySelector('[data-copy]');
+        var text = target.innerText.replace(/\n{3,}/g, '\n\n').trim();
+
+        function done() {
+            var was = btn.textContent;
+            btn.textContent = 'הועתק';
+            btn.classList.add('done');
+            setTimeout(function () { btn.textContent = was; btn.classList.remove('done'); }, 1400);
+        }
+        /* בתוך iframe מסונן, כתיבה ללוח נחסמת לפעמים. הדרך הישנה עובדת שם */
+        function fallback() {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) {}
+            document.body.removeChild(ta);
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, fallback);
+        } else {
+            fallback();
+        }
+    });
+});
+</script>
