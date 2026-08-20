@@ -171,7 +171,11 @@ module.exports = async (req, res) => {
        כל הרוכשים כאותו אדם. */
     try {
         const r = await sendToMeta({
-            eventName: 'Purchase', eventId: eventId, orderId: code || undefined,
+            /* האסמכתא היא המספר שמופיע במסך העסקאות של Grow, ולכן היא מה
+               שמאפשר להצליב דוח במטא מול עסקה אצלם. transactionCode הוא
+               טוקן פנימי ארוך ולא שימושי לזה. */
+            eventName: 'Purchase', eventId: eventId,
+            orderId: pick(b, 'asmachta') || code || undefined,
             sourceUrl: 'https://ron-amit-claude.vercel.app/thanks',
             name: name, email: email, phone: phone, value: value, currency: 'ILS',
             fbp: fbp, fbc: fbc,
