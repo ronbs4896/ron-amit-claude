@@ -188,7 +188,7 @@
         <div class="order-line">
             <span>סוכני AI בוואטסאפ, קורס דיגיטלי</span>
             <span>·</span>
-            <b>297 ש״ח</b>
+            <b>197 ש״ח</b>
             <span>·</span>
             <span>גישה לכל החיים</span>
         </div>
@@ -251,7 +251,7 @@ function rbsPurchaseId(lead) {
 /* ── Meta Pixel: אירוע רכישה ── */
 function rbsPixelPurchase() {
     if (typeof fbq !== 'function') return;
-    var PRICE = 297;   /* מחיר ההשקה, כולל מע״מ */
+    var PRICE = 197;   /* מחיר הפריסייל, כולל מע״מ */
     var lead = null;
     try { lead = JSON.parse(localStorage.getItem('rbs_lead') || 'null'); } catch (e) {}
     if (lead && lead.email) {
@@ -292,7 +292,7 @@ function rbsReportPurchase() {
         event_id: rbsPurchaseId(lead),
         fbp: rbsCookie('_fbp') || lead.fbp || '',
         fbc: rbsCookie('_fbc') || lead.fbc || '',
-        value: 297, currency: 'ILS',
+        value: 197, currency: 'ILS',
         ts: new Date().toISOString(), source: location.href
     };
     Object.keys(attr).forEach(function (k) {

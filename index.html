@@ -11,7 +11,7 @@
     <!-- OG / שיתוף -->
     <meta property="og:site_name" content="WhatsApp AI Agents">
     <meta property="og:title" content="הקורס המלא לבניית סוכני AI בוואטסאפ">
-    <meta property="og:description" content="סוכן שעונה ללקוחות שלך 24/7 בוואטסאפ ובאינסטגרם, בשלושה שקלים ליום. 297 ש״ח כולל מע״מ במקום 997.">
+    <meta property="og:description" content="סוכן שעונה ללקוחות שלך 24/7 בוואטסאפ ובאינסטגרם, בשלושה שקלים ליום. 197 ש״ח כולל מע״מ במקום 1,497, ל-30 הראשונים.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ron-amit-claude.vercel.app/">
     <meta property="og:image" content="https://ron-amit-claude.vercel.app/og-image.png">
@@ -992,8 +992,64 @@
 
         .spots-bar { max-width: 360px; margin: 16px auto 22px; position: relative; }
         .spots-line { text-align: center; margin-bottom: 10px; }
-        .spots-line strong { font-weight: 900; display: inline-block; transition: transform 0.2s; }
-        .spots-line strong.tick { transform: scale(1.35); }
+        .spots-line strong { font-weight: 900; display: inline-block; }
+
+        /* ── תגית הפריסייל: ברק שעובר על המילה, ונקודה שפועמת החוצה ── */
+        .presale-badge {
+            position: relative; overflow: hidden;
+            display: inline-flex; align-items: center; gap: 9px;
+            padding: 8px 17px; border-radius: 999px;
+            background: linear-gradient(120deg, rgba(245, 158, 11, 0.18), rgba(245, 158, 11, 0.06));
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            color: #fbbf24; font-weight: 900; font-size: 12px;
+            letter-spacing: 2.2px; line-height: 1.4; white-space: nowrap;
+            margin-bottom: 18px;
+        }
+        .presale-badge .psb-live {
+            width: 7px; height: 7px; border-radius: 50%; background: #fbbf24;
+            flex-shrink: 0; animation: psb-ping 1.9s ease-out infinite;
+        }
+        .presale-badge .psb-tail {
+            letter-spacing: 0; font-weight: 700; font-size: 12.5px; color: #f3d497;
+        }
+        .presale-badge::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(100deg, transparent 32%, rgba(255, 224, 150, 0.30) 50%, transparent 68%);
+            transform: translateX(-130%);
+            animation: psb-sheen 3.6s ease-in-out infinite;
+        }
+        @keyframes psb-sheen { 0%, 62% { transform: translateX(-130%); } 100% { transform: translateX(130%); } }
+        @keyframes psb-ping {
+            0%   { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.55); }
+            70%, 100% { box-shadow: 0 0 0 9px rgba(251, 191, 36, 0); }
+        }
+        /* אותה תגית, בתוך הבר העליון הירוק */
+        .ub-presale {
+            position: relative; overflow: hidden;
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 3px 11px; border-radius: 999px;
+            background: #04140f; color: #ffd479;
+            font-size: 11.5px; font-weight: 900; letter-spacing: 1.6px;
+        }
+        .ub-presale .psb-live {
+            width: 6px; height: 6px; border-radius: 50%; background: #ffd479;
+            flex-shrink: 0; animation: pulse-dot 1.5s ease-in-out infinite;
+        }
+        .ub-presale::after {
+            content: ''; position: absolute; inset: 0; pointer-events: none;
+            background: linear-gradient(100deg, transparent 32%, rgba(255, 212, 121, 0.34) 50%, transparent 68%);
+            transform: translateX(-130%);
+            animation: psb-sheen 3.6s ease-in-out infinite;
+        }
+        .ub-price s { opacity: 0.62; font-weight: 700; }
+        @media (prefers-reduced-motion: reduce) {
+            .presale-badge::after, .ub-presale::after,
+            .presale-badge .psb-live, .ub-presale .psb-live { animation: none; }
+        }
+        @media (max-width: 480px) {
+            .presale-badge { font-size: 11px; padding: 7px 13px; gap: 7px; letter-spacing: 1.6px; }
+            .presale-badge .psb-tail { font-size: 11.5px; }
+        }
         .spots-track { height: 8px; background: rgba(255,255,255,0.06); border-radius: 8px; overflow: hidden; }
         .spots-fill { height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--red), #f97316); width: 78%; position: relative; }
         .spots-fill::after {
@@ -1580,6 +1636,9 @@
 
 <!-- URGENCY BAR -->
 <div class="urgency-bar">
+    <span class="ub-presale"><span class="psb-live"></span>PRESALE</span>
+    <span class="ub-price">197 ₪ במקום <s>1,497 ₪</s></span>
+    <span class="ub-sep">|</span>
     <span class="ub-timer"><svg class="ico" aria-hidden="true"><use href="#i-hourglass"/></svg> <span class="ub-label">המחיר עולה בעוד </span><span id="ubDays"></span><span class="ub-count" id="ubCount">–</span></span>
 </div>
 
@@ -1605,6 +1664,10 @@
         </a>
     </div>
     <div class="container">
+        <div class="presale-badge reveal stagger-1">
+            <span class="psb-live"></span>PRESALE
+            <span class="psb-tail">ל-30 הרוכשים הראשונים</span>
+        </div>
         <h1 class="reveal stagger-2">
             כמה אתה שורף כל חודש<br class="br-d">
             על מישהו שרק אומר ללקוחות<br>
@@ -1652,7 +1715,7 @@
 
         <div class="cta-wrap reveal stagger-5">
             <a href="#register" class="cta-btn">אני רוצה את הסוכן שלי</a>
-            <div class="cta-sub"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-lock"/></svg> תשלום מאובטח, 297 ש״ח כולל מע״מ, תשלום אחד</div>
+            <div class="cta-sub"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-lock"/></svg> תשלום מאובטח, 197 ש״ח כולל מע״מ, תשלום אחד</div>
         <div class="meta-strip reveal stagger-5">
             <div class="meta-chip">
                 <span class="mc-icon"><svg class="ico" aria-hidden="true"><use href="#i-bolt"/></svg></span>
@@ -1959,7 +2022,7 @@
             <h3 id="sumTitle"></h3>
             <p id="sumText"></p>
             <a class="cta-btn" href="#register" style="font-size:18px;padding:17px 40px">אני רוצה סוכן כזה לעסק שלי</a>
-            <p style="margin:14px 0 0;font-size:13px;color:var(--text-dim)">בקורס בונים בדיוק את זה, מסך מול מסך, צעד אחרי צעד. 297 ש״ח כולל מע״מ.</p>
+            <p style="margin:14px 0 0;font-size:13px;color:var(--text-dim)">בקורס בונים בדיוק את זה, מסך מול מסך, צעד אחרי צעד. 197 ש״ח כולל מע״מ.</p>
         </div>
         <!-- /SIM -->
 
@@ -2265,12 +2328,15 @@
     <div class="container">
         <div class="price-outer reveal-scale" id="priceCard">
             <div class="price-inner">
-                <div class="price-tag">מחיר השקה</div>
+                <div class="presale-badge">
+                    <span class="psb-live"></span>PRESALE
+                    <span class="psb-tail">197 ₪ במקום 1,497 ₪</span>
+                </div>
                 <div class="price-title">הסוכן שיענה במקומך</div>
                 <div class="price-subtitle">גישה מיידית, מהתשלום לשיעור הראשון</div>
 
                 <div class="countdown-section">
-                    <div class="countdown-label">מחיר ההשקה נסגר בעוד</div>
+                    <div class="countdown-label">מחיר הפריסייל נסגר בעוד</div>
                     <div class="countdown">
                         <div class="cd-item"><div class="cd-num" id="cd-days">0</div><div class="cd-label">ימים</div></div>
                         <div class="cd-item"><div class="cd-num" id="cd-hours">0</div><div class="cd-label">שעות</div></div>
@@ -2280,15 +2346,15 @@
                 </div>
 
                 <div class="spots-bar">
-                    <div class="spots-line"><span class="badge badge-warning"><span class="b-dot"></span>נותרו <strong id="spotsNum">66</strong> כרטיסים מתוך 300</span></div>
+                    <div class="spots-line"><span class="badge badge-warning"><span class="b-dot"></span><span id="spotsText">30 מקומות בלבד במחיר הפריסייל</span></span></div>
                     <div class="spots-track"><div class="spots-fill" id="spotsFill"></div></div>
                 </div>
 
                 <div class="price-anchor">
-                    <span class="price-original">997 ש״ח</span>
+                    <span class="price-original">1,497 ש״ח</span>
                 </div>
                 <div class="price-amount">
-                    <span class="pa-number">297</span>
+                    <span class="pa-number">197</span>
                     <span class="pa-currency">ש״ח</span>
                     <span class="pa-vat">תשלום אחד, כולל מע״מ</span>
                 </div>
@@ -2326,7 +2392,7 @@
                     </label>
                     <div class="ld-check-err">בלי אישור התקנון אי אפשר להמשיך</div>
                     <button type="submit" class="cta-btn ld-submit" id="liSubmit">ממשיכים לתשלום מאובטח</button>
-                    <div class="cta-sub" style="text-align:center;margin-top:9px"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-lock"/></svg> סליקה מאובטחת, 297 ש״ח כולל מע״מ, תשלום אחד</div>
+                    <div class="cta-sub" style="text-align:center;margin-top:9px"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-lock"/></svg> סליקה מאובטחת, 197 ש״ח כולל מע״מ, תשלום אחד</div>
                 </form>
 
                 <div class="guarantee-wrap">
@@ -2387,8 +2453,8 @@
             <div class="faq-a"><p>לכל החיים, כולל עדכונים. הכלים בתחום הזה זזים מהר, וכשמשהו משתנה מהותית עמית מקליט את זה מחדש ואתה מקבל את זה בלי לשלם שוב.</p></div>
         </div>
         <div class="faq-item reveal stagger-5">
-            <div class="faq-q" onclick="toggleFaq(this)"><span>למה 297 ולא 997?</span><span class="faq-arrow"><svg class="ico" aria-hidden="true"><use href="#i-chevron"/></svg></span></div>
-            <div class="faq-a"><p>זו קבוצת ההשקה. אנחנו רוצים מספר מספיק גדול של אנשים שיבנו סוכן ויספרו לנו איפה נתקעו, כדי שהגרסה הבאה תהיה טובה יותר. בתמורה אתה משלם פחות משליש מהמחיר. כשמחיר ההשקה נסגר, הוא נסגר.</p></div>
+            <div class="faq-q" onclick="toggleFaq(this)"><span>למה 197 ולא 1,497?</span><span class="faq-arrow"><svg class="ico" aria-hidden="true"><use href="#i-chevron"/></svg></span></div>
+            <div class="faq-a"><p>זה פריסייל, ל-30 הראשונים. אנחנו רוצים קבוצה שתבנה סוכן ותספר לנו איפה נתקעה, כדי שהגרסה הבאה תהיה טובה יותר. בתמורה אתה משלם פחות משביעית מהמחיר. אחרי 30 המקומות הראשונים הקורס עולה ל-1,497, וזה המחיר שהוא יישאר בו.</p></div>
         </div>
     </div>
 </section>
@@ -2403,14 +2469,14 @@
         </p>
         <div class="reveal stagger-2">
             <a href="#register" class="cta-btn">אני רוצה את הסוכן שלי</a>
-            <div class="cta-sub">297 ש״ח כולל מע״מ, תשלום אחד, גישה מיידית לכל החיים</div>
+            <div class="cta-sub">197 ש״ח כולל מע״מ, תשלום אחד, גישה מיידית לכל החיים</div>
         </div>
     </div>
 </section>
 
 <!-- STICKY CTA MOBILE -->
 <div class="sticky-cta" id="stickyCta">
-    <a href="#register" class="cta-btn">קח את הסוכן | 297 ש״ח</a>
+    <a href="#register" class="cta-btn">קח את הסוכן | 197 ש״ח</a>
 </div>
 
 
@@ -2428,7 +2494,7 @@
         </p>
         <div class="faq-callout" style="text-align:right;margin:0 0 16px">
             <div class="fc-row"><span>עובד שירות לקוחות</span><b class="fc-bad">7,040 ₪ בחודש, כל חודש</b></div>
-            <div class="fc-row"><span>הקורס, תשלום אחד</span><b>297 ₪ כולל מע״מ</b></div>
+            <div class="fc-row"><span>הקורס, תשלום אחד</span><b>197 ₪ כולל מע״מ</b></div>
             <div class="fc-row fc-win"><span>הפעלת הסוכן, 24/7</span><b>3 ₪ ביום</b></div>
         </div>
         <p style="font-size:15px;margin-bottom:20px">
@@ -2454,7 +2520,7 @@
             <h4>2. המוצר</h4>
             <p>הקורס הוא תוכן דיגיטלי מוקלט, לצפייה אישית, המלמד בניית סוכן שירות אוטומטי בוואטסאפ ובאינסטגרם. הקורס אינו כולל את עלות הכלים החיצוניים (ספקי AI, חיבור וואטסאפ וכדומה), המשולמת ישירות לצדדים שלישיים לפי השימוש, בסדר גודל של כ-90 ש״ח בחודש, משתנה לפי היקף השימוש. אין בקורס התחייבות לתוצאה עסקית כלשהי, והתוצאות תלויות ביישום.</p>
             <h4>3. מחיר ותשלום</h4>
-            <p>מחיר ההשקה: 297 ש״ח כולל מע״מ (251.69 ש״ח לפני מע״מ בשיעור 18%), בתשלום אחד. הסליקה מתבצעת באמצעות ספק סליקה חיצוני מאובטח; פרטי כרטיס האשראי אינם נשמרים אצל המפעיל. חשבונית מס/קבלה תישלח לכתובת המייל שנמסרה ברכישה.</p>
+            <p>מחיר הפריסייל: 197 ש״ח כולל מע״מ (166.95 ש״ח לפני מע״מ בשיעור 18%), בתשלום אחד. הסליקה מתבצעת באמצעות ספק סליקה חיצוני מאובטח; פרטי כרטיס האשראי אינם נשמרים אצל המפעיל. חשבונית מס/קבלה תישלח לכתובת המייל שנמסרה ברכישה.</p>
             <h4>4. אספקה וגישה</h4>
             <p>הגישה לקורס נפתחת לאחר אישור התשלום, ומייל עם פרטי הכניסה נשלח בסמוך לרכישה (מומלץ לבדוק גם בתיקיית הספאם). הגישה אישית ואינה ניתנת להעברה, והיא כוללת עדכונים עתידיים לתכני הקורס. בכל תקלת גישה ניתן לפנות אלינו ונטפל בתוך יום עסקים.</p>
             <h4>5. ביטול עסקה והחזר כספי</h4>
@@ -2509,7 +2575,7 @@
                 </label>
                 <div class="ld-check-err">בלי אישור התקנון אי אפשר להמשיך לתשלום</div>
                 <button type="submit" class="cta-btn ld-submit" id="ldSubmit">ממשיכים לתשלום מאובטח</button>
-                <div class="cta-sub" style="text-align:center;margin-top:10px"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-lock"/></svg> 297 ש״ח כולל מע״מ, תשלום אחד, סליקה מאובטחת</div>
+                <div class="cta-sub" style="text-align:center;margin-top:10px"><svg class="ico ico-sm" aria-hidden="true"><use href="#i-lock"/></svg> 197 ש״ח כולל מע״מ, תשלום אחד, סליקה מאובטחת</div>
             </form>
         </div>
     </div>
@@ -2541,8 +2607,10 @@ const CONFIG = {
     // מתי מחיר ההשקה נסגר (שעון ישראל)
     DEADLINE: '2026-09-01T23:59:00+03:00',
 
-    // מונה הכרטיסים שנותרו. false = מספר קבוע, בלי ירידה ברקע
-    SHOW_LIVE_SOCIAL: true,
+    // פריסייל: כמה מקומות במחיר המוזל, וכמה מהם עוד פנויים.
+    // מעדכנים את PRESALE_LEFT ידנית לפי המכירות בפועל.
+    PRESALE_TOTAL: 30,
+    PRESALE_LEFT: 30,
 };
 
 /* ══ מקור הליד: UTM, ref וכל מה שאפשר לעקוב אחריו ══
@@ -2823,7 +2891,7 @@ var RBS_LEAD = (function () {
         fbq('track', 'InitiateCheckout', {
             content_name: 'סוכני AI בוואטסאפ - קורס דיגיטלי',
             content_ids: ['ai-agents-course'], content_type: 'product',
-            currency: 'ILS', value: 297
+            currency: 'ILS', value: 197
         });
     }
 
@@ -2876,7 +2944,7 @@ var RBS_LEAD = (function () {
             fbq('track', 'Lead', {
                 content_name: 'סוכני AI בוואטסאפ - קורס דיגיטלי',
                 content_ids: ['ai-agents-course'], content_type: 'product',
-                currency: 'ILS', value: 297
+                currency: 'ILS', value: 197
             }, { eventID: eventId });
         }
         if (CONFIG.LEAD_WEBHOOK_URL) {
@@ -3348,38 +3416,22 @@ setInterval(updateCountdown, 1000);
 /* ====== FAQ ====== */
 function toggleFaq(el) { el.closest('.faq-item').classList.toggle('open'); }
 
-/* ====== מונה כרטיסים מתמיד (שקט, בלי פופ-אפים) ====== */
+/* ====== מקומות הפריסייל ====== */
 (function () {
-    if (!CONFIG.SHOW_LIVE_SOCIAL) return;
-
-    /* ── מלאי כרטיסים: נשמר לכל מבקר, יורד בשקט ברקע,
-         וכשנגמר חוזר ל-66 ── */
-    const TOTAL = 300, START = 66;
-    let spots = START;
-    try {
-        const saved = JSON.parse(localStorage.getItem('rbs_spots') || 'null');
-        if (saved && saved.c >= 1 && saved.c <= START) spots = saved.c;
-    } catch (e) {}
-
-    function renderSpots(flash) {
-        const n = document.getElementById('spotsNum');
-        const f = document.getElementById('spotsFill');
-        if (n) {
-            n.textContent = spots;
-            if (flash) { n.classList.add('tick'); setTimeout(() => n.classList.remove('tick'), 250); }
-        }
-        if (f) f.style.width = ((TOTAL - spots) / TOTAL * 100).toFixed(1) + '%';
-        try { localStorage.setItem('rbs_spots', JSON.stringify({ c: spots, t: Date.now() })); } catch (e) {}
+    var total = CONFIG.PRESALE_TOTAL, left = CONFIG.PRESALE_LEFT;
+    var txt = document.getElementById('spotsText');
+    var fill = document.getElementById('spotsFill');
+    var track = document.querySelector('.spots-track');
+    var taken = total - left;
+    /* לפני שנמכר מקום אחד אין מה לספור, ו"30 מתוך 30" רק מספר שאף אחד לא קנה */
+    if (txt) {
+        txt.innerHTML = taken > 0
+            ? 'נותרו <strong>' + left + '</strong> מקומות מתוך ' + total + ' במחיר הפריסייל'
+            : '<strong>' + total + '</strong> מקומות בלבד במחיר הפריסייל';
     }
-    renderSpots(false);
-
-    function drop() {
-        spots = spots - 1;
-        if (spots < 1) spots = START;
-        renderSpots(true);
-        setTimeout(drop, 180000 + Math.random() * 300000);
-    }
-    setTimeout(drop, 90000 + Math.random() * 120000);
+    if (fill) fill.style.width = (taken / total * 100).toFixed(1) + '%';
+    /* בלי מכירות אין מה למלא, ופס ריק נראה שבור */
+    if (track) track.style.display = taken > 0 ? '' : 'none';
 })();
 
 /* ── הבר העליון נעלם בגלילה ── */
