@@ -2536,8 +2536,9 @@ const CONFIG = {
     // מתי הקורס נפתח. משנים כאן, וזה מתעדכן בכל מקום בדף
     COURSE_OPENS: '2026-08-27',
 
-    // מתי מחיר הפריסייל נסגר (שעון ישראל)
-    DEADLINE: '2026-09-01T23:59:00+03:00',
+    // מתי מחיר הפריסייל נסגר (שעון ישראל). הלילה שלפני הפתיחה,
+    // כי פריסייל שממשיך אחרי שהמוצר נפתח הוא כבר לא פריסייל
+    DEADLINE: '2026-08-26T23:59:00+03:00',
 
 };
 
@@ -3225,6 +3226,16 @@ document.querySelectorAll('.reveal, .reveal-scale').forEach(el => obs.observe(el
 function updateCountdown() {
     const target = new Date(CONFIG.DEADLINE).getTime();
     const diff = Math.max(0, target - Date.now());
+
+    /* נגמר: טיימר שתקוע על אפס נראה שבור, אז אומרים את זה במילים */
+    if (diff === 0) {
+        const timer = document.querySelector('.ub-timer');
+        if (timer) timer.textContent = 'מחיר הפריסייל נסגר';
+        const cd = document.querySelector('.countdown-section');
+        if (cd) cd.style.display = 'none';
+        return;
+    }
+
     const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
     set('cd-days', Math.floor(diff / 86400000));
     set('cd-hours', Math.floor((diff % 86400000) / 3600000));
