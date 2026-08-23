@@ -623,9 +623,9 @@
 @keyframes pulse-dot { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
 
         .hero h1 {
-            font-size: clamp(21px, 4.4vw, 42px);
-            font-weight: 900; line-height: 1.32;
-            letter-spacing: -0.6px;
+            font-size: clamp(28px, 6.6vw, 46px);
+            font-weight: 900; line-height: 1.22;
+            letter-spacing: -0.8px;
             margin-bottom: 22px;
             max-width: 800px;
             margin-left: auto; margin-right: auto;
@@ -636,9 +636,44 @@
             max-width: 570px; margin: 0 auto 30px;
             line-height: 1.85;
         }
-        .hs-lead { display: block; color: var(--text); font-weight: 800; margin-bottom: 12px; }
-        .hs-line { display: block; }
-        .hs-line + .hs-line { margin-top: 6px; }
+        /* ── הדגמה חיה בהירו: שיחה אמיתית שמתנגנת לבד ── */
+        .hero-demo { max-width: 360px; margin: 30px auto 4px; }
+        .hd-frame {
+            background: var(--bg-deep); border: 1px solid var(--line);
+            border-radius: 22px; overflow: hidden;
+            box-shadow: 0 18px 50px rgba(0,0,0,.35);
+        }
+        .hd-top {
+            padding: 11px 15px; background: var(--bg-card);
+            display: flex; align-items: center; gap: 10px;
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .hd-msgs {
+            height: 268px; padding: 14px 13px;
+            display: flex; flex-direction: column; gap: 8px;
+            justify-content: flex-end; overflow: hidden;
+            /* ההודעה שנגללה למעלה נמוגה במקום להיחתך באמצע שורה */
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 42px);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 42px);
+        }
+        .hd-msgs .wa-msg { max-width: 92%; font-size: 13px; animation: hd-pop .32s cubic-bezier(.16,1,.3,1); }
+        @keyframes hd-pop { from { opacity: 0; transform: translateY(9px) scale(.97); } to { opacity: 1; transform: none; } }
+        .hd-caption {
+            text-align: center; margin-top: 13px;
+            font-size: 14px; color: var(--text-dim);
+        }
+        .hd-caption b { color: var(--wa-bright); font-weight: 800; }
+        @media (prefers-reduced-motion: reduce) { .hd-msgs .wa-msg { animation: none; } }
+        .hs-key { color: var(--text); font-weight: 800; }
+        .hs-num {
+            color: var(--wa-bright); font-weight: 800;
+            border-bottom: 2px solid rgba(74,229,133,.45); padding-bottom: 1px;
+        }
+        .hs-good {
+            color: var(--wa-bright); font-weight: 900;
+            border-bottom: 3px solid rgba(74,229,133,.5); padding-bottom: 2px;
+        }
+        .hs-bad { color: #ff8f8f; font-weight: 900; text-decoration: line-through; text-decoration-thickness: 2px; }
         .hero-sub-punch {
             margin-top: 14px; font-weight: 700;
             color: var(--text); font-size: clamp(17px, 4.2vw, 21px);
@@ -1576,15 +1611,29 @@
         </h1>
 
         <p class="hero-sub reveal stagger-3">
-            <b class="hs-lead">תכיר את העובד החדש שלך.</b>
-            <span class="hs-line">הוא יודע את המחירון, את הנהלים, ואת מה שאמרת ללקוח לפני חודש.</span>
-            <span class="hs-line">הוא לא מאחר, לא שוכח, ולא יוצא להפסקה בדיוק כשנכנסת הודעה.</span>
-            <span class="hs-line">הוא לא מתפטר אחרי שנה ולוקח איתו את כל מה שלימדת אותו.</span>
-            <span class="hs-line">הוא עונה תוך 6 שניות, גם ב-2 בלילה וגם בשבת.</span>
+            תכיר את <b class="hs-key">העובד החדש שלך</b>. הוא יודע את המחירון, את הנהלים,
+            ואת מה שאמרת ללקוח לפני חודש. הוא <b class="hs-key">לא מאחר, לא שוכח, לא יוצא להפסקה</b>,
+            ולא מתפטר אחרי שנה עם כל מה שלימדת אותו. הוא עונה <b class="hs-num">תוך 6 שניות</b>,
+            בוואטסאפ ובאינסטגרם, גם ב-2 בלילה וגם בשבת.
         </p>
         <p class="hero-sub hero-sub-punch reveal stagger-3">
-            <span class="marker" style="white-space:nowrap">3 שקלים ליום</span>, במקום 7,040 בחודש.
+            <span class="hs-good">3 שקלים ליום</span>, במקום <span class="hs-bad">7,040 בחודש</span>.
         </p>
+
+        <div class="hero-demo reveal stagger-4">
+            <div class="hd-frame">
+                <div class="hd-top">
+                    <div class="ph-avatar">ר</div>
+                    <div>
+                        <div class="ph-name">רהיטי אורן</div>
+                        <div class="ph-status"><i></i>מקוון</div>
+                    </div>
+                    <div class="ph-clock">23:47</div>
+                </div>
+                <div class="hd-msgs" id="hdMsgs"></div>
+            </div>
+            <div class="hd-caption">23:47. אתה ישן. <b>הסוכן לא.</b></div>
+        </div>
 
         <!-- PAIN STRIP -->
         <div class="pain-strip reveal stagger-3">
@@ -2584,6 +2633,73 @@ var RBS_ATTR = (function () {
 
     /* פעמיים את אותה רשימה: זה מה שמאפשר ללולאה להיסגר בלי קפיצה */
     CLIENTS.concat(CLIENTS).forEach(function (c) { track.appendChild(chip(c)); });
+})();
+
+/* ── הדגמה בהירו: שיחה אחת שמתנגנת בלולאה ──
+   התסריט הוא מה שסוכן באמת עונה: מחיר מדויק, מדיניות משלוח, ואז דחיפה
+   לסגירה. לא "איך אפשר לעזור", שזה מה שבוטים עושים ולקוחות שונאים. */
+(function () {
+    var box = document.getElementById('hdMsgs');
+    if (!box) return;
+
+    var SCRIPT = [
+        { side: 'in',  t: '23:47', wait: 900,
+          text: 'היי, כמה עולה שולחן האורן שראיתי אצלכם באינסטגרם?<br>ויש משלוח לראשון?' },
+        { typing: 1500 },
+        { side: 'out', t: '23:47', wait: 2600,
+          text: 'היי 🙂 שולחן אורן: 1,290 ₪.<br>משלוח לראשון לציון 89 ₪, תוך 3-5 ימי עסקים.<br>רוצה שאשמור לך אחד?' },
+        { side: 'in',  t: '23:48', wait: 1600, text: 'כן, תשמור לי' },
+        { typing: 1000 },
+        { side: 'out', t: '23:48', wait: 3200, text: 'שמרתי. שולח לך קישור לתשלום עכשיו.' }
+    ];
+
+    function bubble(step) {
+        var el = document.createElement('div');
+        el.className = 'wa-msg ' + step.side;
+        el.innerHTML = step.text +
+            '<span class="wa-t">' + step.t +
+            (step.side === 'out' ? ' <span class="wa-check">✓✓</span>' : '') + '</span>';
+        return el;
+    }
+
+    /* בלי אנימציה: מציגים את השיחה במלואה ולא מנגנים כלום */
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        SCRIPT.forEach(function (step) { if (step.side) box.appendChild(bubble(step)); });
+        return;
+    }
+
+    var timer = null;
+    function play(i) {
+        if (i >= SCRIPT.length) {
+            timer = setTimeout(function () { box.innerHTML = ''; play(0); }, 3400);
+            return;
+        }
+        var step = SCRIPT[i];
+        if (step.typing) {
+            var t = document.createElement('div');
+            t.className = 'wa-msg out';
+            t.innerHTML = '<span class="wa-typing"><i></i><i></i><i></i></span>';
+            box.appendChild(t);
+            timer = setTimeout(function () { box.removeChild(t); play(i + 1); }, step.typing);
+            return;
+        }
+        box.appendChild(bubble(step));
+        while (box.children.length > 3) box.removeChild(box.firstChild);
+        timer = setTimeout(function () { play(i + 1); }, step.wait);
+    }
+
+    /* מתחילים רק כשהדמו באמת נראה, ועוצרים כשיוצאים ממנו */
+    var frame = box.closest('.hero-demo');
+    if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+            entries.forEach(function (e) {
+                if (e.isIntersecting && !timer) play(0);
+                else if (!e.isIntersecting && timer) { clearTimeout(timer); timer = null; box.innerHTML = ''; }
+            });
+        }, { threshold: 0.25 }).observe(frame);
+    } else {
+        play(0);
+    }
 })();
 
 /* ====== החלת קישור התשלום על כל הכפתורים ====== */
