@@ -50,7 +50,7 @@ const META_PIXEL_ID = process.env.META_PIXEL_ID || '1410625827632523';
 const META_API = 'https://graph.facebook.com/v21.0/';
 const COURSE_NAME = 'סוכני AI בוואטסאפ - קורס דיגיטלי';
 const COURSE_ID = 'ai-agents-course';
-const COURSE_PRICE = 293.82;   /* 249 + מע״מ, הסכום שמחויב בפועל */
+const COURSE_PRICE = 297;   /* מחיר ההשקה, כולל מע״מ */
 
 function sha256(v) {
     return crypto.createHash('sha256').update(String(v)).digest('hex');
