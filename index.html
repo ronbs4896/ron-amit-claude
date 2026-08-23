@@ -636,6 +636,13 @@
             max-width: 570px; margin: 0 auto 30px;
             line-height: 1.85;
         }
+        .hs-lead { display: block; color: var(--text); font-weight: 800; margin-bottom: 12px; }
+        .hs-line { display: block; }
+        .hs-line + .hs-line { margin-top: 6px; }
+        .hero-sub-punch {
+            margin-top: 14px; font-weight: 700;
+            color: var(--text); font-size: clamp(17px, 4.2vw, 21px);
+        }
 
         .meta-strip {
             display: grid; grid-template-columns: repeat(4, 1fr);
@@ -1563,15 +1570,20 @@
     </div>
     <div class="container">
         <h1 class="reveal stagger-2">
-            בזמן שאתה ישן, שלושה לקוחות<br class="br-d">
-            שאלו כמה זה עולה.<br>
-            <span class="h1-hit">עד הבוקר שניים קנו במקום אחר.</span>
+            כמה אתה שורף כל חודש<br class="br-d">
+            על מישהו שרק אומר ללקוחות<br>
+            <span class="h1-hit">כמה זה עולה?</span>
         </h1>
 
         <p class="hero-sub reveal stagger-3">
-            סוכן AI שעונה להם תוך 6 שניות בוואטסאפ ובאינסטגרם, גם ב-2 בלילה וגם בשבת.
-            בונים אותו בערב אחד בלי לכתוב שורת קוד, והוא עולה
-            <span class="marker" style="white-space:nowrap">3 שקלים ליום</span>, בערך 90 בחודש, במקום 7,040.
+            <b class="hs-lead">תכיר את העובד החדש שלך.</b>
+            <span class="hs-line">הוא יודע את המחירון, את הנהלים, ואת מה שאמרת ללקוח לפני חודש.</span>
+            <span class="hs-line">הוא לא מאחר, לא שוכח, ולא יוצא להפסקה בדיוק כשנכנסת הודעה.</span>
+            <span class="hs-line">הוא לא מתפטר אחרי שנה ולוקח איתו את כל מה שלימדת אותו.</span>
+            <span class="hs-line">הוא עונה תוך 6 שניות, גם ב-2 בלילה וגם בשבת.</span>
+        </p>
+        <p class="hero-sub hero-sub-punch reveal stagger-3">
+            <span class="marker" style="white-space:nowrap">3 שקלים ליום</span>, במקום 7,040 בחודש.
         </p>
 
         <!-- PAIN STRIP -->
