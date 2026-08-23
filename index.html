@@ -44,6 +44,24 @@
     /></noscript>
     <!-- End Meta Pixel Code -->
 
+    <!-- Microsoft Clarity: הקלטות מסך ומפות חום.
+         מדביקים כאן את מזהה הפרויקט מ-clarity.microsoft.com, וזהו.
+         ריק = הסקריפט לא נטען בכלל, ואין קריאה החוצה. -->
+    <script>
+    var CLARITY_ID = '';
+    if (CLARITY_ID) {
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+            t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, 'clarity', 'script', CLARITY_ID);
+    }
+    /* עוטף בטוח: אם Clarity לא נטען, שום קריאה בדף לא נופלת */
+    function clar() {
+        if (typeof clarity === 'function') { try { clarity.apply(null, arguments); } catch (e) {} }
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;500;700;900&display=swap" rel="stylesheet">
@@ -2445,7 +2463,7 @@
             <h4>7. אחריות</h4>
             <p>הקורס מסופק כמות שהוא (AS IS). המפעיל לא יישא באחריות לנזק עקיף או תוצאתי הנובע מיישום התכנים. השימוש בכלים חיצוניים כפוף לתנאי אותם ספקים, והמפעיל אינו אחראי לזמינותם או למחיריהם. אין לראות בתכנים ייעוץ משפטי, פיננסי או מקצועי אחר.</p>
             <h4>8. פרטיות</h4>
-            <p>פרטים הנמסרים ברכישה (שם, מייל, טלפון) משמשים לאספקת המוצר, לתמיכה ולעדכונים מהמפעיל. ניתן להסיר את עצמך מרשימת התפוצה בכל עת. פרטים לא יועברו לצד שלישי אלא לצורך תפעול השירות (סליקה, דיוור) או כנדרש על פי דין.</p>
+            <p>פרטים הנמסרים ברכישה (שם, מייל, טלפון) משמשים לאספקת המוצר, לתמיכה ולעדכונים מהמפעיל. ניתן להסיר את עצמך מרשימת התפוצה בכל עת. פרטים לא יועברו לצד שלישי אלא לצורך תפעול השירות (סליקה, דיוור) או כנדרש על פי דין. האתר משתמש בכלי מדידה של צד שלישי, Meta Pixel ו-Microsoft Clarity, לצורך מדידת ביצועים ושיפור הדף. Clarity מתעד את ההתנהגות בעמוד (גלילות, קליקים ותנועת עכבר) ומסתיר בהקלטה תוכן שהוקלד בשדות טופס. ניתן לחסום קבצי Cookie דרך הגדרות הדפדפן.</p>
             <h4>9. שונות ויצירת קשר</h4>
             <p>על תקנון זה יחול הדין הישראלי בלבד, וסמכות השיפוט הייחודית נתונה לבתי המשפט המוסמכים במחוז תל אביב. המפעיל רשאי לעדכן את התקנון מעת לעת, והנוסח המפורסם בדף זה במועד הרכישה הוא המחייב.</p>
             <p><b>יצירת קשר:</b> אר-בי-אס דיגיטל יזמות והשקעות בע״מ · office@ronbenshushan.com · 052-270-9152</p>
@@ -2699,6 +2717,7 @@ var RBS_LEAD = (function () {
     function intent() {
         if (intentFired || typeof fbq !== 'function') return;
         intentFired = true;
+        clar('event', 'checkout_intent');
         fbq('track', 'InitiateCheckout', {
             content_name: 'סוכני AI בוואטסאפ - קורס דיגיטלי',
             content_ids: ['ai-agents-course'], content_type: 'product',
@@ -2767,6 +2786,9 @@ var RBS_LEAD = (function () {
                 }).catch(function () {});
             } catch (err) {}
         }
+        clar('event', 'lead_submitted');
+        clar('set', 'utm_source', String(RBS_ATTR.utm_source || 'direct'));
+        clar('set', 'utm_campaign', String(RBS_ATTR.utm_campaign || 'none'));
         setTimeout(function () { location.href = checkoutUrl(lead); }, 400);
     }
 

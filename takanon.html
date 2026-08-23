@@ -36,6 +36,24 @@
     /></noscript>
     <!-- End Meta Pixel Code -->
 
+    <!-- Microsoft Clarity: הקלטות מסך ומפות חום.
+         מדביקים כאן את מזהה הפרויקט מ-clarity.microsoft.com, וזהו.
+         ריק = הסקריפט לא נטען בכלל, ואין קריאה החוצה. -->
+    <script>
+    var CLARITY_ID = '';
+    if (CLARITY_ID) {
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+            t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, 'clarity', 'script', CLARITY_ID);
+    }
+    /* עוטף בטוח: אם Clarity לא נטען, שום קריאה בדף לא נופלת */
+    function clar() {
+        if (typeof clarity === 'function') { try { clarity.apply(null, arguments); } catch (e) {} }
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;500;700;900&display=swap" rel="stylesheet">
@@ -290,7 +308,7 @@
 
         <section id="privacy">
             <h2>פרטיות</h2>
-            <p>פרטים הנמסרים ברכישה (שם, מייל, טלפון) משמשים לאספקת המוצר, לתמיכה ולעדכונים מהמפעיל. ניתן להסיר את עצמך מרשימת התפוצה בכל עת. פרטים לא יועברו לצד שלישי אלא לצורך תפעול השירות (סליקה, דיוור) או כנדרש על פי דין.</p>
+            <p>פרטים הנמסרים ברכישה (שם, מייל, טלפון) משמשים לאספקת המוצר, לתמיכה ולעדכונים מהמפעיל. ניתן להסיר את עצמך מרשימת התפוצה בכל עת. פרטים לא יועברו לצד שלישי אלא לצורך תפעול השירות (סליקה, דיוור) או כנדרש על פי דין. האתר משתמש בכלי מדידה של צד שלישי, Meta Pixel ו-Microsoft Clarity, לצורך מדידת ביצועים ושיפור הדף. Clarity מתעד את ההתנהגות בעמוד (גלילות, קליקים ותנועת עכבר) ומסתיר בהקלטה תוכן שהוקלד בשדות טופס. ניתן לחסום קבצי Cookie דרך הגדרות הדפדפן.</p>
         </section>
 
         <section id="misc">
