@@ -197,7 +197,7 @@
            חוץ מ-primary שהוא הווריאנט הדגשי היחיד.
            כל הווריאנטים נבדקו מול ארבע רצועות הרקע ועוברים AA (4.5:1). */
         .badge,
-        .eyebrow, .live-viewers,
+        .eyebrow,
         .about-tag, .price-tag, .wa-agent-tag {
             display: inline-flex; align-items: center; gap: 7px;
             padding: 6px 14px;
@@ -225,7 +225,7 @@
             background: transparent; color: #c3d4cd;
             border-color: rgba(255, 255, 255, 0.18);
         }
-        .badge-destructive, .live-viewers {
+        .badge-destructive {
             background: rgba(239, 68, 68, 0.15); color: #ff9b9b;
             border-color: rgba(239, 68, 68, 0.28);
         }
@@ -256,21 +256,15 @@
         }
 
         /* ── נקודת סטטוס, אותו רכיב בכל התגיות ── */
-        .badge .b-dot, .eb-dot, .live-dot {
+        .badge .b-dot, .eb-dot {
             width: 6px; height: 6px; border-radius: 50%;
             background: currentColor; flex-shrink: 0;
         }
-        .live-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
 
         /* ── מרווחים חיצוניים נשארים באחריות ההקשר, לא של הרכיב ── */
         .eyebrow      { margin-bottom: 18px; }
-        .live-viewers { margin-top: 20px; animation: fade-in 1s ease 2s both; }
         .price-tag    { margin-bottom: 24px; position: relative; }
         .wa-agent-tag { margin-bottom: 6px; }
-
-        @media (prefers-reduced-motion: reduce) {
-            .live-dot { animation: none; }
-        }
 
 /* ══ SIM ══ */
         /* בורר עסק */
@@ -650,20 +644,27 @@
         }
         .hd-msgs {
             height: 268px; padding: 14px 13px;
-            display: flex; flex-direction: column; gap: 8px;
+            display: flex; flex-direction: column;
             justify-content: flex-end; overflow: hidden;
             /* ההודעה שנגללה למעלה נמוגה במקום להיחתך באמצע שורה */
-            -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 42px);
-            mask-image: linear-gradient(to bottom, transparent 0, #000 42px);
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 46px);
+            mask-image: linear-gradient(to bottom, transparent 0, #000 46px);
         }
-        .hd-msgs .wa-msg { max-width: 92%; font-size: 13px; animation: hd-pop .32s cubic-bezier(.16,1,.3,1); }
-        @keyframes hd-pop { from { opacity: 0; transform: translateY(9px) scale(.97); } to { opacity: 1; transform: none; } }
+        /* כל השיחה נוסעת כגוש אחד כלפי מעלה, וההודעה החדשה נכנסת מתחתיה */
+        .hd-stream { display: flex; flex-direction: column; gap: 8px; will-change: transform; }
+        .hd-stream.glide { transition: transform .55s cubic-bezier(.22, 1, .3, 1); }
+        .hd-stream .wa-msg { max-width: 92%; font-size: 13px; }
+        .hd-stream .wa-msg.rise { animation: hd-rise .45s ease-out both; }
+        @keyframes hd-rise { from { opacity: 0; transform: scale(.97); } to { opacity: 1; transform: none; } }
         .hd-caption {
             text-align: center; margin-top: 13px;
             font-size: 14px; color: var(--text-dim);
         }
         .hd-caption b { color: var(--wa-bright); font-weight: 800; }
-        @media (prefers-reduced-motion: reduce) { .hd-msgs .wa-msg { animation: none; } }
+        @media (prefers-reduced-motion: reduce) {
+            .hd-stream .wa-msg.rise { animation: none; }
+            .hd-stream.glide { transition: none; }
+        }
         .hs-key { color: var(--text); font-weight: 800; }
         .hs-num {
             color: var(--wa-bright); font-weight: 800;
@@ -1630,7 +1631,7 @@
                     </div>
                     <div class="ph-clock">23:47</div>
                 </div>
-                <div class="hd-msgs" id="hdMsgs"></div>
+                <div class="hd-msgs"><div class="hd-stream" id="hdMsgs"></div></div>
             </div>
             <div class="hd-caption">23:47. אתה ישן. <b>הסוכן לא.</b></div>
         </div>
@@ -1673,21 +1674,6 @@
                 <span class="mc-value">וואטסאפ</span>
                 ואינסטגרם
             </div>
-        </div>
-
-        <!-- HERO VIDEO שים כתובת וידאו ב-CONFIG.HERO_VIDEO למטה -->
-        <div class="reveal stagger-4" style="max-width:420px;margin:34px auto 0;border-radius:20px;overflow:hidden;border:1px solid var(--glass-border);background:var(--glass);aspect-ratio:16/9;position:relative;cursor:pointer" id="heroVideo" onclick="playHeroVid()">
-            <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:var(--bg-card)">
-                <div style="width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,0.92);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.3)">
-                    <div style="width:0;height:0;border-top:12px solid transparent;border-bottom:12px solid transparent;border-right:20px solid var(--wa-deep);margin-right:-3px;transform:rotate(180deg)"></div>
-                </div>
-                <span style="font-size:13px;color:var(--text-dim);font-weight:500">תראה את הסוכן עונה ללקוח אמיתי, 60 שניות</span>
-            </div>
-        </div>
-
-            <div class="live-viewers" id="liveViewersBox">
-                <span class="live-dot"></span>
-                <span id="viewerCount">17</span> אנשים צופים בדף הזה עכשיו
             </div>
         </div>
     </div>
@@ -2555,13 +2541,7 @@ const CONFIG = {
     // מתי מחיר ההשקה נסגר (שעון ישראל)
     DEADLINE: '2026-09-01T23:59:00+03:00',
 
-    // וידאו הירו: יוטיוב, וימאו או קישור ישיר ל-mp4. ריק = לא לחיץ
-    HERO_VIDEO: '',
-
-    // סרטוני עדויות, לפי סדר הכרטיסים
-
-    // הוכחה חברתית "חיה" (צופים עכשיו + פופאפ רכישות)
-    // שים false אם אתה מעדיף לא להציג נתונים מדומים
+    // מונה הכרטיסים שנותרו. false = מספר קבוע, בלי ירידה ברקע
     SHOW_LIVE_SOCIAL: true,
 };
 
@@ -2639,8 +2619,8 @@ var RBS_ATTR = (function () {
    התסריט הוא מה שסוכן באמת עונה: מחיר מדויק, מדיניות משלוח, ואז דחיפה
    לסגירה. לא "איך אפשר לעזור", שזה מה שבוטים עושים ולקוחות שונאים. */
 (function () {
-    var box = document.getElementById('hdMsgs');
-    if (!box) return;
+    var stream = document.getElementById('hdMsgs');
+    if (!stream) return;
 
     var SCRIPT = [
         { side: 'in',  t: '23:47', wait: 900,
@@ -2655,7 +2635,7 @@ var RBS_ATTR = (function () {
 
     function bubble(step) {
         var el = document.createElement('div');
-        el.className = 'wa-msg ' + step.side;
+        el.className = 'wa-msg rise ' + step.side;
         el.innerHTML = step.text +
             '<span class="wa-t">' + step.t +
             (step.side === 'out' ? ' <span class="wa-check">✓✓</span>' : '') + '</span>';
@@ -2664,37 +2644,69 @@ var RBS_ATTR = (function () {
 
     /* בלי אנימציה: מציגים את השיחה במלואה ולא מנגנים כלום */
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        SCRIPT.forEach(function (step) { if (step.side) box.appendChild(bubble(step)); });
+        SCRIPT.forEach(function (step) { if (step.side) stream.appendChild(bubble(step)); });
         return;
     }
 
-    var timer = null;
+    /* כל שינוי בשיחה מתחיל מהמצב שהעין כבר רואה ונוסע ממנו למעלה: מודדים
+       את הגובה לפני ואחרי, מקבעים את ההפרש כנקודת פתיחה, ומשחררים אותו. */
+    function currentY() {
+        var m = window.getComputedStyle(stream).transform;
+        if (!m || m === 'none') return 0;
+        var p = m.match(/matrix\(([^)]+)\)/);
+        return p ? (parseFloat(p[1].split(',')[5]) || 0) : 0;
+    }
+    function glide(change) {
+        var before = stream.offsetHeight;
+        change();
+        var delta = stream.offsetHeight - before;
+        if (!delta) return;
+        stream.classList.remove('glide');
+        stream.style.transform = 'translateY(' + (currentY() + delta) + 'px)';
+        void stream.offsetHeight;                 /* מאלץ פריסה מחדש לפני המעבר */
+        stream.classList.add('glide');
+        stream.style.transform = 'translateY(0)';
+    }
+    function reset() {
+        stream.classList.remove('glide');
+        stream.style.transform = '';
+        stream.innerHTML = '';
+        typingEl = null;
+    }
+
+    var timer = null, typingEl = null;
     function play(i) {
         if (i >= SCRIPT.length) {
-            timer = setTimeout(function () { box.innerHTML = ''; play(0); }, 3400);
+            timer = setTimeout(function () { reset(); play(0); }, 2400);
             return;
         }
         var step = SCRIPT[i];
         if (step.typing) {
-            var t = document.createElement('div');
-            t.className = 'wa-msg out';
-            t.innerHTML = '<span class="wa-typing"><i></i><i></i><i></i></span>';
-            box.appendChild(t);
-            timer = setTimeout(function () { box.removeChild(t); play(i + 1); }, step.typing);
+            glide(function () {
+                typingEl = document.createElement('div');
+                typingEl.className = 'wa-msg out rise';
+                typingEl.innerHTML = '<span class="wa-typing"><i></i><i></i><i></i></span>';
+                stream.appendChild(typingEl);
+            });
+            timer = setTimeout(function () { play(i + 1); }, step.typing);
             return;
         }
-        box.appendChild(bubble(step));
-        while (box.children.length > 3) box.removeChild(box.firstChild);
+        /* "מקליד" יורד וההודעה עולה באותה תנועה, בלי קפיצה באמצע */
+        glide(function () {
+            if (typingEl && typingEl.parentNode) stream.removeChild(typingEl);
+            typingEl = null;
+            stream.appendChild(bubble(step));
+        });
         timer = setTimeout(function () { play(i + 1); }, step.wait);
     }
 
     /* מתחילים רק כשהדמו באמת נראה, ועוצרים כשיוצאים ממנו */
-    var frame = box.closest('.hero-demo');
+    var frame = stream.closest('.hero-demo');
     if ('IntersectionObserver' in window) {
         new IntersectionObserver(function (entries) {
             entries.forEach(function (e) {
                 if (e.isIntersecting && !timer) play(0);
-                else if (!e.isIntersecting && timer) { clearTimeout(timer); timer = null; box.innerHTML = ''; }
+                else if (!e.isIntersecting && timer) { clearTimeout(timer); timer = null; reset(); }
             });
         }, { threshold: 0.25 }).observe(frame);
     } else {
@@ -3336,19 +3348,9 @@ setInterval(updateCountdown, 1000);
 /* ====== FAQ ====== */
 function toggleFaq(el) { el.closest('.faq-item').classList.toggle('open'); }
 
-/* ====== LIVE SOCIAL + מונה כרטיסים מתמיד (שקט, בלי פופ-אפים) ====== */
+/* ====== מונה כרטיסים מתמיד (שקט, בלי פופ-אפים) ====== */
 (function () {
-    const box = document.getElementById('liveViewersBox');
-
-    if (!CONFIG.SHOW_LIVE_SOCIAL) {
-        if (box) box.style.display = 'none';
-        return;
-    }
-
-    setInterval(() => {
-        const el = document.getElementById('viewerCount');
-        if (el) el.textContent = 15 + Math.floor(Math.random() * 7);
-    }, 8000);
+    if (!CONFIG.SHOW_LIVE_SOCIAL) return;
 
     /* ── מלאי כרטיסים: נשמר לכל מבקר, יורד בשקט ברקע,
          וכשנגמר חוזר ל-66 ── */
@@ -3432,11 +3434,6 @@ function embedVideo(el, src) {
     } else {
         el.innerHTML = '<video src="' + src + '" autoplay playsinline controls style="width:100%;height:100%;object-fit:cover"></video>';
     }
-}
-
-/* ====== HERO VIDEO ====== */
-function playHeroVid() {
-    embedVideo(document.getElementById('heroVideo'), CONFIG.HERO_VIDEO);
 }
 
 /* ====== AGENDA ROADMAP ANIMATION ====== */
