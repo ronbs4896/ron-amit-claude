@@ -2209,7 +2209,10 @@
 </section>
 
 <!-- VIDEO TESTIMONIALS -->
-<section class="vid-test-section band">
+<!-- הסקשן מוסתר עד שארבע התמונות testi-1.jpg עד testi-4.jpg יעלו לשורש הריפו.
+     ברגע שכולן נטענות הוא נחשף מעצמו, בלי לגעת בקוד. נשאר רק להחליף את
+     "שם הלקוח" ו"תחום העסק" בשמות האמיתיים. -->
+<section class="vid-test-section band" id="testiSection" style="display:none">
     <div class="container">
         <div class="section-head reveal"><span class="eyebrow"><span class="eb-dot"></span>עדויות</span></div>
         <h2 class="section-title reveal">תשמע את זה מהם, לא מאיתנו</h2>
@@ -3355,6 +3358,37 @@ function embedVideo(el, src) {
     gcObs.observe(gc);
 })();
 
+/* ====== עדויות: נחשפות רק כשכל התמונות באמת נטענו ====== */
+(function () {
+    var section = document.getElementById('testiSection');
+    if (!section) return;
+    var thumbs = section.querySelectorAll('.vid-test-thumb');
+    if (!thumbs.length) return;
+
+    var loaded = [], settled = 0;
+    thumbs.forEach(function (thumb, i) {
+        var img = new Image();
+        img.alt = '';
+        img.onload = function () { loaded[i] = img; settle(); };
+        img.onerror = settle;
+        /* בלי loading=lazy: תמונה עצלה בתוך אלמנט מוסתר לא נטענת לעולם,
+           והסקשן לא היה נחשף אף פעם */
+        img.src = 'testi-' + (i + 1) + '.jpg';
+    });
+
+    function settle() {
+        if (++settled < thumbs.length) return;
+        /* הכל או כלום: כרטיס חסר שובר את הנקודות ואת המונה, ועדות בודדת
+           ממילא נראית כאילו שכחנו את השאר */
+        for (var i = 0; i < thumbs.length; i++) if (!loaded[i]) return;
+        thumbs.forEach(function (thumb, i) {
+            thumb.innerHTML = '';
+            thumb.appendChild(loaded[i]);
+        });
+        section.style.display = '';
+    }
+})();
+
 /* ====== VIDEO TESTIMONIALS SLIDER ====== */
 (function () {
     let vtIdx = 0;
@@ -3387,7 +3421,7 @@ function embedVideo(el, src) {
 
     window.playVidTest = function (i) {
         const card = vtCards[i];
-        const src = CONFIG.TESTIMONIAL_VIDEOS[i];
+        const src = (CONFIG.TESTIMONIAL_VIDEOS || [])[i];
         if (!card || !src) return;
         embedVideo(card.querySelector('.vid-test-thumb'), src);
         card.classList.add('playing');
