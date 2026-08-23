@@ -11,7 +11,7 @@
     <!-- OG / שיתוף -->
     <meta property="og:site_name" content="WhatsApp AI Agents">
     <meta property="og:title" content="הקורס המלא לבניית סוכני AI בוואטסאפ">
-    <meta property="og:description" content="סוכן שעונה ללקוחות שלך 24/7 בוואטסאפ ובאינסטגרם, בשלושה שקלים ליום. 197 ש״ח כולל מע״מ במקום 1,497, ל-30 הראשונים.">
+    <meta property="og:description" content="סוכן שעונה ללקוחות שלך 24/7 בוואטסאפ ובאינסטגרם, בשלושה שקלים ליום. 197 ש״ח כולל מע״מ במקום 1,497.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://ron-amit-claude.vercel.app/">
     <meta property="og:image" content="https://ron-amit-claude.vercel.app/og-image.png">
@@ -564,8 +564,6 @@
         }
         .urgency-bar { transition: transform 0.35s ease; }
         .urgency-bar.ub-hide { transform: translateY(-100%); }
-        .ub-price { white-space: nowrap; }
-        .ub-sep { opacity: 0.35; font-weight: 400; }
         .ub-timer {
             display: inline-flex; align-items: center; gap: 7px;
             white-space: nowrap; font-weight: 900;
@@ -583,7 +581,6 @@
         }
         @media (max-width: 400px) {
             .urgency-bar { font-size: 11.5px; }
-            .ub-sep { display: none; }
         }
         @keyframes pulse-text { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
@@ -618,12 +615,10 @@
 
         .hero h1 {
             font-size: clamp(28px, 6.6vw, 46px);
-            font-weight: 900; line-height: 1.22;
+            font-weight: 900; line-height: 1.2;
             letter-spacing: -0.8px;
-            margin-bottom: 22px;
+            margin: 0 auto 22px;
             max-width: 800px;
-            margin-left: auto; margin-right: auto;
-            text-wrap: balance;
         }
         .hero-sub {
             font-size: 16.5px; color: var(--text-mid);
@@ -955,10 +950,7 @@
         .cd-num { font-size: 23px; font-weight: 900; line-height: 1; color: var(--wa); }
         .cd-label { font-size: 10.5px; color: var(--text-dim); margin-top: 3px; font-weight: 500; }
 
-        .spots-bar { max-width: 360px; margin: 16px auto 22px; position: relative; }
-        .opens-line { text-align: center; margin-bottom: 14px; }
-        .spots-line { text-align: center; margin-bottom: 10px; }
-        .spots-line strong { font-weight: 900; display: inline-block; }
+        .opens-line { text-align: center; margin: 2px 0 20px; }
 
         /* ── תגית הפריסייל: ברק שעובר על המילה, ונקודה שפועמת החוצה ── */
         .presale-badge {
@@ -1007,7 +999,6 @@
             transform: translateX(-130%);
             animation: psb-sheen 3.6s ease-in-out infinite;
         }
-        .ub-price s { opacity: 0.62; font-weight: 700; }
         @media (prefers-reduced-motion: reduce) {
             .presale-badge::after, .ub-presale::after,
             .presale-badge .psb-live, .ub-presale .psb-live { animation: none; }
@@ -1016,15 +1007,6 @@
             .presale-badge { font-size: 11px; padding: 7px 13px; gap: 7px; letter-spacing: 1.6px; }
             .presale-badge .psb-tail { font-size: 11.5px; }
         }
-        .spots-track { height: 8px; background: rgba(255,255,255,0.06); border-radius: 8px; overflow: hidden; }
-        .spots-fill { height: 100%; border-radius: 8px; background: linear-gradient(90deg, var(--red), #f97316); width: 78%; position: relative; }
-        .spots-fill::after {
-            content: ''; position: absolute; top: 0; right: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-            animation: bar-shine 2s infinite;
-        }
-        @keyframes bar-shine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
         .price-anchor { margin-bottom: 6px; position: relative; }
         .price-original { font-size: 18px; font-weight: 700; color: var(--text-dim); text-decoration: line-through; display: inline-block; }
         .price-amount {
@@ -1370,16 +1352,6 @@
         .exit-decline u { text-underline-offset: 3px; white-space: nowrap; }
         .exit-decline:hover { color: var(--text-mid); }
 
-        /* ====== STICKY MOBILE ====== */
-        .sticky-cta {
-            display: none; position: fixed; bottom: 0; left: 0; right: 0;
-            background: var(--bg-deep);
-            padding: 9px 14px;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
-            z-index: 99; text-align: center;
-        }
-        .sticky-cta .cta-btn { padding: 11px 20px; font-size: 15px; width: 100%; border-radius: 12px; box-shadow: none; }
-
         .f-logo { width: 190px; height: auto; display: block; margin: 0 auto 20px; opacity: 0.9; }
         .tk-mark { width: 26px; height: 26px; vertical-align: -6px; margin-left: 9px; }
         .footer {
@@ -1498,10 +1470,10 @@
             .meta-chip:nth-child(2)::after { display: none; }
             .meta-chip:nth-child(3), .meta-chip:nth-child(4) { border-top: 1px solid var(--glass-border); }
             .hero { padding: 34px 0 30px; }
+            /* הכותרת חורגת מריפוד המכל, כדי לגמור בפחות שורות */
+            .hero h1 { margin-inline: -13px; letter-spacing: -1.2px; }
             .cta-btn { padding: 17px 26px; font-size: 17px; }
             .price-inner { padding: 28px 16px; }
-            .sticky-cta { display: block; }
-            .final-section { padding-bottom: 130px; }
             .growth-chart { height: 300px; gap: 10px; }
             .gc-month { font-size: 11.5px; }
             .gc-detail { font-size: 10px; }
@@ -1603,8 +1575,6 @@
 <!-- URGENCY BAR -->
 <div class="urgency-bar">
     <span class="ub-presale"><span class="psb-live"></span>PRESALE</span>
-    <span class="ub-price">197 ₪ במקום <s>1,497 ₪</s></span>
-    <span class="ub-sep">|</span>
     <span class="ub-timer"><svg class="ico" aria-hidden="true"><use href="#i-hourglass"/></svg> <span class="ub-label">המחיר עולה בעוד </span><span id="ubDays"></span><span class="ub-count" id="ubCount">–</span></span>
 </div>
 
@@ -2282,9 +2252,9 @@
                     <span class="psb-live"></span>PRESALE
                     <span class="psb-tail">197 ₪ במקום 1,497 ₪</span>
                 </div>
+                <div class="opens-line"><span class="badge badge-info"><span class="b-dot"></span>הקורס נפתח <b data-opens="full">ביום חמישי, 27.8</b></span></div>
                 <div class="price-title">הסוכן שיענה במקומך</div>
                 <div class="price-subtitle">נרשמים היום במחיר הפריסייל, מתחילים ביום הפתיחה</div>
-                <div class="opens-line"><span class="badge badge-info"><span class="b-dot"></span>הקורס נפתח <b data-opens="full">ביום חמישי, 27.8</b></span></div>
 
                 <div class="countdown-section">
                     <div class="countdown-label">מחיר הפריסייל נסגר בעוד</div>
@@ -2294,11 +2264,6 @@
                         <div class="cd-item"><div class="cd-num" id="cd-mins">0</div><div class="cd-label">דקות</div></div>
                         <div class="cd-item"><div class="cd-num" id="cd-secs">0</div><div class="cd-label">שניות</div></div>
                     </div>
-                </div>
-
-                <div class="spots-bar">
-                    <div class="spots-line"><span class="badge badge-warning"><span class="b-dot"></span><span id="spotsText">30 מקומות בלבד במחיר הפריסייל</span></span></div>
-                    <div class="spots-track"><div class="spots-fill" id="spotsFill"></div></div>
                 </div>
 
                 <div class="price-anchor">
@@ -2405,7 +2370,7 @@
         </div>
         <div class="faq-item reveal stagger-5">
             <div class="faq-q" onclick="toggleFaq(this)"><span>למה 197 ולא 1,497?</span><span class="faq-arrow"><svg class="ico" aria-hidden="true"><use href="#i-chevron"/></svg></span></div>
-            <div class="faq-a"><p>זה פריסייל, ל-30 הראשונים. אנחנו רוצים קבוצה שתבנה סוכן ותספר לנו איפה נתקעה, כדי שהגרסה הבאה תהיה טובה יותר. בתמורה אתה משלם פחות משביעית מהמחיר. אחרי 30 המקומות הראשונים הקורס עולה ל-1,497, וזה המחיר שהוא יישאר בו.</p></div>
+            <div class="faq-a"><p>זה מחיר פריסייל, לפני שהקורס נפתח. אנחנו רוצים קבוצה ראשונה שתבנה סוכן ותספר לנו איפה היא נתקעה, כדי שהגרסה הבאה תהיה טובה יותר. בתמורה אתה משלם פחות משביעית מהמחיר. כשהפריסייל נסגר הקורס עולה ל-1,497, וזה המחיר שהוא יישאר בו.</p></div>
         </div>
     </div>
 </section>
@@ -2424,11 +2389,6 @@
         </div>
     </div>
 </section>
-
-<!-- STICKY CTA MOBILE -->
-<div class="sticky-cta" id="stickyCta">
-    <a href="#register" class="cta-btn">קח את הסוכן | 197 ש״ח</a>
-</div>
 
 
     </div>
@@ -2561,10 +2521,6 @@ const CONFIG = {
     // מתי מחיר הפריסייל נסגר (שעון ישראל)
     DEADLINE: '2026-09-01T23:59:00+03:00',
 
-    // פריסייל: כמה מקומות במחיר המוזל, וכמה מהם עוד פנויים.
-    // מעדכנים את PRESALE_LEFT ידנית לפי המכירות בפועל.
-    PRESALE_TOTAL: 30,
-    PRESALE_LEFT: 30,
 };
 
 /* ══ מקור הליד: UTM, ref וכל מה שאפשר לעקוב אחריו ══
@@ -3291,24 +3247,6 @@ function toggleFaq(el) { el.closest('.faq-item').classList.toggle('open'); }
     });
 })();
 
-/* ====== מקומות הפריסייל ====== */
-(function () {
-    var total = CONFIG.PRESALE_TOTAL, left = CONFIG.PRESALE_LEFT;
-    var txt = document.getElementById('spotsText');
-    var fill = document.getElementById('spotsFill');
-    var track = document.querySelector('.spots-track');
-    var taken = total - left;
-    /* לפני שנמכר מקום אחד אין מה לספור, ו"30 מתוך 30" רק מספר שאף אחד לא קנה */
-    if (txt) {
-        txt.innerHTML = taken > 0
-            ? 'נותרו <strong>' + left + '</strong> מקומות מתוך ' + total + ' במחיר הפריסייל'
-            : '<strong>' + total + '</strong> מקומות בלבד במחיר הפריסייל';
-    }
-    if (fill) fill.style.width = (taken / total * 100).toFixed(1) + '%';
-    /* בלי מכירות אין מה למלא, ופס ריק נראה שבור */
-    if (track) track.style.display = taken > 0 ? '' : 'none';
-})();
-
 /* ── הבר העליון נעלם בגלילה ── */
 (function () {
     const bar = document.querySelector('.urgency-bar');
@@ -3480,18 +3418,6 @@ function embedVideo(el, src) {
     });
 })();
 
-/* ====== STICKY CTA ====== */
-(function () {
-    const stickyCta = document.getElementById('stickyCta');
-    const registerSection = document.getElementById('register');
-    if (!stickyCta || !registerSection) return;
-    stickyCta.style.transition = 'transform 0.3s';
-    window.addEventListener('scroll', () => {
-        if (window.innerWidth > 768) return;
-        const rect = registerSection.getBoundingClientRect();
-        stickyCta.style.transform = (rect.top < window.innerHeight && rect.bottom > 0) ? 'translateY(100%)' : 'translateY(0)';
-    });
-})();
 </script>
 
 </body>
