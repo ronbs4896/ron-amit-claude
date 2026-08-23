@@ -183,7 +183,7 @@
         <img src="logo.png" alt="WhatsApp AI Agents" class="thanks-logo" onerror="this.remove()">
         <span class="badge badge-success"><span class="b-dot"></span>התשלום אושר</span>
         <h1>אתה בפנים.</h1>
-        <p class="sub">המייל עם פרטי הגישה כבר בדרך אליך. בזמן שהוא מגיע, בוא נראה מה בדיוק קנית לעצמך.</p>
+        <p class="sub">מייל אישור כבר בדרך אליך, ופרטי הכניסה מגיעים <b data-opens="day">ביום חמישי</b>, כשהקורס נפתח. בינתיים, בוא נראה מה בדיוק קנית לעצמך.</p>
 
         <div class="order-line">
             <span>סוכני AI בוואטסאפ, קורס דיגיטלי</span>
@@ -195,8 +195,8 @@
 
         <div class="next-steps">
             <div class="ns-title">מה עכשיו</div>
-            <div class="ns-item"><span class="ns-num">1</span><div>מייל עם פרטי הכניסה מגיע תוך דקות ספורות.<small>לא רואה אותו? תציץ בספאם או בקידומי מכירות.</small></div></div>
-            <div class="ns-item"><span class="ns-num">2</span><div>נכנסים, ומתחילים מהשיעור הראשון: חיבור הוואטסאפ.<small>שעה וחצי מעכשיו יכול להיות לך סוכן שעונה.</small></div></div>
+            <div class="ns-item"><span class="ns-num">1</span><div>מייל אישור מגיע תוך דקות ספורות.<small>לא רואה אותו? תציץ בספאם או בקידומי מכירות.</small></div></div>
+            <div class="ns-item"><span class="ns-num">2</span><div><b data-opens="full">ביום חמישי, 27.8</b> נפתח הקורס, ופרטי הכניסה מגיעים למייל.<small>מתחילים מהשיעור הראשון: חיבור הוואטסאפ. שעה וחצי, ויש לך סוכן שעונה.</small></div></div>
             <div class="ns-item" id="groupRow" style="display:none"><span class="ns-num">3</span><div><a id="groupLink" href="#" target="_blank" rel="noopener" style="color:var(--wa);font-weight:800;text-decoration:none">מצטרפים לקבוצת התלמידים</a>, לשאלות תוך כדי בנייה.<small>עמית עונה שם בעצמו.</small></div></div>
         </div>
     </div>
@@ -252,6 +252,24 @@ function rbsPurchaseId(lead) {
 function rbsPixelPurchase() {
     if (typeof fbq !== 'function') return;
     var PRICE = 197;   /* מחיר הפריסייל, כולל מע״מ */
+    var COURSE_OPENS = '2026-08-27';   /* מועד פתיחת הקורס, כמו בדף הבית */
+
+    (function () {
+        var parts = COURSE_OPENS.split('-');
+        if (parts.length !== 3) return;
+        /* בנייה מהחלקים ולא מהמחרוזת, כדי שאזור הזמן של הגולש לא יזיז את היום */
+        var d = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+        if (isNaN(d.getTime())) return;
+        var day = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'][d.getDay()];
+        var text = {
+            day: 'ביום ' + day,
+            full: 'ביום ' + day + ', ' + d.getDate() + '.' + (d.getMonth() + 1)
+        };
+        document.querySelectorAll('[data-opens]').forEach(function (el) {
+            var t = text[el.getAttribute('data-opens')];
+            if (t) el.textContent = t;
+        });
+    })();
     var lead = null;
     try { lead = JSON.parse(localStorage.getItem('rbs_lead') || 'null'); } catch (e) {}
     if (lead && lead.email) {

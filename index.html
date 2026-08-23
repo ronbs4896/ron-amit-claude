@@ -956,6 +956,7 @@
         .cd-label { font-size: 10.5px; color: var(--text-dim); margin-top: 3px; font-weight: 500; }
 
         .spots-bar { max-width: 360px; margin: 16px auto 22px; position: relative; }
+        .opens-line { text-align: center; margin-bottom: 14px; }
         .spots-line { text-align: center; margin-bottom: 10px; }
         .spots-line strong { font-weight: 900; display: inline-block; }
 
@@ -1665,8 +1666,8 @@
         <div class="meta-strip reveal stagger-5">
             <div class="meta-chip">
                 <span class="mc-icon"><svg class="ico" aria-hidden="true"><use href="#i-bolt"/></svg></span>
-                <span class="mc-value">מיידי</span>
-                גישה אחרי התשלום
+                <span class="mc-value" data-opens="short">חמישי</span>
+                הקורס נפתח
             </div>
             <div class="meta-chip">
                 <span class="mc-icon"><svg class="ico" aria-hidden="true"><use href="#i-infinity"/></svg></span>
@@ -2282,7 +2283,8 @@
                     <span class="psb-tail">197 ₪ במקום 1,497 ₪</span>
                 </div>
                 <div class="price-title">הסוכן שיענה במקומך</div>
-                <div class="price-subtitle">גישה מיידית, מהתשלום לשיעור הראשון</div>
+                <div class="price-subtitle">נרשמים היום במחיר הפריסייל, מתחילים ביום הפתיחה</div>
+                <div class="opens-line"><span class="badge badge-info"><span class="b-dot"></span>הקורס נפתח <b data-opens="full">ביום חמישי, 27.8</b></span></div>
 
                 <div class="countdown-section">
                     <div class="countdown-label">מחיר הפריסייל נסגר בעוד</div>
@@ -2418,7 +2420,7 @@
         </p>
         <div class="reveal stagger-2">
             <a href="#register" class="cta-btn">אני רוצה את הסוכן שלי</a>
-            <div class="cta-sub">197 ש״ח כולל מע״מ, תשלום אחד, גישה מיידית לכל החיים</div>
+            <div class="cta-sub">197 ש״ח כולל מע״מ, תשלום אחד, גישה לכל החיים</div>
         </div>
     </div>
 </section>
@@ -2471,7 +2473,7 @@
             <h4>3. מחיר ותשלום</h4>
             <p>מחיר הפריסייל: 197 ש״ח כולל מע״מ (166.95 ש״ח לפני מע״מ בשיעור 18%), בתשלום אחד. הסליקה מתבצעת באמצעות ספק סליקה חיצוני מאובטח; פרטי כרטיס האשראי אינם נשמרים אצל המפעיל. חשבונית מס/קבלה תישלח לכתובת המייל שנמסרה ברכישה.</p>
             <h4>4. אספקה וגישה</h4>
-            <p>הגישה לקורס נפתחת לאחר אישור התשלום, ומייל עם פרטי הכניסה נשלח בסמוך לרכישה (מומלץ לבדוק גם בתיקיית הספאם). הגישה אישית ואינה ניתנת להעברה, והיא כוללת עדכונים עתידיים לתכני הקורס. בכל תקלת גישה ניתן לפנות אלינו ונטפל בתוך יום עסקים.</p>
+            <p>הקורס נפתח ביום 27.08.2026. לאחר אישור התשלום נשלח מייל אישור, ומייל עם פרטי הכניסה נשלח במועד הפתיחה (מומלץ לבדוק גם בתיקיית הספאם). הגישה אישית ואינה ניתנת להעברה, והיא כוללת עדכונים עתידיים לתכני הקורס. בכל תקלת גישה ניתן לפנות אלינו ונטפל בתוך יום עסקים.</p>
             <h4>5. ביטול עסקה והחזר כספי</h4>
             <p><b>הקורס הוא "מידע" ותוכן דיגיטלי הניתן לשעתוק ולהעתקה</b>, ולכן חלים עליו הסייגים לזכות הביטול שבחוק הגנת הצרכן, התשמ״א-1981 ובתקנות שמכוחו, החלים על טובין הניתנים להקלטה, לשעתוק או לשכפול.</p>
             <p>ניתן לבטל את העסקה ולקבל החזר כספי מלא בתוך 14 יום ממועד הרכישה, <b>ובתנאי מצטבר שטרם בוצעה כניסה לאזור הקורס וטרם נצפה תוכן כלשהו, ולו באופן חלקי</b>. כניסה ראשונה לאזור הקורס או צפייה בשיעור כלשהו, לרבות בחלק ממנו, מהווה צריכה של התוכן הדיגיטלי, וממועד זה <b>לא יינתן החזר כספי מכל סוג, לא מלא ולא חלקי</b>, וזאת בהתאם לדין.</p>
@@ -2501,7 +2503,7 @@
             <button class="tk-close" onclick="document.getElementById('leadOverlay').classList.remove('show')" aria-label="סגירה"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
         </div>
         <div class="tk-body">
-            <p class="ld-sub">ממלאים פרטים, ומיד עוברים לדף תשלום מאובטח. הגישה לקורס נשלחת למייל הזה.</p>
+            <p class="ld-sub">ממלאים פרטים, ומיד עוברים לדף תשלום מאובטח. פרטי הכניסה נשלחים למייל הזה ביום הפתיחה.</p>
             <form id="leadForm" novalidate>
                 <div class="ld-field" id="ldfName">
                     <label for="ldName">שם מלא</label>
@@ -2552,6 +2554,9 @@ const CONFIG = {
     // קישור התשלום (Morning / Cardcom / Grow / Stripe וכו')
     CHECKOUT_URL: 'https://pay.grow.link/NzQzMTA~143716badbe4bab51e3061353cce2522-Mzg2NTQxOQ',
     LEAD_WEBHOOK_URL: '/api/lead',           // פונקציית Vercel → רב מסר (hotlist). ריק = רק מעבר לתשלום
+
+    // מתי הקורס נפתח. משנים כאן, וזה מתעדכן בכל מקום בדף
+    COURSE_OPENS: '2026-08-27',
 
     // מתי מחיר הפריסייל נסגר (שעון ישראל)
     DEADLINE: '2026-09-01T23:59:00+03:00',
@@ -3265,6 +3270,26 @@ setInterval(updateCountdown, 1000);
 
 /* ====== FAQ ====== */
 function toggleFaq(el) { el.closest('.faq-item').classList.toggle('open'); }
+
+/* ====== מועד פתיחת הקורס, במקום אחד ומשם לכל הדף ====== */
+(function () {
+    var parts = String(CONFIG.COURSE_OPENS || '').split('-');
+    if (parts.length !== 3) return;
+    /* בנייה מהחלקים ולא מהמחרוזת, כדי שאזור הזמן של הגולש לא יזיז את היום */
+    var d = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+    if (isNaN(d.getTime())) return;
+    var names = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+    var day = names[d.getDay()];
+    var text = {
+        short: day,
+        day: 'ביום ' + day,
+        full: 'ביום ' + day + ', ' + d.getDate() + '.' + (d.getMonth() + 1)
+    };
+    document.querySelectorAll('[data-opens]').forEach(function (el) {
+        var t = text[el.getAttribute('data-opens')];
+        if (t) el.textContent = t;
+    });
+})();
 
 /* ====== מקומות הפריסייל ====== */
 (function () {
