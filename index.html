@@ -197,7 +197,7 @@
            חוץ מ-primary שהוא הווריאנט הדגשי היחיד.
            כל הווריאנטים נבדקו מול ארבע רצועות הרקע ועוברים AA (4.5:1). */
         .badge,
-        .eyebrow, .hero-badge, .live-viewers,
+        .eyebrow, .live-viewers,
         .about-tag, .price-tag, .wa-agent-tag {
             display: inline-flex; align-items: center; gap: 7px;
             padding: 6px 14px;
@@ -210,7 +210,7 @@
 
         /* ── גדלים ── */
         .badge-sm, .wa-agent-tag { padding: 2px 9px; font-size: 10.5px; gap: 5px; }
-        .badge-lg, .hero-badge   { padding: 8px 18px; font-size: 13px; gap: 8px; }
+        .badge-lg { padding: 8px 18px; font-size: 13px; gap: 8px; }
 
         /* ── ווריאנטים ── */
         .badge-primary {
@@ -229,7 +229,7 @@
             background: rgba(239, 68, 68, 0.15); color: #ff9b9b;
             border-color: rgba(239, 68, 68, 0.28);
         }
-        .badge-success, .hero-badge, .wa-agent-tag {
+        .badge-success, .wa-agent-tag {
             background: rgba(37, 211, 102, 0.14); color: #34e07a;
             border-color: rgba(37, 211, 102, 0.28);
         }
@@ -256,22 +256,20 @@
         }
 
         /* ── נקודת סטטוס, אותו רכיב בכל התגיות ── */
-        .badge .b-dot, .eb-dot, .live-dot, .pulse-dot {
+        .badge .b-dot, .eb-dot, .live-dot {
             width: 6px; height: 6px; border-radius: 50%;
             background: currentColor; flex-shrink: 0;
         }
-        .live-dot, .pulse-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
-        .pulse-dot { background: var(--red); }
+        .live-dot { animation: pulse-dot 1.5s ease-in-out infinite; }
 
         /* ── מרווחים חיצוניים נשארים באחריות ההקשר, לא של הרכיב ── */
         .eyebrow      { margin-bottom: 18px; }
-        .hero-badge   { margin-bottom: 28px; }
         .live-viewers { margin-top: 20px; animation: fade-in 1s ease 2s both; }
         .price-tag    { margin-bottom: 24px; position: relative; }
         .wa-agent-tag { margin-bottom: 6px; }
 
         @media (prefers-reduced-motion: reduce) {
-            .live-dot, .pulse-dot { animation: none; }
+            .live-dot { animation: none; }
         }
 
 /* ══ SIM ══ */
@@ -592,7 +590,6 @@
         @media (max-width: 400px) {
             .urgency-bar { font-size: 11.5px; }
             .ub-sep { display: none; }
-            .hero-badge { white-space: normal; text-align: center; max-width: 92%; }
         }
         @keyframes pulse-text { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
@@ -1565,13 +1562,6 @@
         </a>
     </div>
     <div class="container">
-        <div class="reveal stagger-1">
-            <div class="hero-badge">
-                <span class="pulse-dot"></span>
-                מחיר השקה, 297 ש״ח כולל מע״מ במקום 997
-            </div>
-        </div>
-
         <h1 class="reveal stagger-2">
             בזמן שאתה ישן, שלושה לקוחות<br class="br-d">
             שאלו כמה זה עולה.<br>
